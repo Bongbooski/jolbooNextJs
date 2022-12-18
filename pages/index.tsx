@@ -11,6 +11,7 @@ import {
   Box,
   RadioGroup,
   Radio,
+  Switch,
 } from "@mui/material";
 import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -27,9 +28,26 @@ interface Movie {
 const Home = () => {
   const [value, setValue] = useState<Dayjs | null>(null);
   const [isMarried, setIsMarried] = useState<string | null>(null);
+  const [isNewCouple, setIsNewCouple] = useState(false);
+  const [isFirstTime, setIsFirstTime] = useState(true);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeIsMarried = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setIsMarried((event.target as HTMLInputElement).value);
+    setIsNewCouple(false);
+  };
+
+  const handleChangeIsNewCouple = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsNewCouple(event.target.checked);
+  };
+
+  const handleChangeIsFirstTime = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsFirstTime(event.target.checked);
   };
 
   const radioGroupCss = {
@@ -67,7 +85,7 @@ const Home = () => {
             value={isMarried}
             name="radio-buttons-group"
             style={radioGroupCss}
-            onChange={handleChange}
+            onChange={handleChangeIsMarried}
           >
             <FormControlLabel
               value="married"
@@ -81,8 +99,36 @@ const Home = () => {
             />
           </RadioGroup>
         </FormControl>
+
+        {isMarried === "married" && (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isNewCouple}
+                onChange={handleChangeIsNewCouple}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            }
+            label={isNewCouple ? "신혼이에요" : "신혼은 아니에요"}
+          />
+        )}
       </Box>
 
+      <Box style={{ display: "flex" }}>
+        <Typography variant="h5" gutterBottom>
+          생애 최초 여부
+        </Typography>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isFirstTime}
+              onChange={handleChangeIsFirstTime}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+          }
+          label={isFirstTime ? "집 처음 사봐요" : "집 사본적 있어요"}
+        />
+      </Box>
       <style jsx>{`
         .birthdayWrapper {
           display: flex;
