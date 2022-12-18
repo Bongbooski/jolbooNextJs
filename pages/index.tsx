@@ -3,7 +3,20 @@ import Seo from "../components/Seo";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
+import {
+  FormControlLabel,
+  FormControl,
+  Typography,
+  TextField,
+  Box,
+  RadioGroup,
+  Radio,
+} from "@mui/material";
+import { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { CSSProperties } from "@emotion/serialize";
 
 interface Movie {
   id: string;
@@ -11,53 +24,70 @@ interface Movie {
   poster_path: string;
 }
 
-const Home = ({ results }: InferGetServerSidePropsType<GetServerSideProps>) => {
-  // FE에서 기다리면서 화면은 로딩을 보여주는 방식
-  // const [movies, setMovies] = useState<Movie[]>();
-  // useEffect(() => {
-  //   (async () => {
-  //     const { results } = await (
-  //       await fetch(
-  //         `/api/movies`
-  //       )
-  //     ).json();
-  //     setMovies(results);
-  //   })();
-  // }, []);
+const Home = () => {
+  const [value, setValue] = useState<Dayjs | null>(null);
+  const [isMarried, setIsMarried] = useState<string | null>(null);
 
-  const router = useRouter()
-  const onMovieClick = (movie: Movie) => {
-    // option, 뒤에는 마스킹
-    // router.push({
-    //   pathname: `/movies/${movie.id}`,
-    //   query: {
-    //     title: movie.original_title
-    //   }
-    // }, `/movies/${movie.id}`)
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsMarried((event.target as HTMLInputElement).value);
+  };
 
-    router.push(`/movies/${movie.original_title}/${movie.id}`)
-  }
+  const radioGroupCss = {
+    display: "flex",
+    flexDirection: "row",
+  };
 
   return (
     <div className="container">
       <Seo title="Home" />
-      {!results && <h4>Loading...</h4>}
-      {results?.map((movie: Movie) => (
-        <div className="movie" key={movie.id} onClick={() => onMovieClick(movie)}>
-          <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          {/* <Link href={{
-            pathname: `/movies/${movie.id}`,
-            query: {
-              title: movie.original_title
-            }
-          }} as={`/movies/${movie.id}`}> */}
-          <Link href={`/movies/${movie.original_title}/${movie.id}`}>
-            <h4>{movie.original_title}</h4>
-          </Link>
-        </div>
-      ))}
+
+      <Box className="birthdayWrapper" style={{ display: "flex" }}>
+        <Typography variant="h5" gutterBottom>
+          생년월일을 입력해주세요
+        </Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Basic example"
+            value={value}
+            onChange={(newValue) => {
+              setValue(newValue);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+      </Box>
+
+      <Box style={{ display: "flex" }}>
+        <Typography variant="h5" gutterBottom>
+          결혼, 신혼여부
+        </Typography>
+        <FormControl>
+          <RadioGroup
+            // defaultValue="female"
+            value={isMarried}
+            name="radio-buttons-group"
+            style={radioGroupCss}
+            onChange={handleChange}
+          >
+            <FormControlLabel
+              value="married"
+              control={<Radio />}
+              label="결혼했어요"
+            />
+            <FormControlLabel
+              value="notMarried"
+              control={<Radio />}
+              label="결혼안했어요"
+            />
+          </RadioGroup>
+        </FormControl>
+      </Box>
+
       <style jsx>{`
-        .container {
+        .birthdayWrapper {
+          display: flex;
+        }
+        /* .container {
           display: grid;
           grid-template-columns: 1fr 1fr;
           padding: 20px;
@@ -78,21 +108,21 @@ const Home = ({ results }: InferGetServerSidePropsType<GetServerSideProps>) => {
         .movie h4 {
           font-size: 18px;
           text-align: center;
-        }
+        } */
       `}</style>
     </div>
   );
-}
+};
 
 export default Home;
 
 // server side에서만 실행된다
 // async는 필요없으면 안써도 됨, export, 함수명이 중요
-export const getServerSideProps = async () => {
-  const { results } = await (await fetch('http://localhost:3000/api/movies')).json();
-  return {
-    props: {
-      results,
-    }
-  }
-}
+// export const getServerSideProps = async () => {
+//   const { results } = await (await fetch('http://localhost:3000/api/movies')).json();
+//   return {
+//     props: {
+//       results,
+//     }
+//   }
+// }

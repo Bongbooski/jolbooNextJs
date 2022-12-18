@@ -6,6 +6,9 @@ const API_KEY = process.env.API_KEY;
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  compiler: {
+    emotion: true,
+  },
   async redirects() {
     return [
       {
