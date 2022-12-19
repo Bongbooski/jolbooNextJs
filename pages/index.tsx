@@ -12,6 +12,9 @@ import {
   RadioGroup,
   Radio,
   Switch,
+  InputLabel,
+  Input,
+  InputAdornment,
 } from "@mui/material";
 import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -26,10 +29,69 @@ interface Movie {
 }
 
 const Home = () => {
-  const [value, setValue] = useState<Dayjs | null>(null);
+  const [birthday, setBirthday] = useState<Dayjs | null>(null);
   const [isMarried, setIsMarried] = useState<string | null>(null);
-  const [isNewCouple, setIsNewCouple] = useState(false);
-  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [isNewCouple, setIsNewCouple] = useState<boolean | null>(null);
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
+  const [showSecondSection, setShowSecondSection] = useState<boolean | null>(
+    null
+  );
+  const [yearIncome, setYearIncome] = useState<string>();
+  const [supportAmount, setSupportAmount] = useState<string>();
+  const [depositAmount, setDepositAmount] = useState<string>();
+
+  const [isSingleParent, setIsSingleParent] = useState<boolean>(false);
+  const [isManyKids, setIsManyKids] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [isMultiCultural, setIsMultiCultural] = useState<boolean>(false);
+  const [havingNoHouse, setHavingNoHouse] = useState<boolean>(true);
+  const [kidsCount, setKidsCount] = useState<string>();
+
+  useEffect(() => {
+    if (
+      birthday !== null &&
+      isMarried !== null &&
+      yearIncome &&
+      supportAmount &&
+      depositAmount
+    ) {
+      setShowSecondSection(true);
+    } else {
+      setShowSecondSection(false);
+    }
+  }, [birthday, isMarried, yearIncome, supportAmount, depositAmount]);
+
+  const handleChangeKidsCount = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setKidsCount(event.target.value);
+  };
+
+  const handleChangeIsSingleParent = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsSingleParent(event.target.checked);
+  };
+  const handleChangeIsManyKids = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsManyKids(event.target.checked);
+  };
+  const handleChangeIsDisabled = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsDisabled(event.target.checked);
+  };
+  const handleChangeIsMultiCultural = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsMultiCultural(event.target.checked);
+  };
+  const handleChangeHavingNoHouse = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setHavingNoHouse(event.target.checked);
+  };
 
   const handleChangeIsMarried = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -50,38 +112,60 @@ const Home = () => {
     setIsFirstTime(event.target.checked);
   };
 
+  const handleChangeYearIncome = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setYearIncome(event.target.value);
+  };
+
+  const handleChangeSupportAmount = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSupportAmount(event.target.value);
+  };
+
+  const handleChangeDepositAmount = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setDepositAmount(event.target.value);
+  };
+
   const radioGroupCss = {
     display: "flex",
     flexDirection: "row",
+  };
+
+  const wrapperBoxCss = {
+    display: "flex",
+    justifyContent: "space-between",
   };
 
   return (
     <div className="container">
       <Seo title="Home" />
 
-      <Box className="birthdayWrapper" style={{ display: "flex" }}>
+      <Box className="birthdayWrapper" style={wrapperBoxCss}>
         <Typography variant="h5" gutterBottom>
           생년월일을 입력해주세요
         </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            label="Basic example"
-            value={value}
+            label="생년월일"
+            value={birthday}
             onChange={(newValue) => {
-              setValue(newValue);
+              setBirthday(newValue);
             }}
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
       </Box>
 
-      <Box style={{ display: "flex" }}>
+      <Box style={wrapperBoxCss}>
         <Typography variant="h5" gutterBottom>
           결혼, 신혼여부
         </Typography>
         <FormControl>
           <RadioGroup
-            // defaultValue="female"
             value={isMarried}
             name="radio-buttons-group"
             style={radioGroupCss}
@@ -114,7 +198,7 @@ const Home = () => {
         )}
       </Box>
 
-      <Box style={{ display: "flex" }}>
+      <Box style={wrapperBoxCss}>
         <Typography variant="h5" gutterBottom>
           생애 최초 여부
         </Typography>
@@ -126,9 +210,160 @@ const Home = () => {
               inputProps={{ "aria-label": "controlled" }}
             />
           }
-          label={isFirstTime ? "집 처음 사봐요" : "집 사본적 있어요"}
+          label={isFirstTime ? "집 처음 사요" : "집 사본적 있어요"}
         />
       </Box>
+
+      <Box style={wrapperBoxCss}>
+        <Typography variant="h5" gutterBottom>
+          연소득
+        </Typography>
+        <FormControl variant="standard">
+          <Input
+            id="year-income-amount"
+            startAdornment={<InputAdornment position="start">₩</InputAdornment>}
+            endAdornment={
+              <InputAdornment position="start">만원</InputAdornment>
+            }
+            value={yearIncome}
+            onChange={handleChangeYearIncome}
+          />
+        </FormControl>
+      </Box>
+
+      <Box style={wrapperBoxCss}>
+        <Typography variant="h5" gutterBottom>
+          은인들의 지원금
+        </Typography>
+        <FormControl variant="standard">
+          <Input
+            id="support-amount"
+            startAdornment={<InputAdornment position="start">₩</InputAdornment>}
+            endAdornment={
+              <InputAdornment position="start">만원</InputAdornment>
+            }
+            value={supportAmount}
+            onChange={handleChangeSupportAmount}
+          />
+        </FormControl>
+      </Box>
+
+      <Box style={wrapperBoxCss}>
+        <Typography variant="h5" gutterBottom>
+          저축액
+        </Typography>
+        <FormControl variant="standard">
+          <Input
+            id="deposit-amount"
+            startAdornment={<InputAdornment position="start">₩</InputAdornment>}
+            endAdornment={
+              <InputAdornment position="start">만원</InputAdornment>
+            }
+            value={depositAmount}
+            onChange={handleChangeDepositAmount}
+          />
+        </FormControl>
+      </Box>
+      {showSecondSection && (
+        <>
+          <Box style={wrapperBoxCss}>
+            <Typography variant="h5" gutterBottom>
+              한부모 가정 여부
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isSingleParent}
+                  onChange={handleChangeIsSingleParent}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label={isSingleParent ? "맞아요" : "아니에요"}
+            />
+          </Box>
+
+          <Box style={wrapperBoxCss}>
+            <Typography variant="h5" gutterBottom>
+              다자녀 가구 여부
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isManyKids}
+                  onChange={handleChangeIsManyKids}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label={isManyKids ? "다자녀 가구에요" : "아니에요"}
+            />
+          </Box>
+          {isManyKids && (
+            <Box style={wrapperBoxCss}>
+              <Typography variant="h5" gutterBottom>
+                미성년 자녀수
+              </Typography>
+              <FormControl variant="standard">
+                <Input
+                  id="kids"
+                  endAdornment={
+                    <InputAdornment position="start">명</InputAdornment>
+                  }
+                  value={kidsCount}
+                  onChange={handleChangeKidsCount}
+                />
+              </FormControl>
+            </Box>
+          )}
+
+          <Box style={wrapperBoxCss}>
+            <Typography variant="h5" gutterBottom>
+              장애인 가구 여부
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isDisabled}
+                  onChange={handleChangeIsDisabled}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label={isDisabled ? "맞아요" : "아니에요"}
+            />
+          </Box>
+
+          <Box style={wrapperBoxCss}>
+            <Typography variant="h5" gutterBottom>
+              다문화 가구 여부
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isMultiCultural}
+                  onChange={handleChangeIsMultiCultural}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label={isMultiCultural ? "맞아요" : "아니에요"}
+            />
+          </Box>
+
+          <Box style={wrapperBoxCss}>
+            <Typography variant="h5" gutterBottom>
+              무주택 여부
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={havingNoHouse}
+                  onChange={handleChangeHavingNoHouse}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label={havingNoHouse ? "무주택이에요" : "무주택이 아니에요"}
+            />
+          </Box>
+        </>
+      )}
       <style jsx>{`
         .birthdayWrapper {
           display: flex;
