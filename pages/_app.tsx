@@ -7,13 +7,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <RecoilRoot>
-      <CssBaseline/>
+      <CssBaseline />
       <Layout>
         <Component {...pageProps} />
         <style jsx global>{`
-          a {
+          /* a {
             color: green;
-          }
+          } */
         `}</style>
       </Layout>
     </RecoilRoot>
