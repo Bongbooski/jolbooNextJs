@@ -31,22 +31,22 @@ interface Movie {
 }
 
 const Home = () => {
-  const [birthday, setBirthday] = useState<Dayjs | null>(null);
-  // const [birthday, setBirthday] = useRecoilState<Dayjs | null>(
-  //   SampleState.birthday
-  // );
-  const [isMarried, setIsMarried] = useState<string | null>(null);
-  // const [isMarried, setIsMarried] = useRecoilState<string | null>(
-  //   SampleState.isMarried
-  // );
-  const [isNewCouple, setIsNewCouple] = useState<boolean | null>(null);
-  // const [isNewCouple, setIsNewCouple] = useRecoilState<boolean | null>(
-  //   SampleState.isNewCouple
-  // );
-  const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
-  // const [isFirstTime, setIsFirstTime] = useRecoilState<boolean>(
-  //   SampleState.isFirstTime
-  // );
+  // const [birthday, setBirthday] = useState<Dayjs | null>(null);
+  const [birthday, setBirthday] = useRecoilState<Dayjs | null>(
+    SampleState.birthday
+  );
+  // const [isMarried, setIsMarried] = useState<string | null>(null);
+  const [isMarried, setIsMarried] = useRecoilState<string | null>(
+    SampleState.isMarried
+  );
+  // const [isNewCouple, setIsNewCouple] = useState<boolean | null>(null);
+  const [isNewCouple, setIsNewCouple] = useRecoilState<boolean | null>(
+    SampleState.isNewCouple
+  );
+  // const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
+  const [isFirstTime, setIsFirstTime] = useRecoilState<boolean>(
+    SampleState.isFirstTime
+  );
   const [showSecondSection, setShowSecondSection] = useState<boolean | null>(
     null
   );
