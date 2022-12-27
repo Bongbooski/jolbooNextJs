@@ -24,7 +24,7 @@ import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import LoanInput from "../components/\bLoanInput";
+import LoanInput from "../components/LoanInput";
 
 interface Loan {
   name: string;

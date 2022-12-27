@@ -50,43 +50,43 @@ const Home = () => {
   const [showSecondSection, setShowSecondSection] = useState<boolean | null>(
     null
   );
-  const [yearIncome, setYearIncome] = useState<string>();
-  // const [yearIncome, setYearIncome] = useRecoilState<string>(
-  //   SampleState.yearIncome
-  // );
-  const [supportAmount, setSupportAmount] = useState<string>();
-  // const [supportAmount, setSupportAmount] = useRecoilState<string>(
-  //   SampleState.supportAmount
-  // );
-  const [depositAmount, setDepositAmount] = useState<string>();
-  // const [depositAmount, setDepositAmount] = useRecoilState<string>(
-  //   SampleState.depositAmount
-  // );
+  // const [yearIncome, setYearIncome] = useState<string>();
+  const [yearIncome, setYearIncome] = useRecoilState<string>(
+    SampleState.yearIncome
+  );
+  // const [supportAmount, setSupportAmount] = useState<string>();
+  const [supportAmount, setSupportAmount] = useRecoilState<string>(
+    SampleState.supportAmount
+  );
+  // const [depositAmount, setDepositAmount] = useState<string>();
+  const [depositAmount, setDepositAmount] = useRecoilState<string>(
+    SampleState.depositAmount
+  );
 
-  const [isSingleParent, setIsSingleParent] = useState<boolean>(false);
-  // const [isSingleParent, setIsSingleParent] = useRecoilState<boolean>(
-  //   SampleState.isSingleParent
-  // );
-  const [isManyKids, setIsManyKids] = useState<boolean>(false);
-  // const [isManyKids, setIsManyKids] = useRecoilState<boolean>(
-  //   SampleState.isManyKids
-  // );
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  // const [isDisabled, setIsDisabled] = useRecoilState<boolean>(
-  //   SampleState.isDisabled
-  // );
-  const [isMultiCultural, setIsMultiCultural] = useState<boolean>(false);
-  // const [isMultiCultural, setIsMultiCultural] = useRecoilState<boolean>(
-  //   SampleState.isMultiCultural
-  // );
-  const [havingNoHouse, setHavingNoHouse] = useState<boolean>(true);
-  // const [havingNoHouse, setHavingNoHouse] = useRecoilState<boolean>(
-  //   SampleState.havingNoHouse
-  // );
-  const [kidsCount, setKidsCount] = useState<string>();
-  // const [kidsCount, setKidsCount] = useRecoilState<string>(
-  //   SampleState.kidsCount
-  // );
+  // const [isSingleParent, setIsSingleParent] = useState<boolean>(false);
+  const [isSingleParent, setIsSingleParent] = useRecoilState<boolean>(
+    SampleState.isSingleParent
+  );
+  // const [isManyKids, setIsManyKids] = useState<boolean>(false);
+  const [isManyKids, setIsManyKids] = useRecoilState<boolean>(
+    SampleState.isManyKids
+  );
+  // const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useRecoilState<boolean>(
+    SampleState.isDisabled
+  );
+  // const [isMultiCultural, setIsMultiCultural] = useState<boolean>(false);
+  const [isMultiCultural, setIsMultiCultural] = useRecoilState<boolean>(
+    SampleState.isMultiCultural
+  );
+  // const [havingNoHouse, setHavingNoHouse] = useState<boolean>(true);
+  const [havingNoHouse, setHavingNoHouse] = useRecoilState<boolean>(
+    SampleState.havingNoHouse
+  );
+  // const [kidsCount, setKidsCount] = useState<string>();
+  const [kidsCount, setKidsCount] = useRecoilState<string>(
+    SampleState.kidsCount
+  );
 
   useEffect(() => {
     if (
