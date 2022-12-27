@@ -22,12 +22,15 @@ export const KnowingState = {
 
   yearIncome: atom<string>({
     key: RecoilKey.knowing["KNOWING/yearIncome"],
+    default: "",
   }),
   supportAmount: atom<string>({
     key: RecoilKey.knowing["KNOWING/supportAmount"],
+    default: "",
   }),
   depositAmount: atom<string>({
     key: RecoilKey.knowing["KNOWING/depositAmount"],
+    default: "",
   }),
 
   isSingleParent: atom<boolean>({
@@ -53,5 +56,6 @@ export const KnowingState = {
 
   kidsCount: atom<string>({
     key: RecoilKey.knowing["KNOWING/kidsCount"],
+    default: "",
   }),
 };
