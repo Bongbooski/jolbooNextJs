@@ -21,7 +21,8 @@ import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { CSSProperties } from "@emotion/serialize";
+import { SampleState } from "../state/SampleState";
+import { useRecoilState } from "recoil";
 
 interface Movie {
   id: string;
@@ -31,22 +32,61 @@ interface Movie {
 
 const Home = () => {
   const [birthday, setBirthday] = useState<Dayjs | null>(null);
+  // const [birthday, setBirthday] = useRecoilState<Dayjs | null>(
+  //   SampleState.birthday
+  // );
   const [isMarried, setIsMarried] = useState<string | null>(null);
+  // const [isMarried, setIsMarried] = useRecoilState<string | null>(
+  //   SampleState.isMarried
+  // );
   const [isNewCouple, setIsNewCouple] = useState<boolean | null>(null);
+  // const [isNewCouple, setIsNewCouple] = useRecoilState<boolean | null>(
+  //   SampleState.isNewCouple
+  // );
   const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
+  // const [isFirstTime, setIsFirstTime] = useRecoilState<boolean>(
+  //   SampleState.isFirstTime
+  // );
   const [showSecondSection, setShowSecondSection] = useState<boolean | null>(
     null
   );
   const [yearIncome, setYearIncome] = useState<string>();
+  // const [yearIncome, setYearIncome] = useRecoilState<string>(
+  //   SampleState.yearIncome
+  // );
   const [supportAmount, setSupportAmount] = useState<string>();
+  // const [supportAmount, setSupportAmount] = useRecoilState<string>(
+  //   SampleState.supportAmount
+  // );
   const [depositAmount, setDepositAmount] = useState<string>();
+  // const [depositAmount, setDepositAmount] = useRecoilState<string>(
+  //   SampleState.depositAmount
+  // );
 
   const [isSingleParent, setIsSingleParent] = useState<boolean>(false);
+  // const [isSingleParent, setIsSingleParent] = useRecoilState<boolean>(
+  //   SampleState.isSingleParent
+  // );
   const [isManyKids, setIsManyKids] = useState<boolean>(false);
+  // const [isManyKids, setIsManyKids] = useRecoilState<boolean>(
+  //   SampleState.isManyKids
+  // );
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  // const [isDisabled, setIsDisabled] = useRecoilState<boolean>(
+  //   SampleState.isDisabled
+  // );
   const [isMultiCultural, setIsMultiCultural] = useState<boolean>(false);
+  // const [isMultiCultural, setIsMultiCultural] = useRecoilState<boolean>(
+  //   SampleState.isMultiCultural
+  // );
   const [havingNoHouse, setHavingNoHouse] = useState<boolean>(true);
+  // const [havingNoHouse, setHavingNoHouse] = useRecoilState<boolean>(
+  //   SampleState.havingNoHouse
+  // );
   const [kidsCount, setKidsCount] = useState<string>();
+  // const [kidsCount, setKidsCount] = useRecoilState<string>(
+  //   SampleState.kidsCount
+  // );
 
   useEffect(() => {
     if (
@@ -143,7 +183,7 @@ const Home = () => {
 
   return (
     <div className="container">
-      <Seo title="나에 대하여" />
+      {/* <Seo title="나에 대하여" /> */}
 
       <Box className="birthdayWrapper" style={wrapperBoxCss}>
         <Typography variant="h5" gutterBottom>
