@@ -3,16 +3,16 @@ import RecoilKey from "../constants/recoilKey";
 import { Dayjs } from "dayjs";
 
 export const SampleState = {
-  //   isMarried: atom<boolean>({
-  //     key: RecoilKey.sample["SAMPLE/isMarried"],
+  //   isMarriedValue: atom<boolean>({
+  //     key: RecoilKey.sample["SAMPLE/isMarriedValue"],
   //     default: false,
   //   }),
   birthday: atom<Dayjs | null>({
     key: "birthday",
     default: null,
   }),
-  isMarried: atom<string | null>({
-    key: "isMarried",
+  isMarriedValue: atom<string | null>({
+    key: "isMarriedValue",
     default: null,
   }),
   isNewCouple: atom<boolean | null>({
@@ -38,8 +38,8 @@ export const SampleState = {
     key: "isSingleParent",
     default: false,
   }),
-  isManyKids: atom<boolean>({
-    key: "isManyKids",
+  isHavingKids: atom<boolean>({
+    key: "isHavingKids",
     default: false,
   }),
   isDisabled: atom<boolean>({

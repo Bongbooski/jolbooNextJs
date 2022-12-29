@@ -1,3 +1,3 @@
-const keyArr = ["SAMPLE/isMarried"] as const;
+const keyArr = ["SAMPLE/isMarriedValue"] as const;
 
 export default keyArr;

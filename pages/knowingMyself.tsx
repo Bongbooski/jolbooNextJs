@@ -23,7 +23,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SampleState } from "../state/SampleState";
 import { KnowingState } from "../state/KnowingState";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 interface Movie {
   id: string;
@@ -36,9 +36,9 @@ const Home = () => {
   const [birthday, setBirthday] = useRecoilState<Dayjs | null>(
     KnowingState.birthday
   );
-  // const [isMarried, setIsMarried] = useState<string | null>(null);
-  const [isMarried, setIsMarried] = useRecoilState<string | null>(
-    KnowingState.isMarried
+  // const [isMarriedValue, setisMarriedValue] = useState<string | null>(null);
+  const [isMarriedValue, setisMarriedValue] = useRecoilState<string | null>(
+    KnowingState.isMarriedValue
   );
   // const [isNewCouple, setIsNewCouple] = useState<boolean | null>(null);
   const [isNewCouple, setIsNewCouple] = useRecoilState<boolean | null>(
@@ -68,9 +68,9 @@ const Home = () => {
   const [isSingleParent, setIsSingleParent] = useRecoilState<boolean>(
     KnowingState.isSingleParent
   );
-  // const [isManyKids, setIsManyKids] = useState<boolean>(false);
-  const [isManyKids, setIsManyKids] = useRecoilState<boolean>(
-    KnowingState.isManyKids
+  // const [isHavingKids, setisHavingKids] = useState<boolean>(false);
+  const [isHavingKids, setisHavingKids] = useRecoilState<boolean>(
+    KnowingState.isHavingKids
   );
   // const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useRecoilState<boolean>(
@@ -89,10 +89,12 @@ const Home = () => {
     KnowingState.kidsCount
   );
 
+  const isMarried = useRecoilValue<boolean>(KnowingState.isMarried);
+
   useEffect(() => {
     if (
       birthday !== null &&
-      isMarried !== null &&
+      isMarriedValue !== null &&
       yearIncome &&
       supportAmount &&
       depositAmount
@@ -101,7 +103,7 @@ const Home = () => {
     } else {
       setShowSecondSection(false);
     }
-  }, [birthday, isMarried, yearIncome, supportAmount, depositAmount]);
+  }, [birthday, isMarriedValue, yearIncome, supportAmount, depositAmount]);
 
   const handleChangeKidsCount = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -114,10 +116,10 @@ const Home = () => {
   ) => {
     setIsSingleParent(event.target.checked);
   };
-  const handleChangeIsManyKids = (
+  const handleChangeisHavingKids = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setIsManyKids(event.target.checked);
+    setisHavingKids(event.target.checked);
   };
   const handleChangeIsDisabled = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -135,10 +137,10 @@ const Home = () => {
     setHavingNoHouse(event.target.checked);
   };
 
-  const handleChangeIsMarried = (
+  const handleChangeisMarriedValue = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setIsMarried((event.target as HTMLInputElement).value);
+    setisMarriedValue((event.target as HTMLInputElement).value);
     setIsNewCouple(false);
   };
 
@@ -208,10 +210,10 @@ const Home = () => {
         </Typography>
         <FormControl>
           <RadioGroup
-            value={isMarried}
+            value={isMarriedValue}
             name="radio-buttons-group"
             style={radioGroupCss}
-            onChange={handleChangeIsMarried}
+            onChange={handleChangeisMarriedValue}
           >
             <FormControlLabel
               value="married"
@@ -226,7 +228,7 @@ const Home = () => {
           </RadioGroup>
         </FormControl>
 
-        {isMarried === "married" && (
+        {isMarried && (
           <FormControlLabel
             control={
               <Switch
@@ -326,23 +328,23 @@ const Home = () => {
 
           <Box style={wrapperBoxCss}>
             <Typography variant="h5" gutterBottom>
-              다자녀 가구 여부
+              자녀 양육 여부
             </Typography>
             <FormControlLabel
               control={
                 <Switch
-                  checked={isManyKids}
-                  onChange={handleChangeIsManyKids}
+                  checked={isHavingKids}
+                  onChange={handleChangeisHavingKids}
                   inputProps={{ "aria-label": "controlled" }}
                 />
               }
-              label={isManyKids ? "다자녀 가구에요" : "아니에요"}
+              label={isHavingKids ? "다자녀 가구에요" : "아니에요"}
             />
           </Box>
-          {isManyKids && (
+          {isHavingKids && (
             <Box style={wrapperBoxCss}>
               <Typography variant="h5" gutterBottom>
-                미성년 자녀수
+                자녀수
               </Typography>
               <FormControl variant="standard">
                 <Input

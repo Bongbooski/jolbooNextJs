@@ -2,10 +2,12 @@ import { useRecoilState } from "recoil";
 import { SampleState } from "../state/SampleState";
 
 const RecoilSample1 = () => {
-  const [isMarried, setIsMarried] = useRecoilState(SampleState.isMarried);
+  const [isMarriedValue, setisMarriedValue] = useRecoilState(
+    SampleState.isMarriedValue
+  );
 
   const handleClick = () => {
-    isMarried ? setIsMarried(false) : setIsMarried(true);
+    isMarriedValue ? setisMarriedValue(false) : setisMarriedValue(true);
   };
 
   return (
