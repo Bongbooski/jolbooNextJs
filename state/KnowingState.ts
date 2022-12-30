@@ -4,6 +4,7 @@ import { Dayjs } from "dayjs";
 import {
   ConfirmingLoanInterests,
   DidimdolInterests,
+  HomeLoanInterests,
 } from "../constants/Interests";
 import { Loan } from "../components/LoanInput";
 import { ConfirmingLoanBank } from "../constants/Common";
@@ -223,6 +224,141 @@ export const KnowingState = {
           result += 0.2;
         } else if (internationalAge >= 30 && !isMarried) {
           result -= 1;
+        }
+      }
+      return result;
+    },
+  }),
+
+  // 1주택 이하
+  // 신혼 N, 자녀수 0이면 소득 7천 이하
+  // 신혼 N, 자녀수 1이면 소득 8천이하
+  // 자녀 2 이면 9천이하
+  // 자녀 3 이상, 1억이하
+  // 신혼 Y, 자녀수 0이면 소득 8500 이하
+  // 신혼 Y, 자녀수 1이면 소득 8500 이하
+  isAbleHomeLoan: selector<boolean>({
+    key: RecoilKey.knowing["KNOWING/isAbleHomeLoan"],
+    get: ({ get }) => {
+      let result = false;
+
+      const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
+      const isNewCouple = get(KnowingState.isNewCouple);
+      const isHavingKids = get(KnowingState.isHavingKids);
+      const kidsCount = Number.parseInt(get(KnowingState.kidsCount));
+
+      if (!isNewCouple && !isHavingKids && yearIncome <= 7000 ||
+        !isNewCouple && isHavingKids && kidsCount === 1 && yearIncome <= 8000 ||
+        kidsCount === 2 && yearIncome <= 9000 ||
+        kidsCount === 3 && yearIncome <= 10000 ||
+        isNewCouple && yearIncome <= 8500
+        ) {
+          result = true;
+        }
+      return result;
+    },
+  }),
+
+
+  // 0.4 : 한부모, 장애인, 다문화, 자녀 >= 3 && 소득 <= 7천
+  // 0.2 : 결혼 Y && 소득 <= 7천
+  // 0.1 : 소득 <= 4500
+  getHomeLoanPrimeRate: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getHomeLoanPrimeRate"],
+    get: ({ get }) => {
+      let result = 0;
+
+      const isSingleParent = get(KnowingState.isSingleParent);
+      const isDisabled = get(KnowingState.isDisabled);
+      const isMultiCultural = get(KnowingState.isMultiCultural);
+
+      const isMarried = get(KnowingState.isMarried);
+      const isHavingKids = get(KnowingState.isHavingKids);
+      const kidsCount = Number.parseInt(get(KnowingState.kidsCount));
+      const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
+
+      let fourPrimeRateCount = 0;
+      let twoPrimeRateCount = 0;
+      let onePrimeRateCount = 0;
+
+      if (isSingleParent) {
+        fourPrimeRateCount++;
+      }
+
+      if (isDisabled) {
+        fourPrimeRateCount++;
+      }
+
+      if (isMultiCultural) {
+        fourPrimeRateCount++;
+      }
+
+      if (isHavingKids && kidsCount >= 3 && yearIncome <= 7000) {
+        fourPrimeRateCount++;
+      }
+
+      if (isMarried && yearIncome <= 7000) {
+        twoPrimeRateCount++;
+      }
+
+      if (yearIncome <= 4500) {
+        onePrimeRateCount++;
+      }
+
+      if (fourPrimeRateCount >= 2) {
+        result = 0.8;
+      } else if (fourPrimeRateCount === 1 && twoPrimeRateCount === 1) {
+        result = 0.6;
+      } else if (fourPrimeRateCount === 1 && onePrimeRateCount == 1) {
+        result = 0.5;
+      } else if (fourPrimeRateCount === 1 && twoPrimeRateCount === 0 && onePrimeRateCount === 0) {
+        result = 0.4;
+      } else if (twoPrimeRateCount === 1 && onePrimeRateCount === 1) {
+        result = 0.3;
+      } else if (twoPrimeRateCount === 1 && onePrimeRateCount === 0) {
+        result = 0.2;
+      } else if (onePrimeRateCount === 1) {
+        result = 0.1;
+      } else {
+        result = 0;
+      }
+
+      return result.toFixed(2);
+    },
+  }),
+
+  getHomeLoanInterest: selector<number | undefined>({
+    key: RecoilKey.knowing["KNOWING/getHomeLoanInterest"],
+    get: ({ get }) => {
+      let result: number | undefined = undefined;
+      const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
+      const getHomeLoanPrimeRate: number = get(
+        KnowingState.getHomeLoanPrimeRate
+      );
+      const borrowingYear: string = get(KnowingState.borrowingYear);
+
+      if (isAbleHomeLoan) {
+        result = HomeLoanInterests.U_HOME_LOAN[borrowingYear] - getHomeLoanPrimeRate;
+      }
+
+      return result?.toFixed(2);
+    },
+  }),
+
+  // 최대 3.6억
+  // 미성년자녀 3명 이상인 경우 4억
+  getHomeLoanLimit: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getHomeLoanLimit"],
+    get: ({ get }) => {
+      let result = 0;
+      const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
+      const isHavingKids = get(KnowingState.isHavingKids);
+      const kidsCount = Number.parseInt(get(KnowingState.kidsCount));
+
+      if (isAbleHomeLoan) {
+        result = 3.6;
+        if (isHavingKids && kidsCount >= 3) {
+          result += 0.4;
         }
       }
       return result;

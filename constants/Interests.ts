@@ -21,6 +21,15 @@ export const DidimdolInterests: Interest = {
   },
 };
 
+export const HomeLoanInterests: Interest = {
+  U_HOME_LOAN : {
+    "10" : 4.25,
+    "15" : 4.35,
+    "20" : 4.4,
+    "30" : 4.45,
+  }
+}
+
 interface Interest {
   [index: string]: InterestDetail;
 }

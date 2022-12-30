@@ -58,6 +58,15 @@ const Home = () => {
   const getDidimdolInterest = useRecoilValue<boolean>(
     KnowingState.getDidimdolInterest
   );
+
+  const isAbleHomeLoan = useRecoilValue<boolean>(KnowingState.isAbleHomeLoan);
+  const getHomeLoanInterest = useRecoilValue<boolean>(
+    KnowingState.getHomeLoanInterest
+  );
+  const getHomeLoanLimit = useRecoilValue<number>(
+    KnowingState.getHomeLoanLimit
+  );
+
   const getConfirmingLoanInterest = useRecoilValue<boolean>(
     KnowingState.getConfirmingLoanInterest
   );
@@ -186,13 +195,13 @@ const Home = () => {
           보금자리
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
-          가능
+          {isAbleHomeLoan ? "가능" : "불가능"}
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
-          2.75
+          {isAbleHomeLoan ? `${getHomeLoanInterest}%` : ""}
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
-          2.5
+          {isAbleHomeLoan ? `${getHomeLoanLimit}억` : "0원"}
         </Typography>
       </Box>
       <Box style={wrapperBoxCss}>
