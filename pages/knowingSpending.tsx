@@ -113,6 +113,38 @@ const Home = () => {
     paddingTop: "10px",
   };
 
+  // 원리금 균등 월 상환 금액
+  const calculateFixedPaymentLoanAmountByMonth = (): number => {
+    const loanYear = Number.parseInt(borrowingYear);
+    const totalLoanAmount = getSoulGatheringAmount * 10000 * loanYear;
+    const loanRate = 2.5;
+
+    // AB(1 + B)^n / (1 + B)^n - 1
+    // A: 대출받은 원금
+    // B: 대출에 대한 이자율(연이자율 / 12)
+    // n: 대출 상환 개월 수
+    const A = totalLoanAmount;
+    const B = loanRate / 100 / 12;
+    const n = loanYear * 12;
+
+    return Math.ceil((A * B * (1 + B) ** n) / ((1 + B) ** n - 1));
+  };
+
+  // 원금 균등 첫 달 상환 금액
+  const calculateFixedPrincipalPaymentLoanAmountFirstMonth = (): number => {
+    const loanYear = Number.parseInt(borrowingYear);
+    const loanMonth = Number.parseInt(borrowingYear) * 12;
+    const totalLoanAmount = getSoulGatheringAmount * 10000 * loanYear;
+    const loanRate = 2.5;
+
+    // 첫달 갚을 원금 : 대출금 / 개월
+    // 첫달 갚을 이자 : 대출금 * (연이자율 / 100 / 12)
+
+    return Math.ceil(
+      totalLoanAmount / loanMonth + totalLoanAmount * (loanRate / 100 / 12)
+    );
+  };
+
   return (
     <div className="container">
       <Seo title="소비에 대하여" />
@@ -249,7 +281,22 @@ const Home = () => {
           억원
         </Typography>
       </Box>
-
+      <Box style={wrapperBoxCss}>
+        <Typography variant="subtitle2" gutterBottom>
+          월 상환 금액(원리금균등)
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          {calculateFixedPaymentLoanAmountByMonth()}원
+        </Typography>
+      </Box>
+      <Box style={wrapperBoxCss}>
+        <Typography variant="subtitle2" gutterBottom>
+          월 상환 금액(원금균등)
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          {calculateFixedPrincipalPaymentLoanAmountFirstMonth()}원
+        </Typography>
+      </Box>
       <Button variant="contained" disableElevation>
         <Link href={`/knowingMyself`}>
           <h4>뒤로가기(나를 좀더 알아보기)</h4>
