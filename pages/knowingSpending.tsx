@@ -26,6 +26,7 @@ import LoanInput from "../components/LoanInput";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
 import { ConfirmingLoanBank } from "../constants/Common";
+import { LoanResult } from "../constants/Loan";
 
 interface Loan {
   name: string;
@@ -86,6 +87,14 @@ const Home = () => {
 
   const getSoulGatheringAmount = useRecoilValue<number>(
     KnowingState.getSoulGatheringAmount
+  );
+
+  const getMaxPropertyPriceByLTV = useRecoilValue<number>(
+    KnowingState.getMaxPropertyPriceByLTV
+  );
+
+  const getLoanResult = useRecoilValue<Array<LoanResult>>(
+    KnowingState.getLoanResult
   );
 
   const handleChangeMonthlySpending = (
@@ -297,6 +306,36 @@ const Home = () => {
           {calculateFixedPrincipalPaymentLoanAmountFirstMonth()}원
         </Typography>
       </Box>
+
+      <Box style={wrapperBoxCss}>
+        <Typography variant="subtitle2" gutterBottom>
+          LTV 80기준 최대 주택 가격
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          {getMaxPropertyPriceByLTV / 10000}억원
+        </Typography>
+      </Box>
+
+      <Typography variant="subtitle2" gutterBottom>
+        대출 구성
+      </Typography>
+      {getLoanResult.map((result) => (
+        <Box key={`loan_${result.name}`} style={wrapperBoxCss}>
+          <Typography variant="subtitle2" gutterBottom>
+            {result.name}
+          </Typography>
+          <Typography variant="subtitle2" gutterBottom>
+            {result.interest}%
+          </Typography>
+          <Typography variant="subtitle2" gutterBottom>
+            대출금: {result.loanAmount}억원
+          </Typography>
+          <Typography variant="subtitle2" gutterBottom>
+            대출이자: {result.interestAmount}억원
+          </Typography>
+        </Box>
+      ))}
+
       <Button variant="contained" disableElevation>
         <Link href={`/knowingMyself`}>
           <h4>뒤로가기(나를 좀더 알아보기)</h4>

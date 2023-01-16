@@ -8,6 +8,11 @@ import {
 } from "../constants/Interests";
 import { Loan } from "../components/LoanInput";
 import { ConfirmingLoanBank } from "../constants/Common";
+import { LoanResult, LoanType } from "../constants/Loan";
+import {
+  getPrincipalAndInterest,
+  getPrincipalAndInterestInSoulGathering,
+} from "../utils/CommonUtils";
 
 export const KnowingState = {
   birthday: atom<Dayjs | null>({
@@ -247,18 +252,21 @@ export const KnowingState = {
       const isHavingKids = get(KnowingState.isHavingKids);
       const kidsCount = Number.parseInt(get(KnowingState.kidsCount));
 
-      if (!isNewCouple && !isHavingKids && yearIncome <= 7000 ||
-        !isNewCouple && isHavingKids && kidsCount === 1 && yearIncome <= 8000 ||
-        kidsCount === 2 && yearIncome <= 9000 ||
-        kidsCount === 3 && yearIncome <= 10000 ||
-        isNewCouple && yearIncome <= 8500
-        ) {
-          result = true;
-        }
+      if (
+        (!isNewCouple && !isHavingKids && yearIncome <= 7000) ||
+        (!isNewCouple &&
+          isHavingKids &&
+          kidsCount === 1 &&
+          yearIncome <= 8000) ||
+        (kidsCount === 2 && yearIncome <= 9000) ||
+        (kidsCount === 3 && yearIncome <= 10000) ||
+        (isNewCouple && yearIncome <= 8500)
+      ) {
+        result = true;
+      }
       return result;
     },
   }),
-
 
   // 0.4 : 한부모, 장애인, 다문화, 자녀 >= 3 && 소득 <= 7천
   // 0.2 : 결혼 Y && 소득 <= 7천
@@ -311,7 +319,11 @@ export const KnowingState = {
         result = 0.6;
       } else if (fourPrimeRateCount === 1 && onePrimeRateCount == 1) {
         result = 0.5;
-      } else if (fourPrimeRateCount === 1 && twoPrimeRateCount === 0 && onePrimeRateCount === 0) {
+      } else if (
+        fourPrimeRateCount === 1 &&
+        twoPrimeRateCount === 0 &&
+        onePrimeRateCount === 0
+      ) {
         result = 0.4;
       } else if (twoPrimeRateCount === 1 && onePrimeRateCount === 1) {
         result = 0.3;
@@ -338,7 +350,8 @@ export const KnowingState = {
       const borrowingYear: string = get(KnowingState.borrowingYear);
 
       if (isAbleHomeLoan) {
-        result = HomeLoanInterests.U_HOME_LOAN[borrowingYear] - getHomeLoanPrimeRate;
+        result =
+          HomeLoanInterests.U_HOME_LOAN[borrowingYear] - getHomeLoanPrimeRate;
       }
 
       return result?.toFixed(2);
@@ -419,6 +432,158 @@ export const KnowingState = {
       const DSR: number = get(KnowingState.getDsr);
 
       return yearIncome * DSR;
+    },
+  }),
+
+  // 일단 LTV 80퍼센트 기준으로
+  getMaxPropertyPriceByLTV: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getMaxPropertyPriceByLTV"],
+    get: ({ get }) => {
+      const supportAmount = Number.parseInt(get(KnowingState.supportAmount));
+      const depositAmount = Number.parseInt(get(KnowingState.depositAmount));
+
+      const totalAsset = supportAmount + depositAmount;
+
+      return totalAsset * 5;
+    },
+  }),
+
+  getLoanResult: selector<Array<LoanResult>>({
+    key: RecoilKey.knowing["KNOWING/getLoanResult"],
+    get: ({ get }) => {
+      const result: Array<LoanResult> = [];
+      const borrowingYear: number = get(KnowingState.borrowingYear);
+      let soulGatheringAmount: number = get(
+        KnowingState.getSoulGatheringAmount
+      );
+      soulGatheringAmount = (soulGatheringAmount * borrowingYear) / 10000;
+
+      const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
+      const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
+      const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
+
+      if (isAbleDidimdol && soulGatheringAmount > 0) {
+        const didimdolInterest: number = get(KnowingState.getDidimdolInterest);
+        const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
+        const [didimdolPrincipalAmount, didimdolInterestAmount] =
+          getPrincipalAndInterest(didimdolLimit, didimdolInterest);
+        if (
+          soulGatheringAmount -
+            (didimdolPrincipalAmount + didimdolInterestAmount) >=
+          0
+        ) {
+          result.push({
+            name: LoanType.DIDIMDOL,
+            interest: didimdolInterest,
+            loanAmount: didimdolPrincipalAmount.toFixed(2),
+            interestAmount: didimdolInterestAmount.toFixed(2),
+          });
+          soulGatheringAmount =
+            soulGatheringAmount -
+            (didimdolPrincipalAmount + didimdolInterestAmount);
+        } else {
+          const [principalAmount, interestAmount] =
+            getPrincipalAndInterestInSoulGathering(
+              didimdolLimit,
+              didimdolInterest,
+              soulGatheringAmount
+            );
+          result.push({
+            name: LoanType.DIDIMDOL,
+            interest: didimdolInterest,
+            loanAmount: principalAmount.toFixed(2),
+            interestAmount: interestAmount.toFixed(2),
+          });
+          soulGatheringAmount = 0;
+        }
+      }
+
+      if (isAbleHomeLoan && soulGatheringAmount > 0) {
+        const homeLoanInterest: number = get(KnowingState.getHomeLoanInterest);
+        const homeLoanLimit: number = get(KnowingState.getHomeLoanLimit);
+        const [homeLoanPrincipalAmount, homeLoanInterestAmount] =
+          getPrincipalAndInterest(homeLoanLimit, homeLoanInterest);
+        console.log("soulGatheringAmount222:::", soulGatheringAmount);
+        console.log(
+          "homeLoanPrincipalAmount+homeLoanInterestAmount:::",
+          homeLoanPrincipalAmount + homeLoanInterestAmount
+        );
+        if (
+          soulGatheringAmount -
+            (homeLoanPrincipalAmount + homeLoanInterestAmount) >=
+          0
+        ) {
+          console.log("1111111");
+          result.push({
+            name: LoanType.HOME,
+            interest: homeLoanInterest,
+            loanAmount: homeLoanPrincipalAmount.toFixed(2),
+            interestAmount: homeLoanInterestAmount.toFixed(2),
+          });
+          soulGatheringAmount =
+            soulGatheringAmount -
+            (homeLoanPrincipalAmount + homeLoanInterestAmount);
+        } else {
+          console.log("2222");
+          const [principalAmount, interestAmount] =
+            getPrincipalAndInterestInSoulGathering(
+              homeLoanLimit,
+              homeLoanInterest,
+              soulGatheringAmount
+            );
+
+          result.push({
+            name: LoanType.HOME,
+            interest: homeLoanInterest,
+            loanAmount: principalAmount.toFixed(2),
+            interestAmount: interestAmount.toFixed(2),
+          });
+          soulGatheringAmount = 0;
+        }
+      }
+
+      if (isAbleConfirmingLoan && soulGatheringAmount > 0) {
+        const confirmingLoanInterest: number = get(
+          KnowingState.getConfirmingLoanInterest
+        );
+        const confirmingLoanLimit: number = get(
+          KnowingState.getConfirmingLoanLimit
+        );
+        const [confirmingLoanPrincipal, confirmingLoanInterestAmount] =
+          getPrincipalAndInterest(confirmingLoanLimit, confirmingLoanInterest);
+        if (
+          soulGatheringAmount -
+            (confirmingLoanPrincipal + confirmingLoanInterestAmount) >=
+          0
+        ) {
+          result.push({
+            name: LoanType.CONFIRMING,
+            interest: confirmingLoanInterest,
+            loanAmount: confirmingLoanPrincipal.toFixed(2),
+            interestAmount: confirmingLoanInterestAmount.toFixed(2),
+          });
+          soulGatheringAmount =
+            soulGatheringAmount -
+            (confirmingLoanPrincipal + confirmingLoanInterestAmount);
+        } else {
+          const [principalAmount, interestAmount] =
+            getPrincipalAndInterestInSoulGathering(
+              confirmingLoanLimit,
+              confirmingLoanInterest,
+              soulGatheringAmount
+            );
+
+          result.push({
+            name: LoanType.CONFIRMING,
+            interest: confirmingLoanInterest,
+            loanAmount: principalAmount.toFixed(2),
+            interestAmount: interestAmount.toFixed(2),
+          });
+          soulGatheringAmount = 0;
+        }
+      }
+
+      return result;
     },
   }),
 };
