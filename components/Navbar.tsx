@@ -1,49 +1,44 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router';
-import styles from './Navbar.module.css';
+import { Box, Typography } from "@mui/material";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import styles from "./Navbar.module.css";
+import SymbolIcon from "../asset/svg/Symbol.svg";
 
 const Navbar = () => {
-    const router = useRouter();
-    return (
-        <nav >
-            <img src="/vercel.svg" />
-            <div>
-                <Link href="/">
-                    <div className={router.pathname === "/" ? "active" : ""}>Home</div>
-                </Link>
-                <Link href="/about">
-                    <div className={router.pathname === "/about" ? "active" : ""}>About</div>
-                </Link>
-            </div>
-            <style jsx>{`
-        nav {
+  return (
+    <div className="header">
+      <div className="content">
+        <SymbolIcon />
+        <Typography variant="h3" gutterBottom>
+          영끌 계산기
+        </Typography>
+        <Typography>
+          안녕하세요. 영끌이 입니다. 지금부터 입력한 내용은 이번 계산에만
+          활용하며 어떤 개인 정보도 저장하지 않습니다.
+        </Typography>
+      </div>
+      <style jsx>{`
+        .header {
+          left: 0;
+          top: 0;
+          position: fixed;
+          height: 247px;
+          width: 100%;
+          background-color: #ffffff;
+          z-index: 2;
+        }
+        .content {
           display: flex;
-          gap: 10px;
           flex-direction: column;
           align-items: center;
-          padding-top: 20px;
-          padding-bottom: 10px;
-          box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
-            rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-        }
-        img {
-          max-width: 100px;
-          margin-bottom: 5px;
-        }
-        nav a {
-          font-weight: 600;
-          font-size: 18px;
-        }
-        .active {
-          color: tomato;
-        }
-        nav div {
-          display: flex;
+          justify-content: center;
+          padding-top: 29px;
           gap: 10px;
         }
-        `}</style>
-        </nav>
-    );
-}
+      `}</style>
+    </div>
+    // </nav>
+  );
+};
 
 export default Navbar;

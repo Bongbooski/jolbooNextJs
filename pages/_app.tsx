@@ -1,22 +1,37 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import Layout from "../components/Layout";
 import { RecoilRoot } from "recoil";
 import CssBaseline from "@mui/material/CssBaseline";
+import { MuiThemeProvider } from "../context/ThemeProvider";
+import AppLayout from "../components/layout/AppLayout";
+import { NextPage } from "next";
 
-const App = ({ Component, pageProps }: AppProps) => {
+/*For Per-page layout! */
+export type NextPageWithLayout = NextPage & {
+  getLayout?: (page: React.ReactElement) => React.ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+const App = ({ Component, pageProps }: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout || ((page) => page);
   return (
-    <RecoilRoot>
-      <CssBaseline />
-      <Layout>
-        <Component {...pageProps} />
+    <MuiThemeProvider>
+      <RecoilRoot>
+        <CssBaseline />
+        {getLayout(<Component {...pageProps} />)}
         <style jsx global>{`
           /* a {
             color: green;
           } */
+          body {
+            background-color: #f3f5fd;
+          }
         `}</style>
-      </Layout>
-    </RecoilRoot>
+      </RecoilRoot>
+    </MuiThemeProvider>
   );
 };
 

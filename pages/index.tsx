@@ -1,72 +1,38 @@
-import { useEffect, useState } from "react";
 import Seo from "../components/Seo";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import {
-  FormControlLabel,
-  FormControl,
-  Typography,
-  Button,
-} from "@mui/material";
-import { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { CSSProperties } from "@emotion/serialize";
-
+import { Typography, Button } from "@mui/material";
+import MainIcon from "../asset/svg/Main.svg";
+import SymbolIcon from "../asset/svg/Symbol.svg";
+import { ReactElement } from "react";
+import AppLayout from "../components/layout/AppLayout";
 const Home = () => {
-  const radioGroupCss = {
-    display: "flex",
-    flexDirection: "row",
-  };
-
-  const wrapperBoxCss = {
-    display: "flex",
-    justifyContent: "space-between",
-  };
-
   return (
-    <div className="container">
+    <>
       <Seo title="메인" />
-      <Typography variant="h5" gutterBottom>
-        메인 페이지가 될 곳 입니다
+      <SymbolIcon />
+      <Typography variant="h3" gutterBottom>
+        영끌계산기
       </Typography>
-
-      <Button variant="contained" disableElevation>
+      <Typography variant="h5" gutterBottom>
+        내 연봉으로 어떤 집에 살 수 있을까?
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        소득에 따른 대출 금액 계산부터 지역 선택까지 실거주를 위해 필요한 모든
+        것을 알려드려요!
+      </Typography>
+      <MainIcon />
+      <Button variant="contained" size="large" disableElevation>
         <Link href={`/knowingMyself`}>
-          <h4>계산하러 가보자</h4>
+          <Typography variant="body1">시작하기</Typography>
         </Link>
       </Button>
-      <style jsx>{`
-        .birthdayWrapper {
-          display: flex;
-        }
-        /* .container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          padding: 20px;
-          gap: 20px;
-        }
-        .movie{
-          cursor: pointer
-        }
-        .movie img {
-          max-width: 100%;
-          border-radius: 12px;
-          transition: transform 0.2s ease-in-out;
-          box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-        }
-        .movie:hover img {
-          transform: scale(1.05) translateY(-10px);
-        }
-        .movie h4 {
-          font-size: 18px;
-          text-align: center;
-        } */
-      `}</style>
-    </div>
+      <style jsx>{``}</style>
+    </>
   );
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
 };
 
 export default Home;

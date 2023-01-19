@@ -1,9 +1,6 @@
-import Navbar from "./Navbar";
-
-const Layout = ({ children }: React.PropsWithChildren) => {
+const AppLayout = ({ children }: React.PropsWithChildren) => {
   return (
     <>
-      <Navbar />
       <div className="container">{children}</div>
       <style jsx>{`
         .container {
@@ -20,4 +17,4 @@ const Layout = ({ children }: React.PropsWithChildren) => {
   );
 };
 
-export default Layout;
+export default AppLayout;

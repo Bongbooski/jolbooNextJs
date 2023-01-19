@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 
-
 const API_KEY = process.env.API_KEY;
 
 const nextConfig = {
@@ -14,23 +13,32 @@ const nextConfig = {
       {
         source: "/old-path/:path*",
         destination: "/new-path/:path*",
-        permanent: false
-      }
-    ]
+        permanent: false,
+      },
+    ];
   },
   async rewrites() {
     return [
       // redirected but not showed
       {
         source: "/api/movies",
-        destination: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
+        destination: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`,
       },
       {
         source: "/api/movies/:id",
-        destination: `https://api.themoviedb.org/3/movie/:id?api_key=${API_KEY}`
-      }
-    ]
-  }
-}
+        destination: `https://api.themoviedb.org/3/movie/:id?api_key=${API_KEY}`,
+      },
+    ];
+  },
 
-module.exports = nextConfig
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"],
+    });
+
+    return config;
+  },
+};
+
+module.exports = nextConfig;

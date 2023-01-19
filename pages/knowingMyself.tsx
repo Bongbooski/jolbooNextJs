@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import Seo from "../components/Seo";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
@@ -21,9 +21,11 @@ import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { SampleState } from "../state/SampleState";
 import { KnowingState } from "../state/KnowingState";
 import { useRecoilState, useRecoilValue } from "recoil";
+import type { NextPageWithLayout } from "./_app";
+import HeaderLayout from "../components/layout/HeaderLayout";
+import SurveyContents from "../components/SurveyContents";
 
 interface Movie {
   id: string;
@@ -31,7 +33,7 @@ interface Movie {
   poster_path: string;
 }
 
-const Home = () => {
+const Home: NextPageWithLayout = () => {
   // const [birthday, setBirthday] = useState<Dayjs | null>(null);
   const [birthday, setBirthday] = useRecoilState<Dayjs | null>(
     KnowingState.birthday
@@ -188,10 +190,7 @@ const Home = () => {
     <div className="container">
       {/* <Seo title="나에 대하여" /> */}
 
-      <Box className="birthdayWrapper" style={wrapperBoxCss}>
-        <Typography variant="h5" gutterBottom>
-          생년월일을 입력해주세요
-        </Typography>
+      <SurveyContents title={"생년월일을 입력해주세요"}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             label="생년월일"
@@ -202,12 +201,9 @@ const Home = () => {
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
-      </Box>
+      </SurveyContents>
 
-      <Box style={wrapperBoxCss}>
-        <Typography variant="h5" gutterBottom>
-          결혼, 신혼여부
-        </Typography>
+      <SurveyContents title={" 결혼, 신혼여부"}>
         <FormControl>
           <RadioGroup
             value={isMarriedValue}
@@ -240,12 +236,9 @@ const Home = () => {
             label={isNewCouple ? "신혼이에요" : "신혼은 아니에요"}
           />
         )}
-      </Box>
+      </SurveyContents>
 
-      <Box style={wrapperBoxCss}>
-        <Typography variant="h5" gutterBottom>
-          생애 최초 여부
-        </Typography>
+      <SurveyContents title={"생애 최초 여부"}>
         <FormControlLabel
           control={
             <Switch
@@ -256,12 +249,9 @@ const Home = () => {
           }
           label={isFirstTime ? "집 처음 사요" : "집 사본적 있어요"}
         />
-      </Box>
+      </SurveyContents>
 
-      <Box style={wrapperBoxCss}>
-        <Typography variant="h5" gutterBottom>
-          연소득
-        </Typography>
+      <SurveyContents title={"연소득"}>
         <FormControl variant="standard">
           <Input
             id="year-income-amount"
@@ -273,12 +263,9 @@ const Home = () => {
             onChange={handleChangeYearIncome}
           />
         </FormControl>
-      </Box>
+      </SurveyContents>
 
-      <Box style={wrapperBoxCss}>
-        <Typography variant="h5" gutterBottom>
-          은인들의 지원금
-        </Typography>
+      <SurveyContents title={"은인들의 지원금"}>
         <FormControl variant="standard">
           <Input
             id="support-amount"
@@ -290,12 +277,9 @@ const Home = () => {
             onChange={handleChangeSupportAmount}
           />
         </FormControl>
-      </Box>
+      </SurveyContents>
 
-      <Box style={wrapperBoxCss}>
-        <Typography variant="h5" gutterBottom>
-          저축액
-        </Typography>
+      <SurveyContents title={"저축액"}>
         <FormControl variant="standard">
           <Input
             id="deposit-amount"
@@ -307,13 +291,10 @@ const Home = () => {
             onChange={handleChangeDepositAmount}
           />
         </FormControl>
-      </Box>
+      </SurveyContents>
       {showSecondSection && (
         <>
-          <Box style={wrapperBoxCss}>
-            <Typography variant="h5" gutterBottom>
-              한부모 가정 여부
-            </Typography>
+          <SurveyContents title={"한부모 가정 여부"}>
             <FormControlLabel
               control={
                 <Switch
@@ -324,12 +305,9 @@ const Home = () => {
               }
               label={isSingleParent ? "맞아요" : "아니에요"}
             />
-          </Box>
+          </SurveyContents>
 
-          <Box style={wrapperBoxCss}>
-            <Typography variant="h5" gutterBottom>
-              자녀 양육 여부
-            </Typography>
+          <SurveyContents title={"자녀 양육 여부"}>
             <FormControlLabel
               control={
                 <Switch
@@ -340,12 +318,9 @@ const Home = () => {
               }
               label={isHavingKids ? "다자녀 가구에요" : "아니에요"}
             />
-          </Box>
+          </SurveyContents>
           {isHavingKids && (
-            <Box style={wrapperBoxCss}>
-              <Typography variant="h5" gutterBottom>
-                자녀수
-              </Typography>
+            <SurveyContents title={"자녀수"}>
               <FormControl variant="standard">
                 <Input
                   id="kids"
@@ -356,13 +331,10 @@ const Home = () => {
                   onChange={handleChangeKidsCount}
                 />
               </FormControl>
-            </Box>
+            </SurveyContents>
           )}
 
-          <Box style={wrapperBoxCss}>
-            <Typography variant="h5" gutterBottom>
-              장애인 가구 여부
-            </Typography>
+          <SurveyContents title={"장애인 가구 여부"}>
             <FormControlLabel
               control={
                 <Switch
@@ -373,12 +345,9 @@ const Home = () => {
               }
               label={isDisabled ? "맞아요" : "아니에요"}
             />
-          </Box>
+          </SurveyContents>
 
-          <Box style={wrapperBoxCss}>
-            <Typography variant="h5" gutterBottom>
-              다문화 가구 여부
-            </Typography>
+          <SurveyContents title={"다문화 가구 여부"}>
             <FormControlLabel
               control={
                 <Switch
@@ -389,12 +358,9 @@ const Home = () => {
               }
               label={isMultiCultural ? "맞아요" : "아니에요"}
             />
-          </Box>
+          </SurveyContents>
 
-          <Box style={wrapperBoxCss}>
-            <Typography variant="h5" gutterBottom>
-              무주택 여부
-            </Typography>
+          <SurveyContents title={"무주택 여부"}>
             <FormControlLabel
               control={
                 <Switch
@@ -405,7 +371,7 @@ const Home = () => {
               }
               label={havingNoHouse ? "무주택이에요" : "무주택이 아니에요"}
             />
-          </Box>
+          </SurveyContents>
 
           <Button variant="contained" disableElevation>
             <Link href={`/knowingSpending`}>
@@ -443,6 +409,10 @@ const Home = () => {
       `}</style>
     </div>
   );
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <HeaderLayout>{page}</HeaderLayout>;
 };
 
 export default Home;
