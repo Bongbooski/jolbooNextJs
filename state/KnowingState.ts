@@ -456,6 +456,7 @@ export const KnowingState = {
       let soulGatheringAmount: number = get(
         KnowingState.getSoulGatheringAmount
       );
+
       soulGatheringAmount = (soulGatheringAmount * borrowingYear) / 10000;
 
       const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
@@ -478,9 +479,9 @@ export const KnowingState = {
             loanAmount: didimdolPrincipalAmount.toFixed(2),
             interestAmount: didimdolInterestAmount.toFixed(2),
           });
-          soulGatheringAmount =
-            soulGatheringAmount -
-            (didimdolPrincipalAmount + didimdolInterestAmount);
+          // soulGatheringAmount =
+          //   soulGatheringAmount -
+          //   (didimdolPrincipalAmount + didimdolInterestAmount);
         } else {
           const [principalAmount, interestAmount] =
             getPrincipalAndInterestInSoulGathering(
@@ -494,8 +495,11 @@ export const KnowingState = {
             loanAmount: principalAmount.toFixed(2),
             interestAmount: interestAmount.toFixed(2),
           });
-          soulGatheringAmount = 0;
+          // soulGatheringAmount = 0;
         }
+        soulGatheringAmount =
+          soulGatheringAmount -
+          (didimdolPrincipalAmount + didimdolInterestAmount);
       }
 
       if (isAbleHomeLoan && soulGatheringAmount > 0) {
@@ -520,9 +524,9 @@ export const KnowingState = {
             loanAmount: homeLoanPrincipalAmount.toFixed(2),
             interestAmount: homeLoanInterestAmount.toFixed(2),
           });
-          soulGatheringAmount =
-            soulGatheringAmount -
-            (homeLoanPrincipalAmount + homeLoanInterestAmount);
+          // soulGatheringAmount =
+          //   soulGatheringAmount -
+          //   (homeLoanPrincipalAmount + homeLoanInterestAmount);
         } else {
           console.log("2222");
           const [principalAmount, interestAmount] =
@@ -538,8 +542,11 @@ export const KnowingState = {
             loanAmount: principalAmount.toFixed(2),
             interestAmount: interestAmount.toFixed(2),
           });
-          soulGatheringAmount = 0;
+          // soulGatheringAmount = 0;
         }
+        soulGatheringAmount =
+          soulGatheringAmount -
+          (homeLoanPrincipalAmount + homeLoanInterestAmount);
       }
 
       if (isAbleConfirmingLoan && soulGatheringAmount > 0) {
@@ -562,9 +569,9 @@ export const KnowingState = {
             loanAmount: confirmingLoanPrincipal.toFixed(2),
             interestAmount: confirmingLoanInterestAmount.toFixed(2),
           });
-          soulGatheringAmount =
-            soulGatheringAmount -
-            (confirmingLoanPrincipal + confirmingLoanInterestAmount);
+          // soulGatheringAmount =
+          //   soulGatheringAmount -
+          //   (confirmingLoanPrincipal + confirmingLoanInterestAmount);
         } else {
           const [principalAmount, interestAmount] =
             getPrincipalAndInterestInSoulGathering(
@@ -579,8 +586,11 @@ export const KnowingState = {
             loanAmount: principalAmount.toFixed(2),
             interestAmount: interestAmount.toFixed(2),
           });
-          soulGatheringAmount = 0;
+          // soulGatheringAmount = 0;
         }
+        soulGatheringAmount =
+          soulGatheringAmount -
+          (confirmingLoanPrincipal + confirmingLoanInterestAmount);
       }
 
       return result;

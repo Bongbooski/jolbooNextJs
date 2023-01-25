@@ -14,7 +14,7 @@ export const getPrincipalAndInterestInSoulGathering = (
 
   while (resultAmount + resultInterest > soulGathering) {
     console.log("before amount::", amount);
-    amount -= 0.1;
+    amount -= 0.01;
     console.log("after amount::", amount);
 
     [resultAmount, resultInterest] = getPrincipalAndInterest(amount, interest);
