@@ -7,7 +7,7 @@ import {
   HomeLoanInterests,
 } from "../constants/Interests";
 import { Loan } from "../components/LoanInput";
-import { ConfirmingLoanBank } from "../constants/Common";
+import { ConfirmingLoanBank, Criterion } from "../constants/Common";
 import { LoanResult, LoanType } from "../constants/Loan";
 import {
   getPrincipalAndInterest,
@@ -448,8 +448,8 @@ export const KnowingState = {
     },
   }),
 
-  getLoanResult: selector<Array<LoanResult>>({
-    key: RecoilKey.knowing["KNOWING/getLoanResult"],
+  getDsrLoanResult: selector<Array<LoanResult>>({
+    key: RecoilKey.knowing["KNOWING/getDsrLoanResult"],
     get: ({ get }) => {
       const result: Array<LoanResult> = [];
       const borrowingYear: number = get(KnowingState.borrowingYear);
@@ -593,6 +593,28 @@ export const KnowingState = {
           (confirmingLoanPrincipal + confirmingLoanInterestAmount);
       }
 
+      return result;
+    },
+  }),
+
+  getFinalLoanResult: selector<Array<LoanResult>>({
+    key: RecoilKey.knowing["KNOWING/getFinalLoanResult"],
+    get: ({ get }) => {
+      const dsrResult: Array<LoanResult> = get(KnowingState.getDsrLoanResult);
+      const supportAmount = Number.parseInt(get(KnowingState.supportAmount));
+      const depositAmount = Number.parseInt(get(KnowingState.depositAmount));
+
+      const totalAsset = supportAmount + depositAmount;
+      const result: Array<LoanResult> = [];
+
+      let totalLoanAmountByDsr = 0;
+      for (const loan of dsrResult) {
+        totalLoanAmountByDsr += Number.parseFloat(loan.loanAmount);
+      }
+
+      if (totalLoanAmountByDsr > totalAsset * 4) {
+      }
+      // 가중평균금리구해서, ltv기준 최대 대출금액에 적용해서 원리금 총액을 구하고 그 값으로 대출구성 로직을 태운다
       return result;
     },
   }),
