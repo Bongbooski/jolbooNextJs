@@ -21,11 +21,11 @@ const Home = () => {
         것을 알려드려요!
       </Typography>
       <MainIcon />
-      <Button variant="contained" size="large" disableElevation>
-        <Link href={`/knowingMyself`}>
+      <Link href={`/knowingMyself`}>
+        <Button variant="contained" size="large" disableElevation>
           <Typography variant="body1">시작하기</Typography>
-        </Link>
-      </Button>
+        </Button>
+      </Link>
       <style jsx>{``}</style>
     </>
   );

@@ -17,7 +17,15 @@ export const themeStyles = {
           }
         },
       },
+      MuiTypography: {
+        styleOverrides: {
+          root: {
+            marginBottom: '0px',
+          }
+        }
+      },
     },
+    
     typography: {
       fontFamily: [
         'GangwonEdu_OTFBoldA',

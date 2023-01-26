@@ -93,8 +93,8 @@ const Home = () => {
     KnowingState.getMaxPropertyPriceByLTV
   );
 
-  const getLoanResult = useRecoilValue<Array<LoanResult>>(
-    KnowingState.getLoanResult
+  const getDsrLoanResult = useRecoilValue<Array<LoanResult>>(
+    KnowingState.getDsrLoanResult
   );
 
   const handleChangeMonthlySpending = (
@@ -319,7 +319,7 @@ const Home = () => {
       <Typography variant="subtitle2" gutterBottom>
         대출 구성
       </Typography>
-      {getLoanResult.map((result) => (
+      {getDsrLoanResult.map((result) => (
         <Box key={`loan_${result.name}`} style={wrapperBoxCss}>
           <Typography variant="subtitle2" gutterBottom>
             {result.name}

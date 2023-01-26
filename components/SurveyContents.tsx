@@ -3,6 +3,7 @@ import { Typography } from "@mui/material";
 interface SurveyContentsProps extends React.PropsWithChildren<object> {
   title: string;
   required?: boolean;
+  vertical?: boolean;
 }
 
 const SurveyContents = (props: SurveyContentsProps) => {
@@ -18,15 +19,15 @@ const SurveyContents = (props: SurveyContentsProps) => {
       <style jsx>{`
         .container {
           display: flex;
-          flex-direction: column;
+          flex-direction: ${props.vertical ? "row" : "column"};
           align-items: flex-start;
-          justify-content: center;
+          justify-content: ${props.vertical ? "" : "center"};
           gap: 10px;
-          padding: 30px 0 0 0;
+          padding: 30px 50px;
           white-space: pre-wrap;
         }
         .contents {
-          margin-left: auto;
+          margin-left: ${props.vertical ? "" : "auto"};
         }
       `}</style>
     </>

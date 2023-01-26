@@ -26,6 +26,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import type { NextPageWithLayout } from "./_app";
 import HeaderLayout from "../components/layout/HeaderLayout";
 import SurveyContents from "../components/SurveyContents";
+import SurveyContentsGroup from "../components/SurveyContentsGroup";
 
 interface Movie {
   id: string;
@@ -292,97 +293,103 @@ const Home: NextPageWithLayout = () => {
           />
         </FormControl>
       </SurveyContents>
-      {showSecondSection && (
-        <>
-          <SurveyContents title={"한부모 가정 여부"}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isSingleParent}
-                  onChange={handleChangeIsSingleParent}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
-              }
-              label={isSingleParent ? "맞아요" : "아니에요"}
+      <SurveyContents title={"자녀 양육 여부"}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isHavingKids}
+              onChange={handleChangeisHavingKids}
+              inputProps={{ "aria-label": "controlled" }}
             />
-          </SurveyContents>
-
-          <SurveyContents title={"자녀 양육 여부"}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isHavingKids}
-                  onChange={handleChangeisHavingKids}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
+          }
+          label={isHavingKids ? "다자녀 가구에요" : "아니에요"}
+        />
+      </SurveyContents>
+      {isHavingKids && (
+        <SurveyContents title={"자녀수"}>
+          <FormControl variant="standard">
+            <Input
+              id="kids"
+              endAdornment={
+                <InputAdornment position="start">명</InputAdornment>
               }
-              label={isHavingKids ? "다자녀 가구에요" : "아니에요"}
+              value={kidsCount}
+              onChange={handleChangeKidsCount}
             />
-          </SurveyContents>
-          {isHavingKids && (
-            <SurveyContents title={"자녀수"}>
-              <FormControl variant="standard">
-                <Input
-                  id="kids"
-                  endAdornment={
-                    <InputAdornment position="start">명</InputAdornment>
-                  }
-                  value={kidsCount}
-                  onChange={handleChangeKidsCount}
-                />
-              </FormControl>
-            </SurveyContents>
-          )}
-
-          <SurveyContents title={"장애인 가구 여부"}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isDisabled}
-                  onChange={handleChangeIsDisabled}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
-              }
-              label={isDisabled ? "맞아요" : "아니에요"}
-            />
-          </SurveyContents>
-
-          <SurveyContents title={"다문화 가구 여부"}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isMultiCultural}
-                  onChange={handleChangeIsMultiCultural}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
-              }
-              label={isMultiCultural ? "맞아요" : "아니에요"}
-            />
-          </SurveyContents>
-
-          <SurveyContents title={"무주택 여부"}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={havingNoHouse}
-                  onChange={handleChangeHavingNoHouse}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
-              }
-              label={havingNoHouse ? "무주택이에요" : "무주택이 아니에요"}
-            />
-          </SurveyContents>
-
-          <Button variant="contained" disableElevation>
-            <Link href={`/knowingSpending`}>
-              <h4>소비를 알아보자</h4>
-            </Link>
-          </Button>
-        </>
+          </FormControl>
+        </SurveyContents>
       )}
+      {/* {showSecondSection && ( */}
+      {/* <> */}
+      <SurveyContentsGroup>
+        <SurveyContents title={"한부모 가정 여부"} vertical>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isSingleParent}
+                onChange={handleChangeIsSingleParent}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            }
+            label={isSingleParent ? "맞아요" : "아니에요"}
+          />
+        </SurveyContents>
+        <SurveyContents title={"장애인 가구 여부"} vertical>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isDisabled}
+                onChange={handleChangeIsDisabled}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            }
+            label={isDisabled ? "맞아요" : "아니에요"}
+          />
+        </SurveyContents>
+      </SurveyContentsGroup>
+      <SurveyContentsGroup>
+        <SurveyContents title={"다문화 가구 여부"} vertical>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isMultiCultural}
+                onChange={handleChangeIsMultiCultural}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            }
+            label={isMultiCultural ? "맞아요" : "아니에요"}
+          />
+        </SurveyContents>
+
+        <SurveyContents title={"무주택 여부"} vertical>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={havingNoHouse}
+                onChange={handleChangeHavingNoHouse}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            }
+            label={havingNoHouse ? "무주택이에요" : "무주택이 아니에요"}
+          />
+        </SurveyContents>
+      </SurveyContentsGroup>
+
+      <Button variant="contained" size="large" disableElevation>
+        <Link href={`/result`}>
+          <h4>소비를 알아보자</h4>
+        </Link>
+      </Button>
+      {/* </> */}
+      {/* )} */}
       <style jsx>{`
         .birthdayWrapper {
           display: flex;
+        }
+        .container {
+          display: flex;
+          flex-direction: column;
+          padding-bottom: 60px;
         }
         /* .container {
           display: grid;
