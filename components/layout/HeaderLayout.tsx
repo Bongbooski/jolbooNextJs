@@ -11,7 +11,8 @@ const HeaderLayout = ({ children }: React.PropsWithChildren) => {
         <style jsx>{`
           .content {
             position: relative;
-            top: 300px;
+            top: 247px;
+            background-color: #f3f5fd;
           }
         `}</style>
       </div>

@@ -6,8 +6,8 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html>
+        <Head />
         <body>
-          <Head></Head>
           <Main />
           <NextScript />
         </body>
@@ -16,18 +16,19 @@ export default class MyDocument extends Document {
   }
 }
 
-MyDocument.getInitialProps = async ctx => {
+MyDocument.getInitialProps = async (ctx) => {
   const materialSheets = new ServerStyleSheets();
   const originalRenderPage = ctx.renderPage;
 
   ctx.renderPage = () =>
     originalRenderPage({
-      enhanceApp: App => props => materialSheets.collect(<App {...props} />)
+      enhanceApp: (App) => (props) =>
+        materialSheets.collect(<App {...props} />),
     });
 
   const initialProps = await Document.getInitialProps(ctx);
   return {
     ...initialProps,
-    styles: <>{initialProps.styles}</>
+    styles: <>{initialProps.styles}</>,
   };
 };

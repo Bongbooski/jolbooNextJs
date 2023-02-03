@@ -1,12 +1,9 @@
 html,
 body {
   padding: 0;
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-body {
+  background-color: #f3f5fd;
   max-width: 860px;
   width: 100%;
   margin: 0 auto;
@@ -22,8 +19,9 @@ a {
 }
 
 @font-face {
-  font-family: 'GangwonEdu_OTFBoldA';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+  font-family: "GangwonEdu_OTFBoldA";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff")
+    format("woff");
   font-weight: normal;
   font-style: normal;
 }

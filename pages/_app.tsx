@@ -22,14 +22,7 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
       <RecoilRoot>
         <CssBaseline />
         {getLayout(<Component {...pageProps} />)}
-        <style jsx global>{`
-          /* a {
-            color: green;
-          } */
-          body {
-            background-color: #f3f5fd;
-          }
-        `}</style>
+        <style jsx global>{``}</style>
       </RecoilRoot>
     </MuiThemeProvider>
   );
