@@ -35,23 +35,18 @@ interface Loan {
 }
 
 const Home = () => {
-  // const [monthlySpending, setMonthlySpending] = useState<string>();
   const [monthlySpending, setMonthlySpending] = useRecoilState<string>(
     KnowingState.monthlySpending
   );
 
-  // const [residualLoan, setResidualLoan] = useState<Loan[]>([]);
   const [residualLoan, setResidualLoan] = useRecoilState<Loan[]>(
     KnowingState.residualLoan
   );
 
-  // const [borrowingYear, setBorrowingYear] = useState<string>("10");
   const [borrowingYear, setBorrowingYear] = useRecoilState<string>(
     KnowingState.borrowingYear
   );
 
-  //  const [confirmingLoanBank, setConfirmingLoanBank] =
-  //   useState<ConfirmingLoanBank>(ConfirmingLoanBank.BUSAN);
   const [confirmingLoanBank, setConfirmingLoanBank] =
     useRecoilState<ConfirmingLoanBank>(KnowingState.confirmingLoanBank);
 
@@ -60,12 +55,24 @@ const Home = () => {
     KnowingState.getDidimdolInterest
   );
 
-  const isAbleHomeLoan = useRecoilValue<boolean>(KnowingState.isAbleHomeLoan);
-  const getHomeLoanInterest = useRecoilValue<boolean>(
-    KnowingState.getHomeLoanInterest
+  // const isAbleHomeLoan = useRecoilValue<boolean>(KnowingState.isAbleHomeLoan);
+  // const getHomeLoanInterest = useRecoilValue<boolean>(
+  //   KnowingState.getHomeLoanInterest
+  // );
+  // const getHomeLoanLimit = useRecoilValue<number>(
+  //   KnowingState.getHomeLoanLimit
+  // );
+
+  const isAbleSpecialHomeLoan = useRecoilValue<boolean>(
+    KnowingState.isAbleSpecialHomeLoan
   );
-  const getHomeLoanLimit = useRecoilValue<number>(
-    KnowingState.getHomeLoanLimit
+
+  const getSpecialHomeLoanInterest = useRecoilValue<number>(
+    KnowingState.getSpecialHomeLoanInterest
+  );
+
+  const getSpecialHomeLoanLimit = useRecoilValue<number>(
+    KnowingState.getSpecialHomeLoanLimit
   );
 
   const getConfirmingLoanInterest = useRecoilValue<boolean>(
@@ -121,39 +128,6 @@ const Home = () => {
     justifyContent: "space-between",
     paddingTop: "10px",
   };
-
-  // 원리금 균등 월 상환 금액
-  const calculateFixedPaymentLoanAmountByMonth = (): number => {
-    const loanYear = Number.parseInt(borrowingYear);
-    const totalLoanAmount = getSoulGatheringAmount * 10000 * loanYear;
-    const loanRate = 2.5;
-
-    // AB(1 + B)^n / (1 + B)^n - 1
-    // A: 대출받은 원금
-    // B: 대출에 대한 이자율(연이자율 / 12)
-    // n: 대출 상환 개월 수
-    const A = totalLoanAmount;
-    const B = loanRate / 100 / 12;
-    const n = loanYear * 12;
-
-    return Math.ceil((A * B * (1 + B) ** n) / ((1 + B) ** n - 1));
-  };
-
-  // 원금 균등 첫 달 상환 금액
-  const calculateFixedPrincipalPaymentLoanAmountFirstMonth = (): number => {
-    const loanYear = Number.parseInt(borrowingYear);
-    const loanMonth = Number.parseInt(borrowingYear) * 12;
-    const totalLoanAmount = getSoulGatheringAmount * 10000 * loanYear;
-    const loanRate = 2.5;
-
-    // 첫달 갚을 원금 : 대출금 / 개월
-    // 첫달 갚을 이자 : 대출금 * (연이자율 / 100 / 12)
-
-    return Math.ceil(
-      totalLoanAmount / loanMonth + totalLoanAmount * (loanRate / 100 / 12)
-    );
-  };
-
   return (
     <div className="container">
       <Seo title="소비에 대하여" />
@@ -233,6 +207,20 @@ const Home = () => {
       </Box>
       <Box style={wrapperBoxCss}>
         <Typography variant="subtitle2" gutterBottom>
+          특례보금자리
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          {isAbleSpecialHomeLoan ? "가능" : "불가능"}
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          {isAbleSpecialHomeLoan ? `${getSpecialHomeLoanInterest}%` : ""}
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          {isAbleSpecialHomeLoan ? `${getSpecialHomeLoanLimit}억` : "0원"}
+        </Typography>
+      </Box>
+      {/* <Box style={wrapperBoxCss}>
+        <Typography variant="subtitle2" gutterBottom>
           보금자리
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
@@ -258,7 +246,7 @@ const Home = () => {
         <Typography variant="subtitle2" gutterBottom>
           {isAbleConfirmingLoan ? `${getConfirmingLoanLimit}억` : "0원"}
         </Typography>
-      </Box>
+      </Box> */}
       <Box style={wrapperBoxCss}>
         <Typography variant="subtitle2" gutterBottom>
           일반주담대
@@ -290,22 +278,6 @@ const Home = () => {
           억원
         </Typography>
       </Box>
-      <Box style={wrapperBoxCss}>
-        <Typography variant="subtitle2" gutterBottom>
-          월 상환 금액(원리금균등)
-        </Typography>
-        <Typography variant="subtitle2" gutterBottom>
-          {calculateFixedPaymentLoanAmountByMonth()}원
-        </Typography>
-      </Box>
-      <Box style={wrapperBoxCss}>
-        <Typography variant="subtitle2" gutterBottom>
-          월 상환 금액(원금균등)
-        </Typography>
-        <Typography variant="subtitle2" gutterBottom>
-          {calculateFixedPrincipalPaymentLoanAmountFirstMonth()}원
-        </Typography>
-      </Box>
 
       <Box style={wrapperBoxCss}>
         <Typography variant="subtitle2" gutterBottom>
@@ -332,6 +304,13 @@ const Home = () => {
           </Typography>
           <Typography variant="subtitle2" gutterBottom>
             대출이자: {result.interestAmount}억원
+          </Typography>
+          <Typography variant="subtitle2" gutterBottom>
+            월상환액(원금균등): {result.fixedPaymentLoanAmountByMonth}원
+          </Typography>
+          <Typography variant="subtitle2" gutterBottom>
+            월상환액(원금리균등):{" "}
+            {result.fixedPrincipalPaymentLoanAmountFirstMonth}원
           </Typography>
         </Box>
       ))}

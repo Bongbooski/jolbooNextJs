@@ -376,7 +376,7 @@ const Home: NextPageWithLayout = () => {
       </SurveyContentsGroup>
 
       <Button variant="contained" size="large" disableElevation>
-        <Link href={`/result`}>
+        <Link href={`/knowingSpending`}>
           <h4>소비를 알아보자</h4>
         </Link>
       </Button>

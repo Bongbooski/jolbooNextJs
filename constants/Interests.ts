@@ -22,13 +22,32 @@ export const DidimdolInterests: Interest = {
 };
 
 export const HomeLoanInterests: Interest = {
-  U_HOME_LOAN : {
-    "10" : 4.25,
-    "15" : 4.35,
-    "20" : 4.4,
-    "30" : 4.45,
-  }
-}
+  U_HOME_LOAN: {
+    "10": 4.25,
+    "15": 4.35,
+    "20": 4.4,
+    "30": 4.45,
+  },
+};
+
+export const SpecialHomeLoanInterests: Interest = {
+  NORMAL: {
+    "10": 4.25,
+    "15": 4.35,
+    "20": 4.4,
+    "30": 4.45,
+    "40": 4.5,
+    "50": 4.55,
+  },
+  PRIME: {
+    "10": 4.15,
+    "15": 4.25,
+    "20": 4.3,
+    "30": 4.35,
+    "40": 4.4,
+    "50": 4.45,
+  },
+};
 
 interface Interest {
   [index: string]: InterestDetail;

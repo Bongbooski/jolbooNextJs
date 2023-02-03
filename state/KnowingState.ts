@@ -1,15 +1,18 @@
 import { atom, selector } from "recoil";
 import RecoilKey from "../constants/recoilKey";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import {
   ConfirmingLoanInterests,
   DidimdolInterests,
   HomeLoanInterests,
+  SpecialHomeLoanInterests,
 } from "../constants/Interests";
 import { Loan } from "../components/LoanInput";
 import { ConfirmingLoanBank, Criterion } from "../constants/Common";
 import { LoanResult, LoanType } from "../constants/Loan";
 import {
+  calculateFixedPaymentLoanAmountByMonth,
+  calculateFixedPrincipalPaymentLoanAmountFirstMonth,
   getPrincipalAndInterest,
   getPrincipalAndInterestInSoulGathering,
 } from "../utils/CommonUtils";
@@ -17,7 +20,7 @@ import {
 export const KnowingState = {
   birthday: atom<Dayjs | null>({
     key: RecoilKey.knowing["KNOWING/birthday"],
-    default: null,
+    default: dayjs("1988-04-18", "YYYY-MM-DD"),
   }),
   isMarriedValue: atom<string | null>({
     key: RecoilKey.knowing["KNOWING/isMarriedValue"],
@@ -34,15 +37,15 @@ export const KnowingState = {
 
   yearIncome: atom<string>({
     key: RecoilKey.knowing["KNOWING/yearIncome"],
-    default: "",
+    default: "10000",
   }),
   supportAmount: atom<string>({
     key: RecoilKey.knowing["KNOWING/supportAmount"],
-    default: "",
+    default: "0",
   }),
   depositAmount: atom<string>({
     key: RecoilKey.knowing["KNOWING/depositAmount"],
-    default: "",
+    default: "10000",
   }),
 
   isSingleParent: atom<boolean>({
@@ -268,6 +271,69 @@ export const KnowingState = {
     },
   }),
 
+  isAbleSpecialHomeLoan: selector<boolean>({
+    key: RecoilKey.knowing["KNOWING/isAbleSpecialHomeLoan"],
+    get: ({ get }) => {
+      return true;
+    },
+  }),
+
+  // 일반형(주택가격 6억이상 or 소득 1억이상)
+  // 아낌e : 0.1
+
+  // 우대형(주택가격 6억이하 and 소득 1억이하)
+  // 아낌e : 0.1
+  // 저소득청년 (6천이하 and 만39세 이하) : 0.1
+  // 사회적배려층(한부모, 장애인, 다문화, 다자녀) (6천이하(다자녀는 7천이하)) : 0.4
+  // 신혼가구(7천이하) : 0.2
+  // 미분양주택(8천이하) : 0.2
+  // 중복적용가능, 최대 0.8%
+  getSpecialHomeLoanPrimeRate: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getSpecialHomeLoanPrimeRate"],
+    get: ({ get }) => {
+      let result = 0;
+      const housePrice = 50000; //TODO: 임시로 5억으로 설정, 추후 재계산시 결과로 나온 집값 넣기
+      const isSingleParent = get(KnowingState.isSingleParent);
+      const isDisabled = get(KnowingState.isDisabled);
+      const isMultiCultural = get(KnowingState.isMultiCultural);
+
+      const isMarried = get(KnowingState.isMarried);
+      const isNewCouple = get(KnowingState.isNewCouple);
+      const isHavingKids = get(KnowingState.isHavingKids);
+      const kidsCount = Number.parseInt(get(KnowingState.kidsCount));
+      const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
+
+      const internationalAge: number = get(KnowingState.internationalAge);
+
+      if (housePrice >= 60000 || yearIncome >= 10000) {
+        // 일반형
+        result += 0.1; //TODO: 아낌e로 한다고 가정함. 추후 해당 부분 어떻게 ui에 넣을지 확인 필요
+      } else {
+        // 우대형
+        result += 0.1;
+
+        if (yearIncome <= 6000 && internationalAge <= 39) {
+          result += 0.1;
+        }
+
+        if (
+          ((isSingleParent || isDisabled || isMultiCultural) &&
+            yearIncome <= 6000) ||
+          (isHavingKids && kidsCount > 2 && yearIncome <= 7000)
+        ) {
+          result += 0.4;
+        }
+
+        if (isNewCouple && yearIncome <= 7000) {
+          result += 0.2;
+        }
+
+        // TODO: 미분양주택 && 8천이하 어떻게 할지 확인 필요
+      }
+      return Math.min(result, 0.8);
+    },
+  }),
+
   // 0.4 : 한부모, 장애인, 다문화, 자녀 >= 3 && 소득 <= 7천
   // 0.2 : 결혼 Y && 소득 <= 7천
   // 0.1 : 소득 <= 4500
@@ -339,6 +405,34 @@ export const KnowingState = {
     },
   }),
 
+  getSpecialHomeLoanInterest: selector<number | undefined>({
+    key: RecoilKey.knowing["KNOWING/getSpecialHomeLoanInterest"],
+    get: ({ get }) => {
+      let result: number | undefined = undefined;
+      const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
+      const getSpecialHomeLoanPrimeRate: number = get(
+        KnowingState.getSpecialHomeLoanPrimeRate
+      );
+      const borrowingYear: string = get(KnowingState.borrowingYear);
+      const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
+
+      if (isAbleSpecialHomeLoan) {
+        if (yearIncome <= 10000) {
+          // 우대형
+          result =
+            SpecialHomeLoanInterests.PRIME[borrowingYear] -
+            getSpecialHomeLoanPrimeRate;
+        } else {
+          result =
+            SpecialHomeLoanInterests.NORMAL[borrowingYear] -
+            getSpecialHomeLoanPrimeRate;
+        }
+      }
+
+      return result?.toFixed(2);
+    },
+  }),
+
   getHomeLoanInterest: selector<number | undefined>({
     key: RecoilKey.knowing["KNOWING/getHomeLoanInterest"],
     get: ({ get }) => {
@@ -355,6 +449,13 @@ export const KnowingState = {
       }
 
       return result?.toFixed(2);
+    },
+  }),
+
+  getSpecialHomeLoanLimit: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getSpecialHomeLoanLimit"],
+    get: ({ get }) => {
+      return 5;
     },
   }),
 
@@ -460,8 +561,9 @@ export const KnowingState = {
       soulGatheringAmount = (soulGatheringAmount * borrowingYear) / 10000;
 
       const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
-      const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
-      const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
+      const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
+      // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
+      // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
       if (isAbleDidimdol && soulGatheringAmount > 0) {
         const didimdolInterest: number = get(KnowingState.getDidimdolInterest);
@@ -478,6 +580,18 @@ export const KnowingState = {
             interest: didimdolInterest,
             loanAmount: didimdolPrincipalAmount.toFixed(2),
             interestAmount: didimdolInterestAmount.toFixed(2),
+            fixedPaymentLoanAmountByMonth:
+              calculateFixedPaymentLoanAmountByMonth(
+                borrowingYear,
+                didimdolPrincipalAmount,
+                didimdolInterest
+              ),
+            fixedPrincipalPaymentLoanAmountFirstMonth:
+              calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                didimdolPrincipalAmount,
+                didimdolInterest
+              ),
           });
           // soulGatheringAmount =
           //   soulGatheringAmount -
@@ -494,6 +608,18 @@ export const KnowingState = {
             interest: didimdolInterest,
             loanAmount: principalAmount.toFixed(2),
             interestAmount: interestAmount.toFixed(2),
+            fixedPaymentLoanAmountByMonth:
+              calculateFixedPaymentLoanAmountByMonth(
+                borrowingYear,
+                principalAmount,
+                didimdolInterest
+              ),
+            fixedPrincipalPaymentLoanAmountFirstMonth:
+              calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                principalAmount,
+                didimdolInterest
+              ),
           });
           // soulGatheringAmount = 0;
         }
@@ -502,96 +628,148 @@ export const KnowingState = {
           (didimdolPrincipalAmount + didimdolInterestAmount);
       }
 
-      if (isAbleHomeLoan && soulGatheringAmount > 0) {
-        const homeLoanInterest: number = get(KnowingState.getHomeLoanInterest);
-        const homeLoanLimit: number = get(KnowingState.getHomeLoanLimit);
-        const [homeLoanPrincipalAmount, homeLoanInterestAmount] =
-          getPrincipalAndInterest(homeLoanLimit, homeLoanInterest);
-        console.log("soulGatheringAmount222:::", soulGatheringAmount);
-        console.log(
-          "homeLoanPrincipalAmount+homeLoanInterestAmount:::",
-          homeLoanPrincipalAmount + homeLoanInterestAmount
+      if (isAbleSpecialHomeLoan && soulGatheringAmount > 0) {
+        const specialHomeLoanInterest: number = get(
+          KnowingState.getSpecialHomeLoanInterest
         );
+        const specialHomeLoanLimit: number = get(
+          KnowingState.getSpecialHomeLoanLimit
+        );
+        const [specialHomeLoanPrincipalAmount, specialHomeLoanInterestAmount] =
+          getPrincipalAndInterest(
+            specialHomeLoanLimit,
+            specialHomeLoanInterest
+          );
         if (
           soulGatheringAmount -
-            (homeLoanPrincipalAmount + homeLoanInterestAmount) >=
-          0
-        ) {
-          console.log("1111111");
-          result.push({
-            name: LoanType.HOME,
-            interest: homeLoanInterest,
-            loanAmount: homeLoanPrincipalAmount.toFixed(2),
-            interestAmount: homeLoanInterestAmount.toFixed(2),
-          });
-          // soulGatheringAmount =
-          //   soulGatheringAmount -
-          //   (homeLoanPrincipalAmount + homeLoanInterestAmount);
-        } else {
-          console.log("2222");
-          const [principalAmount, interestAmount] =
-            getPrincipalAndInterestInSoulGathering(
-              homeLoanLimit,
-              homeLoanInterest,
-              soulGatheringAmount
-            );
-
-          result.push({
-            name: LoanType.HOME,
-            interest: homeLoanInterest,
-            loanAmount: principalAmount.toFixed(2),
-            interestAmount: interestAmount.toFixed(2),
-          });
-          // soulGatheringAmount = 0;
-        }
-        soulGatheringAmount =
-          soulGatheringAmount -
-          (homeLoanPrincipalAmount + homeLoanInterestAmount);
-      }
-
-      if (isAbleConfirmingLoan && soulGatheringAmount > 0) {
-        const confirmingLoanInterest: number = get(
-          KnowingState.getConfirmingLoanInterest
-        );
-        const confirmingLoanLimit: number = get(
-          KnowingState.getConfirmingLoanLimit
-        );
-        const [confirmingLoanPrincipal, confirmingLoanInterestAmount] =
-          getPrincipalAndInterest(confirmingLoanLimit, confirmingLoanInterest);
-        if (
-          soulGatheringAmount -
-            (confirmingLoanPrincipal + confirmingLoanInterestAmount) >=
+            (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
           0
         ) {
           result.push({
-            name: LoanType.CONFIRMING,
-            interest: confirmingLoanInterest,
-            loanAmount: confirmingLoanPrincipal.toFixed(2),
-            interestAmount: confirmingLoanInterestAmount.toFixed(2),
+            name: LoanType.SPECIAL_HOME,
+            interest: specialHomeLoanInterest,
+            loanAmount: specialHomeLoanPrincipalAmount.toFixed(2),
+            interestAmount: specialHomeLoanInterestAmount.toFixed(2),
+            fixedPaymentLoanAmountByMonth:
+              calculateFixedPaymentLoanAmountByMonth(
+                borrowingYear,
+                specialHomeLoanPrincipalAmount,
+                specialHomeLoanInterest
+              ),
+            fixedPrincipalPaymentLoanAmountFirstMonth:
+              calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                specialHomeLoanPrincipalAmount,
+                specialHomeLoanInterest
+              ),
           });
-          // soulGatheringAmount =
-          //   soulGatheringAmount -
-          //   (confirmingLoanPrincipal + confirmingLoanInterestAmount);
         } else {
           const [principalAmount, interestAmount] =
             getPrincipalAndInterestInSoulGathering(
-              confirmingLoanLimit,
-              confirmingLoanInterest,
+              specialHomeLoanLimit,
+              specialHomeLoanInterest,
               soulGatheringAmount
             );
-
           result.push({
-            name: LoanType.CONFIRMING,
-            interest: confirmingLoanInterest,
+            name: LoanType.SPECIAL_HOME,
+            interest: specialHomeLoanInterest,
             loanAmount: principalAmount.toFixed(2),
             interestAmount: interestAmount.toFixed(2),
+            fixedPaymentLoanAmountByMonth:
+              calculateFixedPaymentLoanAmountByMonth(
+                borrowingYear,
+                principalAmount,
+                specialHomeLoanInterest
+              ),
+            fixedPrincipalPaymentLoanAmountFirstMonth:
+              calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                principalAmount,
+                specialHomeLoanInterest
+              ),
           });
-          // soulGatheringAmount = 0;
         }
         soulGatheringAmount =
           soulGatheringAmount -
-          (confirmingLoanPrincipal + confirmingLoanInterestAmount);
+          (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount);
       }
+
+      // 특례보금자리론 출시로 1년동안 일반 보금자리론, 적격대출은 운영하지 않음 (2023.01.30)
+      // if (isAbleHomeLoan && soulGatheringAmount > 0) {
+      //   const homeLoanInterest: number = get(KnowingState.getHomeLoanInterest);
+      //   const homeLoanLimit: number = get(KnowingState.getHomeLoanLimit);
+      //   const [homeLoanPrincipalAmount, homeLoanInterestAmount] =
+      //     getPrincipalAndInterest(homeLoanLimit, homeLoanInterest);
+      //   if (
+      //     soulGatheringAmount -
+      //       (homeLoanPrincipalAmount + homeLoanInterestAmount) >=
+      //     0
+      //   ) {
+      //     result.push({
+      //       name: LoanType.HOME,
+      //       interest: homeLoanInterest,
+      //       loanAmount: homeLoanPrincipalAmount.toFixed(2),
+      //       interestAmount: homeLoanInterestAmount.toFixed(2),
+      //     });
+      //   } else {
+      //     const [principalAmount, interestAmount] =
+      //       getPrincipalAndInterestInSoulGathering(
+      //         homeLoanLimit,
+      //         homeLoanInterest,
+      //         soulGatheringAmount
+      //       );
+
+      //     result.push({
+      //       name: LoanType.HOME,
+      //       interest: homeLoanInterest,
+      //       loanAmount: principalAmount.toFixed(2),
+      //       interestAmount: interestAmount.toFixed(2),
+      //     });
+      //   }
+      //   soulGatheringAmount =
+      //     soulGatheringAmount -
+      //     (homeLoanPrincipalAmount + homeLoanInterestAmount);
+      // }
+
+      // if (isAbleConfirmingLoan && soulGatheringAmount > 0) {
+      //   const confirmingLoanInterest: number = get(
+      //     KnowingState.getConfirmingLoanInterest
+      //   );
+      //   const confirmingLoanLimit: number = get(
+      //     KnowingState.getConfirmingLoanLimit
+      //   );
+      //   const [confirmingLoanPrincipal, confirmingLoanInterestAmount] =
+      //     getPrincipalAndInterest(confirmingLoanLimit, confirmingLoanInterest);
+      //   if (
+      //     soulGatheringAmount -
+      //       (confirmingLoanPrincipal + confirmingLoanInterestAmount) >=
+      //     0
+      //   ) {
+      //     result.push({
+      //       name: LoanType.CONFIRMING,
+      //       interest: confirmingLoanInterest,
+      //       loanAmount: confirmingLoanPrincipal.toFixed(2),
+      //       interestAmount: confirmingLoanInterestAmount.toFixed(2),
+      //     });
+      //   } else {
+      //     const [principalAmount, interestAmount] =
+      //       getPrincipalAndInterestInSoulGathering(
+      //         confirmingLoanLimit,
+      //         confirmingLoanInterest,
+      //         soulGatheringAmount
+      //       );
+
+      //     result.push({
+      //       name: LoanType.CONFIRMING,
+      //       interest: confirmingLoanInterest,
+      //       loanAmount: principalAmount.toFixed(2),
+      //       interestAmount: interestAmount.toFixed(2),
+      //     });
+      //   }
+      //   soulGatheringAmount =
+      //     soulGatheringAmount -
+      //     (confirmingLoanPrincipal + confirmingLoanInterestAmount);
+      // }
 
       return result;
     },
