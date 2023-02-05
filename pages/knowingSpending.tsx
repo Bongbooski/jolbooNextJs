@@ -320,6 +320,11 @@ const Home = () => {
           <h4>뒤로가기(나를 좀더 알아보기)</h4>
         </Link>
       </Button>
+      <Button variant="contained" disableElevation>
+        <Link href={`/result`}>
+          <h4>결과보기</h4>
+        </Link>
+      </Button>
       <style jsx>{`
         .birthdayWrapper {
           display: flex;

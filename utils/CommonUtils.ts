@@ -29,7 +29,6 @@ export const calculateFixedPaymentLoanAmountByMonth = (
   loanAmount: number,
   loanRate: number
 ): number => {
-  debugger;
   const loanYear = borrowingYear;
   const totalLoanAmount = loanAmount * 10000000 * loanYear;
 
@@ -50,7 +49,6 @@ export const calculateFixedPrincipalPaymentLoanAmountFirstMonth = (
   loanAmount: number,
   loanRate: number
 ): number => {
-  debugger;
   const loanYear = borrowingYear;
   const loanMonth = borrowingYear * 12;
   const totalLoanAmount = loanAmount * 10000000 * loanYear;
