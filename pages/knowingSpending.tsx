@@ -27,6 +27,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
 import { ConfirmingLoanBank } from "../constants/Common";
 import { LoanResult } from "../constants/Loan";
+import { getCommaString } from "../utils/CommonUtils";
 
 interface Loan {
   name: string;
@@ -100,8 +101,8 @@ const Home = () => {
     KnowingState.getMaxPropertyPriceByLTV
   );
 
-  const getDsrLoanResult = useRecoilValue<Array<LoanResult>>(
-    KnowingState.getDsrLoanResult
+  const getFinalLoanResult = useRecoilValue<Array<LoanResult>>(
+    KnowingState.getFinalLoanResult
   );
 
   const handleChangeMonthlySpending = (
@@ -128,6 +129,7 @@ const Home = () => {
     justifyContent: "space-between",
     paddingTop: "10px",
   };
+
   return (
     <div className="container">
       <Seo title="소비에 대하여" />
@@ -288,10 +290,19 @@ const Home = () => {
         </Typography>
       </Box>
 
+      <Box style={wrapperBoxCss}>
+        <Typography variant="subtitle2" gutterBottom>
+          LTV 80기준 최대 대출원금
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          {((getMaxPropertyPriceByLTV / 10000) * 4) / 5}억원
+        </Typography>
+      </Box>
+
       <Typography variant="subtitle2" gutterBottom>
         대출 구성
       </Typography>
-      {getDsrLoanResult.map((result) => (
+      {getFinalLoanResult.map((result) => (
         <Box key={`loan_${result.name}`} style={wrapperBoxCss}>
           <Typography variant="subtitle2" gutterBottom>
             {result.name}
@@ -306,11 +317,12 @@ const Home = () => {
             대출이자: {result.interestAmount}억원
           </Typography>
           <Typography variant="subtitle2" gutterBottom>
-            월상환액(원금균등): {result.fixedPaymentLoanAmountByMonth}원
+            월상환액(원금균등):{" "}
+            {getCommaString(result.fixedPaymentLoanAmountByMonth)}원
           </Typography>
           <Typography variant="subtitle2" gutterBottom>
             월상환액(원금리균등):{" "}
-            {result.fixedPrincipalPaymentLoanAmountFirstMonth}원
+            {getCommaString(result.fixedPrincipalPaymentLoanAmountFirstMonth)}원
           </Typography>
         </Box>
       ))}

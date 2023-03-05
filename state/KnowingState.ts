@@ -593,9 +593,9 @@ export const KnowingState = {
                 didimdolInterest
               ),
           });
-          // soulGatheringAmount =
-          //   soulGatheringAmount -
-          //   (didimdolPrincipalAmount + didimdolInterestAmount);
+          soulGatheringAmount =
+            soulGatheringAmount -
+            (didimdolPrincipalAmount + didimdolInterestAmount);
         } else {
           const [principalAmount, interestAmount] =
             getPrincipalAndInterestInSoulGathering(
@@ -622,10 +622,12 @@ export const KnowingState = {
               ),
           });
           // soulGatheringAmount = 0;
+          soulGatheringAmount =
+            soulGatheringAmount - (principalAmount + interestAmount);
         }
-        soulGatheringAmount =
-          soulGatheringAmount -
-          (didimdolPrincipalAmount + didimdolInterestAmount);
+        // soulGatheringAmount =
+        //   soulGatheringAmount -
+        //   (didimdolPrincipalAmount + didimdolInterestAmount);
       }
 
       if (isAbleSpecialHomeLoan && soulGatheringAmount > 0) {
@@ -663,6 +665,9 @@ export const KnowingState = {
                 specialHomeLoanInterest
               ),
           });
+          soulGatheringAmount =
+            soulGatheringAmount -
+            (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount);
         } else {
           const [principalAmount, interestAmount] =
             getPrincipalAndInterestInSoulGathering(
@@ -688,10 +693,12 @@ export const KnowingState = {
                 specialHomeLoanInterest
               ),
           });
+          soulGatheringAmount =
+            soulGatheringAmount - (principalAmount + interestAmount);
         }
-        soulGatheringAmount =
-          soulGatheringAmount -
-          (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount);
+        // soulGatheringAmount =
+        //   soulGatheringAmount -
+        //   (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount);
       }
 
       // 특례보금자리론 출시로 1년동안 일반 보금자리론, 적격대출은 운영하지 않음 (2023.01.30)
@@ -711,6 +718,9 @@ export const KnowingState = {
       //       loanAmount: homeLoanPrincipalAmount.toFixed(2),
       //       interestAmount: homeLoanInterestAmount.toFixed(2),
       //     });
+      // soulGatheringAmount =
+      //     soulGatheringAmount -
+      //     (homeLoanPrincipalAmount + homeLoanInterestAmount);
       //   } else {
       //     const [principalAmount, interestAmount] =
       //       getPrincipalAndInterestInSoulGathering(
@@ -725,10 +735,13 @@ export const KnowingState = {
       //       loanAmount: principalAmount.toFixed(2),
       //       interestAmount: interestAmount.toFixed(2),
       //     });
-      //   }
-      //   soulGatheringAmount =
+      // soulGatheringAmount =
       //     soulGatheringAmount -
-      //     (homeLoanPrincipalAmount + homeLoanInterestAmount);
+      //     (principalAmount + interestAmount);
+      //   }
+      //   // soulGatheringAmount =
+      //   //   soulGatheringAmount -
+      //   //   (homeLoanPrincipalAmount + homeLoanInterestAmount);
       // }
 
       // if (isAbleConfirmingLoan && soulGatheringAmount > 0) {
@@ -751,6 +764,9 @@ export const KnowingState = {
       //       loanAmount: confirmingLoanPrincipal.toFixed(2),
       //       interestAmount: confirmingLoanInterestAmount.toFixed(2),
       //     });
+      // soulGatheringAmount =
+      //     soulGatheringAmount -
+      //     (confirmingLoanPrincipal + confirmingLoanInterestAmount);
       //   } else {
       //     const [principalAmount, interestAmount] =
       //       getPrincipalAndInterestInSoulGathering(
@@ -765,10 +781,13 @@ export const KnowingState = {
       //       loanAmount: principalAmount.toFixed(2),
       //       interestAmount: interestAmount.toFixed(2),
       //     });
-      //   }
-      //   soulGatheringAmount =
+      // soulGatheringAmount =
       //     soulGatheringAmount -
-      //     (confirmingLoanPrincipal + confirmingLoanInterestAmount);
+      //     (principalAmount + interestAmount);
+      //   }
+      //   // soulGatheringAmount =
+      //     // soulGatheringAmount -
+      //     // (confirmingLoanPrincipal + confirmingLoanInterestAmount);
       // }
 
       return result;
@@ -781,18 +800,147 @@ export const KnowingState = {
       const dsrResult: Array<LoanResult> = get(KnowingState.getDsrLoanResult);
       const supportAmount = Number.parseInt(get(KnowingState.supportAmount));
       const depositAmount = Number.parseInt(get(KnowingState.depositAmount));
+      const borrowingYear: number = get(KnowingState.borrowingYear);
 
       const totalAsset = supportAmount + depositAmount;
-      const result: Array<LoanResult> = [];
+      let loanAmountByLtv = (totalAsset * 4) / 10000;
+      let result: Array<LoanResult> = [];
 
       let totalLoanAmountByDsr = 0;
       for (const loan of dsrResult) {
         totalLoanAmountByDsr += Number.parseFloat(loan.loanAmount);
       }
 
-      if (totalLoanAmountByDsr > totalAsset * 4) {
+      if (totalLoanAmountByDsr > loanAmountByLtv) {
+        const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
+        const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
+        // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
+        // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
+
+        if (isAbleDidimdol && loanAmountByLtv > 0) {
+          const didimdolInterest: number = get(
+            KnowingState.getDidimdolInterest
+          );
+          const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
+
+          if (loanAmountByLtv - didimdolLimit >= 0) {
+            const [didimdolPrincipalAmount, didimdolInterestAmount] =
+              getPrincipalAndInterest(didimdolLimit, didimdolInterest);
+
+            result.push({
+              name: LoanType.DIDIMDOL,
+              interest: didimdolInterest,
+              loanAmount: didimdolPrincipalAmount.toFixed(2),
+              interestAmount: didimdolInterestAmount.toFixed(2),
+              fixedPaymentLoanAmountByMonth:
+                calculateFixedPaymentLoanAmountByMonth(
+                  borrowingYear,
+                  didimdolPrincipalAmount,
+                  didimdolInterest
+                ),
+              fixedPrincipalPaymentLoanAmountFirstMonth:
+                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  didimdolPrincipalAmount,
+                  didimdolInterest
+                ),
+            });
+            loanAmountByLtv = loanAmountByLtv - didimdolLimit;
+          } else if (loanAmountByLtv > 0) {
+            const [principalAmount, interestAmount] =
+              getPrincipalAndInterestInSoulGathering(
+                didimdolLimit,
+                didimdolInterest,
+                loanAmountByLtv
+              );
+            result.push({
+              name: LoanType.DIDIMDOL,
+              interest: didimdolInterest,
+              loanAmount: principalAmount.toFixed(2),
+              interestAmount: interestAmount.toFixed(2),
+              fixedPaymentLoanAmountByMonth:
+                calculateFixedPaymentLoanAmountByMonth(
+                  borrowingYear,
+                  principalAmount,
+                  didimdolInterest
+                ),
+              fixedPrincipalPaymentLoanAmountFirstMonth:
+                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  principalAmount,
+                  didimdolInterest
+                ),
+            });
+            loanAmountByLtv = loanAmountByLtv - principalAmount;
+          }
+        }
+
+        if (isAbleSpecialHomeLoan && loanAmountByLtv > 0) {
+          const specialHomeLoanInterest: number = get(
+            KnowingState.getSpecialHomeLoanInterest
+          );
+          const specialHomeLoanLimit: number = get(
+            KnowingState.getSpecialHomeLoanLimit
+          );
+
+          if (loanAmountByLtv - specialHomeLoanLimit >= 0) {
+            const [didimdolPrincipalAmount, didimdolInterestAmount] =
+              getPrincipalAndInterest(
+                specialHomeLoanLimit,
+                specialHomeLoanInterest
+              );
+
+            result.push({
+              name: LoanType.SPECIAL_HOME,
+              interest: specialHomeLoanInterest,
+              loanAmount: didimdolPrincipalAmount.toFixed(2),
+              interestAmount: didimdolInterestAmount.toFixed(2),
+              fixedPaymentLoanAmountByMonth:
+                calculateFixedPaymentLoanAmountByMonth(
+                  borrowingYear,
+                  didimdolPrincipalAmount,
+                  specialHomeLoanInterest
+                ),
+              fixedPrincipalPaymentLoanAmountFirstMonth:
+                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  didimdolPrincipalAmount,
+                  specialHomeLoanInterest
+                ),
+            });
+            loanAmountByLtv = loanAmountByLtv - specialHomeLoanLimit;
+          } else if (loanAmountByLtv > 0) {
+            const [principalAmount, interestAmount] =
+              getPrincipalAndInterestInSoulGathering(
+                specialHomeLoanLimit,
+                specialHomeLoanInterest,
+                loanAmountByLtv
+              );
+            result.push({
+              name: LoanType.DIDIMDOL,
+              interest: specialHomeLoanInterest,
+              loanAmount: principalAmount.toFixed(2),
+              interestAmount: interestAmount.toFixed(2),
+              fixedPaymentLoanAmountByMonth:
+                calculateFixedPaymentLoanAmountByMonth(
+                  borrowingYear,
+                  principalAmount,
+                  specialHomeLoanInterest
+                ),
+              fixedPrincipalPaymentLoanAmountFirstMonth:
+                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  principalAmount,
+                  specialHomeLoanInterest
+                ),
+            });
+            loanAmountByLtv = loanAmountByLtv - principalAmount;
+          }
+        }
+      } else {
+        result = dsrResult;
       }
-      // 가중평균금리구해서, ltv기준 최대 대출금액에 적용해서 원리금 총액을 구하고 그 값으로 대출구성 로직을 태운다
+
       return result;
     },
   }),
