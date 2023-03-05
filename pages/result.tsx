@@ -15,6 +15,7 @@ import { PricePerSquareMeter } from "../constants/Common";
 import { LoanResult } from "../constants/Loan";
 import { useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
+import { getCommaString } from "../utils/CommonUtils";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -37,18 +38,21 @@ const chartBorderColor = [
 ];
 
 const Result = () => {
-  const getDsrLoanResult = useRecoilValue<Array<LoanResult>>(
-    KnowingState.getDsrLoanResult
+  const getFinalLoanResult = useRecoilValue<Array<LoanResult>>(
+    KnowingState.getFinalLoanResult
   );
 
   const data = {
-    labels: getDsrLoanResult.map((e) => e.name),
+    labels: getFinalLoanResult.map((e) => e.name),
     datasets: [
       {
         label: "원금",
-        data: getDsrLoanResult.map((e) => e.loanAmount),
-        backgroundColor: chartBackgroundColor.slice(0, getDsrLoanResult.length),
-        borderColor: chartBorderColor.slice(0, getDsrLoanResult.length),
+        data: getFinalLoanResult.map((e) => e.loanAmount),
+        backgroundColor: chartBackgroundColor.slice(
+          0,
+          getFinalLoanResult.length
+        ),
+        borderColor: chartBorderColor.slice(0, getFinalLoanResult.length),
         borderWidth: 1,
       },
     ],
@@ -91,7 +95,7 @@ const Result = () => {
     (e) => e.price34 < housePrice * 10000
   ).pop()?.districtName;
 
-  const totalLoanAmount = getDsrLoanResult.reduce((sum, currValue) => {
+  const totalLoanAmount = getFinalLoanResult.reduce((sum, currValue) => {
     return sum + Number(currValue.loanAmount);
   }, 0);
 
@@ -170,19 +174,19 @@ const Result = () => {
         <Doughnut data={data} />
       </div>
 
-      {getDsrLoanResult.map((e) => {
+      {getFinalLoanResult.map((e) => {
         return (
           <>
             <Typography variant="h5" gutterBottom>
-              {e.name} 대출은 원금 {e.loanAmount}에 이자 {e.interest}로
+              {e.name} 대출은 원금 {e.loanAmount}억에 이자 {e.interest}%로
             </Typography>
             <Typography variant="h5" gutterBottom>
-              원금균등일 경우 첫달엔 {e.fixedPaymentLoanAmountByMonth}원을
-              갚아야 하고
+              원금균등일 경우 첫달엔{" "}
+              {getCommaString(e.fixedPaymentLoanAmountByMonth)}원을 갚아야 하고
             </Typography>
             <Typography variant="h5" gutterBottom>
               원리금균등으로는 매월{" "}
-              {e.fixedPrincipalPaymentLoanAmountFirstMonth}
+              {getCommaString(e.fixedPrincipalPaymentLoanAmountFirstMonth)}
               원을 갚아야 해요
             </Typography>
           </>

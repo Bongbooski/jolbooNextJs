@@ -917,7 +917,7 @@ export const KnowingState = {
                 loanAmountByLtv
               );
             result.push({
-              name: LoanType.DIDIMDOL,
+              name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
               loanAmount: principalAmount.toFixed(2),
               interestAmount: interestAmount.toFixed(2),
