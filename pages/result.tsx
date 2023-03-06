@@ -33,6 +33,7 @@ import { LoanResult } from "../constants/Loan";
 import { useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
+import { getCommaString } from "../utils/CommonUtils";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -56,18 +57,21 @@ const chartBorderColor = [
 
 const Result = () => {
   const [selectedSquareMeter, setSelectedSquareMeter] = useState<string>("25");
-  const getDsrLoanResult = useRecoilValue<Array<LoanResult>>(
-    KnowingState.getDsrLoanResult
+  const getFinalLoanResult = useRecoilValue<Array<LoanResult>>(
+    KnowingState.getFinalLoanResult
   );
 
   const data = {
-    labels: getDsrLoanResult.map((e) => e.name),
+    labels: getFinalLoanResult.map((e) => e.name),
     datasets: [
       {
         label: "원금",
-        data: getDsrLoanResult.map((e) => e.loanAmount),
-        backgroundColor: chartBackgroundColor.slice(0, getDsrLoanResult.length),
-        borderColor: chartBorderColor.slice(0, getDsrLoanResult.length),
+        data: getFinalLoanResult.map((e) => e.loanAmount),
+        backgroundColor: chartBackgroundColor.slice(
+          0,
+          getFinalLoanResult.length
+        ),
+        borderColor: chartBorderColor.slice(0, getFinalLoanResult.length),
         borderWidth: 1,
       },
     ],
@@ -88,7 +92,7 @@ const Result = () => {
     (e) => e.price34 < housePrice * 10000
   );
 
-  const totalLoanAmount = getDsrLoanResult.reduce((sum, currValue) => {
+  const totalLoanAmount = getFinalLoanResult.reduce((sum, currValue) => {
     return sum + Number(currValue.loanAmount);
   }, 0);
 
@@ -224,7 +228,7 @@ const Result = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getDsrLoanResult.map((row) => (
+                {getFinalLoanResult.map((row) => (
                   <TableRow
                     key={row.name}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -235,10 +239,12 @@ const Result = () => {
                     <TableCell align="right">{row.loanAmount}억</TableCell>
                     <TableCell align="right">{row.interest}%</TableCell>
                     <TableCell align="right">
-                      {row.fixedPaymentLoanAmountByMonth}
+                      {getCommaString(row.fixedPaymentLoanAmountByMonth)}
                     </TableCell>
                     <TableCell align="right">
-                      {row.fixedPrincipalPaymentLoanAmountFirstMonth}
+                      {getCommaString(
+                        row.fixedPrincipalPaymentLoanAmountFirstMonth
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -259,7 +265,6 @@ const Result = () => {
           내가 살 수 있는 아파트 가격을 확인했으면 이제 후보 지역을 선정해야
           합니다. 아래 내용은 아직 준비중이예요
         </Typography>
-
         <div className="stepperContainer">
           <Stepper activeStep={0} alternativeLabel>
             <Step key={"영끌계산기"}>

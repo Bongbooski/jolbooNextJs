@@ -13,9 +13,7 @@ export const getPrincipalAndInterestInSoulGathering = (
   );
 
   while (resultAmount + resultInterest > soulGathering) {
-    console.log("before amount::", amount);
     amount -= 0.01;
-    console.log("after amount::", amount);
 
     [resultAmount, resultInterest] = getPrincipalAndInterest(amount, interest);
   }
@@ -59,4 +57,8 @@ export const calculateFixedPrincipalPaymentLoanAmountFirstMonth = (
   return Math.ceil(
     totalLoanAmount / loanMonth + totalLoanAmount * (loanRate / 100 / 12)
   );
+};
+
+export const getCommaString = (original: string | number) => {
+  return original.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };

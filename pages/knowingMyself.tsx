@@ -402,14 +402,25 @@ const Home: NextPageWithLayout = () => {
         </SurveyContents>
       </SurveyContentsGroup>
 
-      <Button variant="contained" size="large" disableElevation>
+      <div className="nextButtonContainer">
         <Link href={`/knowingSpending`}>
-          <h4>소비를 알아보자</h4>
+          <Button
+            id="nextButton"
+            variant="contained"
+            size="large"
+            disableElevation
+          >
+            <h4>소비를 알아보자</h4>
+          </Button>
         </Link>
-      </Button>
+      </div>
       {/* </> */}
       {/* )} */}
       <style jsx>{`
+        .nextButtonContainer {
+          display: flex;
+          justify-content: center;
+        }
         .birthdayWrapper {
           display: flex;
         }
@@ -418,6 +429,7 @@ const Home: NextPageWithLayout = () => {
           flex-direction: column;
           padding-bottom: 60px;
         }
+
         /* .container {
           display: grid;
           grid-template-columns: 1fr 1fr;
