@@ -8,7 +8,7 @@ const Symbol = () => {
       <Typography variant="h3" gutterBottom>
         영끌계산기
       </Typography>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         내 연봉으로 어떤 집에 살 수 있을까?
       </Typography>
       <style jsx>{`

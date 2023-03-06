@@ -18,6 +18,9 @@ import {
   Button,
   ToggleButtonGroup,
   ToggleButton,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
 import { NumericFormat } from "react-number-format";
 import { Dayjs } from "dayjs";
@@ -93,6 +96,10 @@ const Home: NextPageWithLayout = () => {
   // const [kidsCount, setKidsCount] = useState<string>();
   const [kidsCount, setKidsCount] = useRecoilState<string>(
     KnowingState.kidsCount
+  );
+
+  const [borrowingYear, setBorrowingYear] = useRecoilState<string>(
+    KnowingState.borrowingYear
   );
 
   const isMarried = useRecoilValue<boolean>(KnowingState.isMarried);
@@ -180,21 +187,19 @@ const Home: NextPageWithLayout = () => {
     setDepositAmount(event.target.value);
   };
 
-  const radioGroupCss = {
-    display: "flex",
-    flexDirection: "row",
+  const handleChangeBorrowingYear = (event: SelectChangeEvent) => {
+    setBorrowingYear(event.target.value);
   };
 
-  const wrapperBoxCss = {
-    display: "flex",
-    justifyContent: "space-between",
-  };
+  const singleParentMultiCultureDisabled: string[] = [];
+
+  if (isSingleParent) singleParentMultiCultureDisabled.push("singleParent");
+  if (isMultiCultural) singleParentMultiCultureDisabled.push("multiCultural");
+  if (isDisabled) singleParentMultiCultureDisabled.push("disabled");
 
   return (
     <div className="container">
-      {/* <Seo title="나에 대하여" /> */}
-
-      <SurveyContents title={"생년월일을 입력해주세요"}>
+      <SurveyContents title={"생년월일이 어떻게 되나요?"}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             label="생년월일"
@@ -208,16 +213,19 @@ const Home: NextPageWithLayout = () => {
         </LocalizationProvider>
       </SurveyContents>
 
-      <SurveyContents title={" 결혼여부를 선택해주세요"}>
+      <SurveyContents
+        title={"결혼 하셨나요?"}
+        description="집을 구매 할 때는 혼인신고를 한 경우에만 결혼으로 판단해요"
+      >
         <ToggleButtonGroup
           color="primary"
           value={isMarriedValue}
           exclusive
           onChange={(
             event: React.MouseEvent<HTMLElement>,
-            newAlignment: string
+            newSelection: string
           ) => {
-            setisMarriedValue(newAlignment);
+            if (newSelection !== null) setisMarriedValue(newSelection);
           }}
           aria-label="Platform"
         >
@@ -226,16 +234,20 @@ const Home: NextPageWithLayout = () => {
         </ToggleButtonGroup>
       </SurveyContents>
       {isMarried && (
-        <SurveyContents title={"신혼인가요?"}>
+        <SurveyContents
+          title={"신혼인가요?"}
+          description={"부동산에서는 혼인신고한지 7년 이내일 경우 신혼이예요"}
+        >
           <ToggleButtonGroup
             color="primary"
             value={isNewCouple!.toString()}
             exclusive
             onChange={(
               event: React.MouseEvent<HTMLElement>,
-              newAlignment: string
+              newSelection: string
             ) => {
-              setIsNewCouple(JSON.parse(newAlignment));
+              if (newSelection !== null)
+                setIsNewCouple(JSON.parse(newSelection));
             }}
             aria-label="Platform"
           >
@@ -245,16 +257,16 @@ const Home: NextPageWithLayout = () => {
         </SurveyContents>
       )}
 
-      <SurveyContents title={"생애 최초 여부"}>
+      <SurveyContents title={"생애 최초로 주택을 구매하시나요?"}>
         <ToggleButtonGroup
           color="primary"
           value={isFirstTime.toString()}
           exclusive
           onChange={(
             event: React.MouseEvent<HTMLElement>,
-            newAlignment: string
+            newSelection: string
           ) => {
-            setIsFirstTime(JSON.parse(newAlignment));
+            if (newSelection !== null) setIsFirstTime(JSON.parse(newSelection));
           }}
           aria-label="Platform"
         >
@@ -263,7 +275,29 @@ const Home: NextPageWithLayout = () => {
         </ToggleButtonGroup>
       </SurveyContents>
 
-      <SurveyContents title={"연소득은 얼마인가요?"}>
+      <SurveyContents title={"무주택인가요?"}>
+        <ToggleButtonGroup
+          color="primary"
+          value={havingNoHouse.toString()}
+          exclusive
+          onChange={(
+            event: React.MouseEvent<HTMLElement>,
+            newSelection: string
+          ) => {
+            if (newSelection !== null)
+              setHavingNoHouse(JSON.parse(newSelection));
+          }}
+          aria-label="Platform"
+        >
+          <ToggleButton value="true">무주택이예요</ToggleButton>
+          <ToggleButton value="false">무주택 아니예요</ToggleButton>
+        </ToggleButtonGroup>
+      </SurveyContents>
+
+      <SurveyContents
+        title={"연소득은 얼마인가요?"}
+        description="세전 소득을 입력해주세요. 맞벌이일경우 합친 소득을 입력해주세요"
+      >
         <FormControl variant="standard">
           <NumericFormat
             id="year-income-amount"
@@ -295,7 +329,10 @@ const Home: NextPageWithLayout = () => {
         </FormControl>
       </SurveyContents>
 
-      <SurveyContents title={"지금까지 모은돈은 얼마인가요?"}>
+      <SurveyContents
+        title={"지금까지 모은돈은 얼마인가요?"}
+        description="가용 할 수 있는 금액을 입력해주세요. 전세에 묶여있는 내 돈 모두 포함해서요"
+      >
         <FormControl variant="standard">
           <NumericFormat
             id="deposit-amount"
@@ -310,20 +347,29 @@ const Home: NextPageWithLayout = () => {
           />
         </FormControl>
       </SurveyContents>
-      <SurveyContents title={"자녀 양육 여부"}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isHavingKids}
-              onChange={handleChangeisHavingKids}
-              inputProps={{ "aria-label": "controlled" }}
-            />
-          }
-          label={isHavingKids ? "다자녀 가구에요" : "아니에요"}
-        />
+      <SurveyContents
+        title={"다자녀 가구인가요?"}
+        description="성년이 되지 않은 자녀가 3명 이상이면 다자녀가구예요. 뱃속에 태아도 포함됩니다"
+      >
+        <ToggleButtonGroup
+          color="primary"
+          value={isHavingKids.toString()}
+          exclusive
+          onChange={(
+            event: React.MouseEvent<HTMLElement>,
+            newSelection: string
+          ) => {
+            if (newSelection !== null)
+              setisHavingKids(JSON.parse(newSelection));
+          }}
+          aria-label="Platform"
+        >
+          <ToggleButton value="true">다자녀가구예요</ToggleButton>
+          <ToggleButton value="false">다자녀가구는 아니예요</ToggleButton>
+        </ToggleButtonGroup>
       </SurveyContents>
       {isHavingKids && (
-        <SurveyContents title={"자녀수"}>
+        <SurveyContents title={"자녀수는 몇 명인가요?"}>
           <FormControl variant="standard">
             <Input
               id="kids"
@@ -336,86 +382,66 @@ const Home: NextPageWithLayout = () => {
           </FormControl>
         </SurveyContents>
       )}
-      {/* {showSecondSection && ( */}
-      {/* <> */}
-      <ToggleButtonGroup
-        color="primary"
-        value={isFirstTime.toString()}
-        onChange={(
-          event: React.MouseEvent<HTMLElement>,
-          newAlignment: string
-        ) => {}}
-        aria-label="Platform"
+      <SurveyContents
+        title={"해당되는 항목을 선택해주세요. 여러개 선택 가능해요."}
       >
-        <ToggleButton value="true">다자녀여부</ToggleButton>
-        <ToggleButton value="true">한부모 가정</ToggleButton>
-        <ToggleButton value="false">장애인 가구</ToggleButton>
-        <ToggleButton value="false">다문화 가구</ToggleButton>
-        <ToggleButton value="false">무주택여부</ToggleButton>
-      </ToggleButtonGroup>
-      <SurveyContentsGroup>
-        <SurveyContents title={"한부모 가정 여부"} vertical>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isSingleParent}
-                onChange={handleChangeIsSingleParent}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            }
-            label={isSingleParent ? "맞아요" : "아니에요"}
-          />
-        </SurveyContents>
-        <SurveyContents title={"장애인 가구 여부"} vertical>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isDisabled}
-                onChange={handleChangeIsDisabled}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            }
-            label={isDisabled ? "맞아요" : "아니에요"}
-          />
-        </SurveyContents>
-      </SurveyContentsGroup>
-      <SurveyContentsGroup>
-        <SurveyContents title={"다문화 가구 여부"} vertical>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isMultiCultural}
-                onChange={handleChangeIsMultiCultural}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            }
-            label={isMultiCultural ? "맞아요" : "아니에요"}
-          />
-        </SurveyContents>
+        <ToggleButtonGroup
+          color="primary"
+          value={singleParentMultiCultureDisabled}
+          onChange={(
+            event: React.MouseEvent<HTMLElement>,
+            newSelections: string
+          ) => {
+            setIsSingleParent(false);
+            setIsDisabled(false);
+            setIsMultiCultural(false);
 
-        <SurveyContents title={"무주택 여부"} vertical>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={havingNoHouse}
-                onChange={handleChangeHavingNoHouse}
-                inputProps={{ "aria-label": "controlled" }}
-              />
+            if (newSelections.includes("singleParent")) {
+              setIsSingleParent(true);
             }
-            label={havingNoHouse ? "무주택이에요" : "무주택이 아니에요"}
-          />
-        </SurveyContents>
-      </SurveyContentsGroup>
+
+            if (newSelections.includes("multiCultural")) {
+              setIsMultiCultural(true);
+            }
+
+            if (newSelections.includes("disabled")) {
+              setIsDisabled(true);
+            }
+          }}
+          aria-label="Platform"
+        >
+          <ToggleButton value="singleParent">한부모 가정</ToggleButton>
+          <ToggleButton value="multiCultural">다문화 가구</ToggleButton>
+          <ToggleButton value="disabled">장애인 가구</ToggleButton>
+        </ToggleButtonGroup>
+      </SurveyContents>
+
+      <SurveyContents title={"대출은 몇 년에 걸쳐 갚을 예정이신가요?"}>
+        <FormControl>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={borrowingYear}
+            onChange={handleChangeBorrowingYear}
+          >
+            <MenuItem value={"10"}>10년간</MenuItem>
+            <MenuItem value={"15"}>15년간</MenuItem>
+            <MenuItem value={"20"}>20년간</MenuItem>
+            <MenuItem value={"30"}>30년간</MenuItem>
+            <MenuItem value={"40"}>40년간</MenuItem>
+          </Select>
+        </FormControl>
+      </SurveyContents>
 
       <div className="nextButtonContainer">
-        <Link href={`/knowingSpending`}>
+        <Link href={`/result`}>
           <Button
             id="nextButton"
             variant="contained"
             size="large"
             disableElevation
           >
-            <h4>소비를 알아보자</h4>
+            <h4>결과보기</h4>
           </Button>
         </Link>
       </div>

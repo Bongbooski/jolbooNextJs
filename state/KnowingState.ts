@@ -24,7 +24,7 @@ export const KnowingState = {
   }),
   isMarriedValue: atom<string | null>({
     key: RecoilKey.knowing["KNOWING/isMarriedValue"],
-    default: null,
+    default: "married",
   }),
   isNewCouple: atom<boolean | null>({
     key: RecoilKey.knowing["KNOWING/isNewCouple"],

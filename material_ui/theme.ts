@@ -1,57 +1,58 @@
-import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from "@mui/material/styles";
 
 interface IThemeOptions extends ThemeOptions {}
 
 export const themeStyles = {
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          // Name of the slot
-          root: {
-            // Some CSS
-            height: '60px',
-          },
-          sizeLarge: {
-            minWidth: '423px',
-            // padding: '8px 42px',
-          }
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          height: "60px",
+        },
+        sizeLarge: {
+          minWidth: "423px",
         },
       },
-      MuiTypography: {
-        styleOverrides: {
-          root: {
-            marginBottom: '0px',
-          }
-        }
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          marginBottom: "0px",
+        },
       },
     },
-    
-    typography: {
-      fontFamily: [
-        'GangwonEdu_OTFBoldA',
-      ].join(','),
-      h3: {
-        color: '#367CFF',
-      }
-    }
-}
+  },
+
+  typography: {
+    fontFamily: ["GangwonEdu_OTFBoldA"].join(","),
+    h3: {
+      color: "#367CFF",
+    },
+    h6: {
+      fontSize: "1.0rem",
+      color: "#6e6d6d",
+    },
+  },
+};
 
 const typographyTheme = {
-    typography: {
-      fontFamily: [
-        'GangwonEdu_OTFBoldA',
-        // 'Pretendard',
-        // '-apple-system',
-        // 'BlinkMacSystemFont',
-        // '"Segoe UI"',
-        // 'Roboto',
-        // '"Helvetica Neue"',
-        // 'Arial',
-        // 'sans-serif',
-        // '"Apple Color Emoji"',
-        // '"Segoe UI Emoji"',
-        // '"Segoe UI Symbol"',
-      ].join(','),
+  typography: {
+    fontFamily: [
+      "GangwonEdu_OTFBoldA",
+      // 'Pretendard',
+      // '-apple-system',
+      // 'BlinkMacSystemFont',
+      // '"Segoe UI"',
+      // 'Roboto',
+      // '"Helvetica Neue"',
+      // 'Arial',
+      // 'sans-serif',
+      // '"Apple Color Emoji"',
+      // '"Segoe UI Emoji"',
+      // '"Segoe UI Symbol"',
+    ].join(","),
     //   h1: {
     //     fontFamily: ['Poppins700-AS800', 'Pretendard'].join(','),
     //     fontWeight: 800,
@@ -135,9 +136,9 @@ const typographyTheme = {
     //     fontSize: '0.75rem',
     //     color: '#5A6172',
     //   },
-      // Button, Input, Avatar, Chip, Tooltip 등은 개별 component 설정에서 폰트 설정(weight, size, color 등)
-    },
-  };
+    // Button, Input, Avatar, Chip, Tooltip 등은 개별 component 설정에서 폰트 설정(weight, size, color 등)
+  },
+};
 
 const theme = createTheme(themeStyles as IThemeOptions);
 
