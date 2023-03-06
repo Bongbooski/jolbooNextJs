@@ -34,6 +34,7 @@ import { useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
 import { getCommaString } from "../utils/CommonUtils";
+import Symbol from "../components/Symbol";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -104,13 +105,7 @@ const Result = () => {
 
   return (
     <>
-      <SymbolIcon />
-      <Typography variant="h3" gutterBottom>
-        영끌계산기
-      </Typography>
-      <Typography variant="h5" gutterBottom>
-        내 연봉으로 어떤 집에 살 수 있을까?
-      </Typography>
+      <Symbol />
       <div className="contentsArea">
         <div className="verticalContainer">
           <Typography variant="h5" gutterBottom>

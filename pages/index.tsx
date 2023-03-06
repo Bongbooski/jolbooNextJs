@@ -5,28 +5,29 @@ import MainIcon from "../asset/svg/Main.svg";
 import SymbolIcon from "../asset/svg/Symbol.svg";
 import { ReactElement } from "react";
 import AppLayout from "../components/layout/AppLayout";
+import Symbol from "../components/Symbol";
 const Home = () => {
   return (
     <>
       <Seo title="메인" />
-      <SymbolIcon />
-      <Typography variant="h3" gutterBottom>
-        영끌계산기
-      </Typography>
-      <Typography variant="h5" gutterBottom>
-        내 연봉으로 어떤 집에 살 수 있을까?
-      </Typography>
+      <Symbol />
       <Typography variant="h6" gutterBottom>
         소득에 따른 대출 금액 계산부터 지역 선택까지 실거주를 위해 필요한 모든
         것을 알려드려요!
       </Typography>
-      <MainIcon />
+      <div className="iconArea">
+        <MainIcon />
+      </div>
       <Link href={`/knowingMyself`}>
         <Button variant="contained" size="large" disableElevation>
           <Typography variant="body1">시작하기</Typography>
         </Button>
       </Link>
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .iconArea {
+          padding: 30px 0px;
+        }
+      `}</style>
     </>
   );
 };
