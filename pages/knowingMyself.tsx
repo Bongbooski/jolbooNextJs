@@ -30,6 +30,7 @@ import type { NextPageWithLayout } from "./_app";
 import HeaderLayout from "../components/layout/HeaderLayout";
 import SurveyContents from "../components/SurveyContents";
 import SurveyContentsGroup from "../components/SurveyContentsGroup";
+import { getCommaString } from "../utils/CommonUtils";
 
 interface Movie {
   id: string;
@@ -165,7 +166,7 @@ const Home: NextPageWithLayout = () => {
   const handleChangeYearIncome = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setYearIncome(event.target.value);
+    setYearIncome(event.target.value.replaceAll(",", ""));
   };
 
   const handleChangeSupportAmount = (
@@ -263,19 +264,30 @@ const Home: NextPageWithLayout = () => {
         </ToggleButtonGroup>
       </SurveyContents>
 
+      {console.log("yearIncome input:::", yearIncome)}
       <SurveyContents title={"연소득은 얼마인가요?"}>
         <FormControl variant="standard">
-          <NumericFormat
+          <Input
             id="year-income-amount"
-            value={yearIncome}
-            customInput={Input}
+            value={getCommaString(yearIncome)}
             onChange={handleChangeYearIncome}
-            thousandSeparator=","
             startAdornment={<InputAdornment position="start">₩</InputAdornment>}
             endAdornment={
               <InputAdornment position="start">만원</InputAdornment>
             }
           />
+          {/* <NumericFormat
+            id="year-income-amount"
+            value={yearIncome}
+            customInput={Input}
+            onChange={handleChangeYearIncome}
+            valueIsNumericString={false}
+            thousandSeparator=","
+            startAdornment={<InputAdornment position="start">₩</InputAdornment>}
+            endAdornment={
+              <InputAdornment position="start">만원</InputAdornment>
+            }
+          /> */}
         </FormControl>
       </SurveyContents>
 

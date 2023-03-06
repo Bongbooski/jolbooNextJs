@@ -61,6 +61,8 @@ type ConfirmingLoanInterest = {
   [index in ConfirmingLoanBank]: InterestDetail;
 };
 
+export const NormalLoanInterest: number = 5.17;
+
 export const ConfirmingLoanInterests: ConfirmingLoanInterest = {
   부산: {
     "10": 2.15,

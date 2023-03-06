@@ -28,6 +28,7 @@ import { KnowingState } from "../state/KnowingState";
 import { ConfirmingLoanBank } from "../constants/Common";
 import { LoanResult } from "../constants/Loan";
 import { getCommaString } from "../utils/CommonUtils";
+import { NormalLoanInterest } from "../constants/Interests";
 
 interface Loan {
   name: string;
@@ -100,6 +101,9 @@ const Home = () => {
   const getMaxPropertyPriceByLTV = useRecoilValue<number>(
     KnowingState.getMaxPropertyPriceByLTV
   );
+
+  const getLtv = useRecoilValue<number>(KnowingState.getLtv);
+  const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
 
   const getFinalLoanResult = useRecoilValue<Array<LoanResult>>(
     KnowingState.getFinalLoanResult
@@ -257,10 +261,10 @@ const Home = () => {
           가능
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
-          2.75
+          {NormalLoanInterest}%
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
-          2.5
+          없음
         </Typography>
       </Box>
       <Box style={wrapperBoxCss}>
@@ -283,19 +287,19 @@ const Home = () => {
 
       <Box style={wrapperBoxCss}>
         <Typography variant="subtitle2" gutterBottom>
-          LTV 80기준 최대 주택 가격
+          LTV {getLtv}% 기준 최대 주택 가격
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
-          {getMaxPropertyPriceByLTV / 10000}억원
+          {getMaxPropertyPriceByLTV}억원
         </Typography>
       </Box>
 
       <Box style={wrapperBoxCss}>
         <Typography variant="subtitle2" gutterBottom>
-          LTV 80기준 최대 대출원금
+          LTV {getLtv}% 기준 최대 대출원금
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
-          {((getMaxPropertyPriceByLTV / 10000) * 4) / 5}억원
+          {((getMyAsset * getLtv) / (100 - getLtv)).toFixed(2)}억원
         </Typography>
       </Box>
 
