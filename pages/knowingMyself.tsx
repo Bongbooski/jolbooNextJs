@@ -16,6 +16,8 @@ import {
   Input,
   InputAdornment,
   Button,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -47,10 +49,10 @@ const Home: NextPageWithLayout = () => {
   const [isNewCouple, setIsNewCouple] = useRecoilState<boolean | null>(
     KnowingState.isNewCouple
   );
-  // const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
   const [isFirstTime, setIsFirstTime] = useRecoilState<boolean>(
     KnowingState.isFirstTime
   );
+
   const [showSecondSection, setShowSecondSection] = useState<boolean | null>(
     null
   );
@@ -200,59 +202,69 @@ const Home: NextPageWithLayout = () => {
               setBirthday(newValue);
             }}
             renderInput={(params) => <TextField {...params} />}
+            inputFormat="YYYY/MM/DD"
           />
         </LocalizationProvider>
       </SurveyContents>
 
-      <SurveyContents title={" 결혼, 신혼여부"}>
-        <FormControl>
-          <RadioGroup
-            value={isMarriedValue}
-            name="radio-buttons-group"
-            style={radioGroupCss}
-            onChange={handleChangeisMarriedValue}
-          >
-            <FormControlLabel
-              value="married"
-              control={<Radio />}
-              label="결혼했어요"
-            />
-            <FormControlLabel
-              value="notMarried"
-              control={<Radio />}
-              label="결혼안했어요"
-            />
-          </RadioGroup>
-        </FormControl>
-
-        {isMarried && (
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isNewCouple}
-                onChange={handleChangeIsNewCouple}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            }
-            label={isNewCouple ? "신혼이에요" : "신혼은 아니에요"}
-          />
-        )}
+      <SurveyContents title={" 결혼여부를 선택해주세요"}>
+        <ToggleButtonGroup
+          color="primary"
+          value={isMarriedValue}
+          exclusive
+          onChange={(
+            event: React.MouseEvent<HTMLElement>,
+            newAlignment: string
+          ) => {
+            setisMarriedValue(newAlignment);
+          }}
+          aria-label="Platform"
+        >
+          <ToggleButton value="married">결혼했어요</ToggleButton>
+          <ToggleButton value="notMarried">결혼안했어요</ToggleButton>
+        </ToggleButtonGroup>
       </SurveyContents>
+      {isMarried && (
+        <SurveyContents title={"신혼인가요?"}>
+          <ToggleButtonGroup
+            color="primary"
+            value={isNewCouple!.toString()}
+            exclusive
+            onChange={(
+              event: React.MouseEvent<HTMLElement>,
+              newAlignment: string
+            ) => {
+              setIsNewCouple(JSON.parse(newAlignment));
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="true">신혼이예요</ToggleButton>
+            <ToggleButton value="false">신혼은 아니예요</ToggleButton>
+          </ToggleButtonGroup>
+        </SurveyContents>
+      )}
 
       <SurveyContents title={"생애 최초 여부"}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isFirstTime}
-              onChange={handleChangeIsFirstTime}
-              inputProps={{ "aria-label": "controlled" }}
-            />
-          }
-          label={isFirstTime ? "집 처음 사요" : "집 사본적 있어요"}
-        />
+        <ToggleButtonGroup
+          color="primary"
+          value={isFirstTime.toString()}
+          exclusive
+          onChange={(
+            event: React.MouseEvent<HTMLElement>,
+            newAlignment: string
+          ) => {
+            console.log(typeof newAlignment);
+            console.log(typeof JSON.parse(newAlignment));
+            setIsFirstTime(JSON.parse(newAlignment));
+          }}
+          aria-label="Platform"
+        >
+          <ToggleButton value="true">집 처음사요</ToggleButton>
+          <ToggleButton value="false">집 사본적 있어요</ToggleButton>
+        </ToggleButtonGroup>
       </SurveyContents>
 
-      <SurveyContents title={"연소득"}>
+      <SurveyContents title={"연소득은 얼마인가요?"}>
         <FormControl variant="standard">
           <Input
             id="year-income-amount"
@@ -280,7 +292,7 @@ const Home: NextPageWithLayout = () => {
         </FormControl>
       </SurveyContents>
 
-      <SurveyContents title={"저축액"}>
+      <SurveyContents title={"지금까지 모은돈은 얼마인가요?"}>
         <FormControl variant="standard">
           <Input
             id="deposit-amount"
@@ -321,6 +333,21 @@ const Home: NextPageWithLayout = () => {
       )}
       {/* {showSecondSection && ( */}
       {/* <> */}
+      <ToggleButtonGroup
+        color="primary"
+        value={isFirstTime.toString()}
+        onChange={(
+          event: React.MouseEvent<HTMLElement>,
+          newAlignment: string
+        ) => {}}
+        aria-label="Platform"
+      >
+        <ToggleButton value="true">다자녀여부</ToggleButton>
+        <ToggleButton value="true">한부모 가정</ToggleButton>
+        <ToggleButton value="false">장애인 가구</ToggleButton>
+        <ToggleButton value="false">다문화 가구</ToggleButton>
+        <ToggleButton value="false">무주택여부</ToggleButton>
+      </ToggleButtonGroup>
       <SurveyContentsGroup>
         <SurveyContents title={"한부모 가정 여부"} vertical>
           <FormControlLabel

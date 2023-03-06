@@ -28,7 +28,7 @@ export const KnowingState = {
   }),
   isNewCouple: atom<boolean | null>({
     key: RecoilKey.knowing["KNOWING/isNewCouple"],
-    default: null,
+    default: false,
   }),
   isFirstTime: atom<boolean>({
     key: RecoilKey.knowing["KNOWING/isFirstTime"],
