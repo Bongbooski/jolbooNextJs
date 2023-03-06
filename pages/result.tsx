@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import AppLayout from "../components/layout/AppLayout";
 import SymbolIcon from "../asset/svg/Symbol.svg";
 import PlaceBlack from "../asset/svg/Place_black_24dp.svg";
@@ -35,6 +35,7 @@ import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
 import { getCommaString } from "../utils/CommonUtils";
 import Symbol from "../components/Symbol";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -61,6 +62,21 @@ const Result = () => {
   const getFinalLoanResult = useRecoilValue<Array<LoanResult>>(
     KnowingState.getFinalLoanResult
   );
+  const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
+  const yearIncome = useRecoilValue<string>(KnowingState.yearIncome);
+  const getFinalPropertyPrice = useRecoilValue<number>(
+    KnowingState.getFinalPropertyPrice
+  );
+
+  const navigate = useNavigate();
+
+  console.log("asset 확인:::", getMyAsset);
+
+  useEffect(() => {
+    if (!yearIncome) {
+      navigate("/");
+    }
+  }, [navigate, yearIncome]);
 
   const data = {
     labels: getFinalLoanResult.map((e) => e.name),
@@ -78,19 +94,16 @@ const Result = () => {
     ],
   };
 
-  const housePrice = 7.7;
-  const myAsset = 3;
-
   // const districtName25 = PricePerSquareMeter.filter(
   //   (e) => e.price25 < housePrice * 10000
   // ).pop()?.districtName;
 
   const districtName25 = PricePerSquareMeter.filter(
-    (e) => e.price25 < housePrice * 10000
+    (e) => e.price25 < getFinalPropertyPrice * 10000
   );
 
   const districtName34 = PricePerSquareMeter.filter(
-    (e) => e.price34 < housePrice * 10000
+    (e) => e.price34 < getFinalPropertyPrice * 10000
   );
 
   const totalLoanAmount = getFinalLoanResult.reduce((sum, currValue) => {
@@ -112,7 +125,7 @@ const Result = () => {
             내가 살 수 있는 주택 가격 최대 금액은{` `}
           </Typography>
           <Typography variant="h1" gutterBottom>
-            {housePrice}억
+            {getFinalPropertyPrice.toFixed(2)}억
           </Typography>
           <Typography variant="h5" gutterBottom>
             이예요
@@ -125,17 +138,23 @@ const Result = () => {
             <div className="mapArea">
               <img src="/seoul_map.png" />
               {selectedSquareMeter === "25" && districtName25.length > 0 ? (
-                districtName25.map((e) => {
+                districtName25.map((e, i) => {
                   return (
-                    <div className={`pinArea${e.districtEngName}`}>
+                    <div
+                      key={`pinIcon25_${i}`}
+                      className={`pinArea${e.districtEngName}`}
+                    >
                       <PlaceBlack className="pinIcon" />
                     </div>
                   );
                 })
               ) : selectedSquareMeter === "34" && districtName34.length > 0 ? (
-                districtName34.map((e) => {
+                districtName34.map((e, i) => {
                   return (
-                    <div className={`pinArea${e.districtEngName}`}>
+                    <div
+                      key={`pinIcon34_${i}`}
+                      className={`pinArea${e.districtEngName}`}
+                    >
                       <PlaceBlack className="pinIcon" />
                     </div>
                   );
@@ -194,7 +213,7 @@ const Result = () => {
             현재 내가 가진돈은{" "}
           </Typography>
           <Typography variant="h1" gutterBottom>
-            {myAsset}억
+            {getMyAsset}억
           </Typography>
           <Typography variant="h5" gutterBottom>
             원이고, 필요한 대출금은 총

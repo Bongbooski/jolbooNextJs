@@ -5,6 +5,7 @@ import {
   ConfirmingLoanInterests,
   DidimdolInterests,
   HomeLoanInterests,
+  NormalLoanInterest,
   SpecialHomeLoanInterests,
 } from "../constants/Interests";
 import { Loan } from "../components/LoanInput";
@@ -37,7 +38,7 @@ export const KnowingState = {
 
   yearIncome: atom<string>({
     key: RecoilKey.knowing["KNOWING/yearIncome"],
-    default: "10000",
+    default: "",
   }),
   supportAmount: atom<string>({
     key: RecoilKey.knowing["KNOWING/supportAmount"],
@@ -526,26 +527,47 @@ export const KnowingState = {
     },
   }),
 
+  getLtv: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getLtv"],
+    get: ({ get }) => {
+      const isFirstTime = get(KnowingState.isFirstTime);
+
+      if (isFirstTime) {
+        return 80;
+      } else {
+        return 70;
+      }
+    },
+  }),
+
   getSoulGatheringAmount: selector<number>({
     key: RecoilKey.knowing["KNOWING/getSoulGatheringAmount"],
     get: ({ get }) => {
       const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
       const DSR: number = get(KnowingState.getDsr);
 
+      console.log("yearIncome??", yearIncome);
       return yearIncome * DSR;
     },
   }),
 
-  // 일단 LTV 80퍼센트 기준으로
-  getMaxPropertyPriceByLTV: selector<number>({
-    key: RecoilKey.knowing["KNOWING/getMaxPropertyPriceByLTV"],
+  getMyAsset: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getMyAsset"],
     get: ({ get }) => {
       const supportAmount = Number.parseInt(get(KnowingState.supportAmount));
       const depositAmount = Number.parseInt(get(KnowingState.depositAmount));
 
-      const totalAsset = supportAmount + depositAmount;
+      return (supportAmount + depositAmount) / 10000;
+    },
+  }),
 
-      return totalAsset * 5;
+  getMaxPropertyPriceByLTV: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getMaxPropertyPriceByLTV"],
+    get: ({ get }) => {
+      const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
+      const getLtv = Number.parseInt(get(KnowingState.getLtv));
+
+      return ((getMyAsset * 100) / (100 - getLtv)).toFixed(2);
     },
   }),
 
@@ -790,6 +812,75 @@ export const KnowingState = {
       //     // (confirmingLoanPrincipal + confirmingLoanInterestAmount);
       // }
 
+      console.log("dsr part:::", soulGatheringAmount);
+      if (soulGatheringAmount > 0) {
+        const [normalLoanPrincipalAmount, normalLoanInterestAmount] =
+          getPrincipalAndInterest(soulGatheringAmount, NormalLoanInterest);
+        if (
+          soulGatheringAmount -
+            (normalLoanPrincipalAmount + normalLoanInterestAmount) >=
+          0
+        ) {
+          console.log("dsr push111");
+
+          result.push({
+            name: LoanType.NORMAL,
+            interest: NormalLoanInterest,
+            loanAmount: normalLoanPrincipalAmount.toFixed(2),
+            interestAmount: normalLoanInterestAmount.toFixed(2),
+            fixedPaymentLoanAmountByMonth:
+              calculateFixedPaymentLoanAmountByMonth(
+                borrowingYear,
+                normalLoanPrincipalAmount,
+                NormalLoanInterest
+              ),
+            fixedPrincipalPaymentLoanAmountFirstMonth:
+              calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                normalLoanPrincipalAmount,
+                NormalLoanInterest
+              ),
+          });
+          soulGatheringAmount =
+            soulGatheringAmount -
+            (normalLoanPrincipalAmount + normalLoanInterestAmount);
+        } else {
+          const [principalAmount, interestAmount] =
+            getPrincipalAndInterestInSoulGathering(
+              soulGatheringAmount,
+              NormalLoanInterest,
+              soulGatheringAmount
+            );
+          console.log("dsr push2222::", principalAmount);
+
+          if (principalAmount > 0.01) {
+            result.push({
+              name: LoanType.NORMAL,
+              interest: NormalLoanInterest,
+              loanAmount: principalAmount.toFixed(2),
+              interestAmount: interestAmount.toFixed(2),
+              fixedPaymentLoanAmountByMonth:
+                calculateFixedPaymentLoanAmountByMonth(
+                  borrowingYear,
+                  principalAmount,
+                  NormalLoanInterest
+                ),
+              fixedPrincipalPaymentLoanAmountFirstMonth:
+                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  principalAmount,
+                  NormalLoanInterest
+                ),
+            });
+            soulGatheringAmount =
+              soulGatheringAmount - (principalAmount + interestAmount);
+          }
+        }
+        // soulGatheringAmount =
+        //   soulGatheringAmount -
+        //   (normalLoanPrincipalAmount + normalLoanInterestAmount);
+      }
+
       return result;
     },
   }),
@@ -798,12 +889,12 @@ export const KnowingState = {
     key: RecoilKey.knowing["KNOWING/getFinalLoanResult"],
     get: ({ get }) => {
       const dsrResult: Array<LoanResult> = get(KnowingState.getDsrLoanResult);
-      const supportAmount = Number.parseInt(get(KnowingState.supportAmount));
-      const depositAmount = Number.parseInt(get(KnowingState.depositAmount));
       const borrowingYear: number = get(KnowingState.borrowingYear);
+      const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
+      const getLtv = Number.parseInt(get(KnowingState.getLtv));
 
-      const totalAsset = supportAmount + depositAmount;
-      let loanAmountByLtv = (totalAsset * 4) / 10000;
+      let loanAmountByLtv = (getMyAsset * getLtv) / (100 - getLtv);
+
       let result: Array<LoanResult> = [];
 
       let totalLoanAmountByDsr = 0;
@@ -818,6 +909,7 @@ export const KnowingState = {
         // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
         if (isAbleDidimdol && loanAmountByLtv > 0) {
+          console.log("recalculate by LTV");
           const didimdolInterest: number = get(
             KnowingState.getDidimdolInterest
           );
@@ -847,12 +939,11 @@ export const KnowingState = {
             });
             loanAmountByLtv = loanAmountByLtv - didimdolLimit;
           } else if (loanAmountByLtv > 0) {
-            const [principalAmount, interestAmount] =
-              getPrincipalAndInterestInSoulGathering(
-                didimdolLimit,
-                didimdolInterest,
-                loanAmountByLtv
-              );
+            const [principalAmount, interestAmount] = getPrincipalAndInterest(
+              loanAmountByLtv,
+              didimdolInterest
+            );
+
             result.push({
               name: LoanType.DIDIMDOL,
               interest: didimdolInterest,
@@ -884,38 +975,39 @@ export const KnowingState = {
           );
 
           if (loanAmountByLtv - specialHomeLoanLimit >= 0) {
-            const [didimdolPrincipalAmount, didimdolInterestAmount] =
-              getPrincipalAndInterest(
-                specialHomeLoanLimit,
-                specialHomeLoanInterest
-              );
+            const [
+              specialHomeLoanPrincipalAmount,
+              specialHomeLoanInterestAmount,
+            ] = getPrincipalAndInterest(
+              specialHomeLoanLimit,
+              specialHomeLoanInterest
+            );
 
             result.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
-              loanAmount: didimdolPrincipalAmount.toFixed(2),
-              interestAmount: didimdolInterestAmount.toFixed(2),
+              loanAmount: specialHomeLoanPrincipalAmount.toFixed(2),
+              interestAmount: specialHomeLoanInterestAmount.toFixed(2),
               fixedPaymentLoanAmountByMonth:
                 calculateFixedPaymentLoanAmountByMonth(
                   borrowingYear,
-                  didimdolPrincipalAmount,
+                  specialHomeLoanPrincipalAmount,
                   specialHomeLoanInterest
                 ),
               fixedPrincipalPaymentLoanAmountFirstMonth:
                 calculateFixedPrincipalPaymentLoanAmountFirstMonth(
                   borrowingYear,
-                  didimdolPrincipalAmount,
+                  specialHomeLoanPrincipalAmount,
                   specialHomeLoanInterest
                 ),
             });
             loanAmountByLtv = loanAmountByLtv - specialHomeLoanLimit;
           } else if (loanAmountByLtv > 0) {
-            const [principalAmount, interestAmount] =
-              getPrincipalAndInterestInSoulGathering(
-                specialHomeLoanLimit,
-                specialHomeLoanInterest,
-                loanAmountByLtv
-              );
+            const [principalAmount, interestAmount] = getPrincipalAndInterest(
+              loanAmountByLtv,
+              specialHomeLoanInterest
+            );
+
             result.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
@@ -937,11 +1029,57 @@ export const KnowingState = {
             loanAmountByLtv = loanAmountByLtv - principalAmount;
           }
         }
+
+        console.log("ltv part:::", loanAmountByLtv);
+
+        if (loanAmountByLtv > 0.01) {
+          const [principalAmount, interestAmount] = getPrincipalAndInterest(
+            loanAmountByLtv,
+            NormalLoanInterest
+          );
+          console.log("ltv push");
+          result.push({
+            name: LoanType.NORMAL,
+            interest: NormalLoanInterest,
+            loanAmount: principalAmount.toFixed(2),
+            interestAmount: interestAmount.toFixed(2),
+            fixedPaymentLoanAmountByMonth:
+              calculateFixedPaymentLoanAmountByMonth(
+                borrowingYear,
+                principalAmount,
+                NormalLoanInterest
+              ),
+            fixedPrincipalPaymentLoanAmountFirstMonth:
+              calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                principalAmount,
+                NormalLoanInterest
+              ),
+          });
+          loanAmountByLtv = loanAmountByLtv - principalAmount;
+        }
       } else {
         result = dsrResult;
       }
 
       return result;
+    },
+  }),
+
+  getFinalPropertyPrice: selector<number>({
+    key: RecoilKey.knowing["KNOWING/getFinalPropertyPrice"],
+    get: ({ get }) => {
+      const finalLoanResult: Array<LoanResult> = get(
+        KnowingState.getFinalLoanResult
+      );
+      const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
+
+      let totalLoanAmount = 0;
+      for (const loan of finalLoanResult) {
+        totalLoanAmount += Number.parseFloat(loan.loanAmount);
+      }
+
+      return totalLoanAmount + getMyAsset;
     },
   }),
 };
