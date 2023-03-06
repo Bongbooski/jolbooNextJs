@@ -19,6 +19,7 @@ import {
   ToggleButtonGroup,
   ToggleButton,
 } from "@mui/material";
+import { NumericFormat } from "react-number-format";
 import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -253,8 +254,6 @@ const Home: NextPageWithLayout = () => {
             event: React.MouseEvent<HTMLElement>,
             newAlignment: string
           ) => {
-            console.log(typeof newAlignment);
-            console.log(typeof JSON.parse(newAlignment));
             setIsFirstTime(JSON.parse(newAlignment));
           }}
           aria-label="Platform"
@@ -266,42 +265,48 @@ const Home: NextPageWithLayout = () => {
 
       <SurveyContents title={"연소득은 얼마인가요?"}>
         <FormControl variant="standard">
-          <Input
+          <NumericFormat
             id="year-income-amount"
+            value={yearIncome}
+            customInput={Input}
+            onChange={handleChangeYearIncome}
+            thousandSeparator=","
             startAdornment={<InputAdornment position="start">₩</InputAdornment>}
             endAdornment={
               <InputAdornment position="start">만원</InputAdornment>
             }
-            value={yearIncome}
-            onChange={handleChangeYearIncome}
           />
         </FormControl>
       </SurveyContents>
 
       <SurveyContents title={"은인들의 지원금"}>
         <FormControl variant="standard">
-          <Input
+          <NumericFormat
             id="support-amount"
+            value={supportAmount}
+            customInput={Input}
+            onChange={handleChangeSupportAmount}
+            thousandSeparator=","
             startAdornment={<InputAdornment position="start">₩</InputAdornment>}
             endAdornment={
               <InputAdornment position="start">만원</InputAdornment>
             }
-            value={supportAmount}
-            onChange={handleChangeSupportAmount}
           />
         </FormControl>
       </SurveyContents>
 
       <SurveyContents title={"지금까지 모은돈은 얼마인가요?"}>
         <FormControl variant="standard">
-          <Input
+          <NumericFormat
             id="deposit-amount"
+            value={depositAmount}
+            customInput={Input}
+            onChange={handleChangeDepositAmount}
+            thousandSeparator=","
             startAdornment={<InputAdornment position="start">₩</InputAdornment>}
             endAdornment={
               <InputAdornment position="start">만원</InputAdornment>
             }
-            value={depositAmount}
-            onChange={handleChangeDepositAmount}
           />
         </FormControl>
       </SurveyContents>
