@@ -1,5 +1,9 @@
 import { Tooltip, Typography } from "@mui/material";
-import { PricePerSquareMeterType } from "../constants/Common";
+import {
+  PricePerSquareMeterType,
+  PricePerSquareMeter,
+} from "../constants/Common";
+
 import SearchIcon from "../asset/svg/Search.svg";
 
 interface DistrictDescriptionProps extends React.PropsWithChildren<object> {
@@ -41,9 +45,22 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
           )}
         </>
       ) : (
-        <Typography variant="h5" gutterBottom>
-          서울 {props.squareMeter}평은 살 수 없어요 &#128517;
-        </Typography>
+        <>
+          <div>
+            <Typography variant="h5" gutterBottom>
+              안타깝지만 서울 {props.squareMeter}평은 살 수 없어요 &#128517;
+            </Typography>
+          </div>
+          <div className="wrapper">
+            <Typography>
+              서울 {props.squareMeter}평 평균가격 최저는{" "}
+              {props.squareMeter === "25"
+                ? (PricePerSquareMeter[0].price25 / 10000).toFixed(2)
+                : (PricePerSquareMeter[0].price34 / 10000).toFixed(2)}
+              억 이네요
+            </Typography>
+          </div>
+        </>
       )}
       <style jsx>
         {`
@@ -54,6 +71,9 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
           .verticalContainer {
             display: flex;
             align-items: center;
+          }
+          .wrapper {
+            padding-top: 10px;
           }
         `}
       </style>
