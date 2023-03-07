@@ -35,11 +35,7 @@ import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
 import { getCommaString } from "../utils/CommonUtils";
 import Symbol from "../components/Symbol";
-<<<<<<< HEAD
 import Router from "next/router";
-=======
-// import { useNavigate } from "react-router-dom";
->>>>>>> main
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
