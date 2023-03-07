@@ -7,11 +7,10 @@ const HeaderLayout = ({ children }: React.PropsWithChildren) => {
       <div>
         <Navbar />
         <div className="content">{children}</div>
-        {/* <div className="container">{children}</div> */}
         <style jsx>{`
           .content {
             position: relative;
-            top: 247px;
+            top: 180px;
             background-color: #f3f5fd;
           }
         `}</style>

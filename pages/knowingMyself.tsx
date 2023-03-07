@@ -21,6 +21,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  FormHelperText,
 } from "@mui/material";
 import { NumericFormat } from "react-number-format";
 import { Dayjs } from "dayjs";
@@ -179,17 +180,32 @@ const Home: NextPageWithLayout = () => {
   const handleChangeSupportAmount = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSupportAmount(event.target.value);
+    setSupportAmount(event.target.value.replaceAll(",", ""));
   };
 
   const handleChangeDepositAmount = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setDepositAmount(event.target.value);
+    setDepositAmount(event.target.value.replaceAll(",", ""));
   };
 
   const handleChangeBorrowingYear = (event: SelectChangeEvent) => {
     setBorrowingYear(event.target.value);
+  };
+
+  const handleResult = (event: React.MouseEvent<HTMLElement>) => {
+    if (
+      !textfieldNumberValidation(yearIncome) ||
+      !textfieldNumberValidation(supportAmount) ||
+      !textfieldNumberValidation(depositAmount)
+    ) {
+      event.preventDefault();
+    }
+  };
+
+  const textfieldNumberValidation = (value: string) => {
+    const reg = /^[0-9]+$/;
+    return reg.test(value);
   };
 
   const singleParentMultiCultureDisabled: string[] = [];
@@ -276,7 +292,7 @@ const Home: NextPageWithLayout = () => {
         </ToggleButtonGroup>
       </SurveyContents>
 
-      <SurveyContents title={"무주택인가요?"}>
+      <SurveyContents title={"현재 무주택인가요?"}>
         <ToggleButtonGroup
           color="primary"
           value={havingNoHouse.toString()}
@@ -299,64 +315,64 @@ const Home: NextPageWithLayout = () => {
         title={"연소득은 얼마인가요?"}
         description="세전 소득을 입력해주세요. 맞벌이일경우 합친 소득을 입력해주세요"
       >
-        <FormControl variant="standard">
-          <Input
-            id="year-income-amount"
-            value={getCommaString(yearIncome)}
-            onChange={handleChangeYearIncome}
-            startAdornment={<InputAdornment position="start">₩</InputAdornment>}
-            endAdornment={
+        <TextField
+          value={getCommaString(yearIncome)}
+          onChange={handleChangeYearIncome}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">₩</InputAdornment>,
+            endAdornment: (
               <InputAdornment position="start">만원</InputAdornment>
-            }
-          />
-          {/* <NumericFormat
-            id="year-income-amount"
-            value={yearIncome}
-            customInput={Input}
-            onChange={handleChangeYearIncome}
-            valueIsNumericString={false}
-            thousandSeparator=","
-            startAdornment={<InputAdornment position="start">₩</InputAdornment>}
-            endAdornment={
-              <InputAdornment position="start">만원</InputAdornment>
-            }
-          /> */}
-        </FormControl>
+            ),
+          }}
+          variant="standard"
+          error={!textfieldNumberValidation(yearIncome)}
+          helperText={
+            !textfieldNumberValidation(yearIncome) ? "숫자만 입력해주세요" : ""
+          }
+        />
       </SurveyContents>
 
       <SurveyContents title={"은인들의 지원금"}>
-        <FormControl variant="standard">
-          <NumericFormat
-            id="support-amount"
-            value={supportAmount}
-            customInput={Input}
-            onChange={handleChangeSupportAmount}
-            thousandSeparator=","
-            startAdornment={<InputAdornment position="start">₩</InputAdornment>}
-            endAdornment={
+        <TextField
+          value={getCommaString(supportAmount)}
+          onChange={handleChangeSupportAmount}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">₩</InputAdornment>,
+            endAdornment: (
               <InputAdornment position="start">만원</InputAdornment>
-            }
-          />
-        </FormControl>
+            ),
+          }}
+          variant="standard"
+          error={!textfieldNumberValidation(supportAmount)}
+          helperText={
+            !textfieldNumberValidation(supportAmount)
+              ? "숫자만 입력해주세요"
+              : ""
+          }
+        />
       </SurveyContents>
 
       <SurveyContents
         title={"지금까지 모은돈은 얼마인가요?"}
         description="가용 할 수 있는 금액을 입력해주세요. 전세에 묶여있는 내 돈 모두 포함해서요"
       >
-        <FormControl variant="standard">
-          <NumericFormat
-            id="deposit-amount"
-            value={depositAmount}
-            customInput={Input}
-            onChange={handleChangeDepositAmount}
-            thousandSeparator=","
-            startAdornment={<InputAdornment position="start">₩</InputAdornment>}
-            endAdornment={
+        <TextField
+          value={getCommaString(depositAmount)}
+          onChange={handleChangeDepositAmount}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">₩</InputAdornment>,
+            endAdornment: (
               <InputAdornment position="start">만원</InputAdornment>
-            }
-          />
-        </FormControl>
+            ),
+          }}
+          variant="standard"
+          error={!textfieldNumberValidation(depositAmount)}
+          helperText={
+            !textfieldNumberValidation(depositAmount)
+              ? "숫자만 입력해주세요"
+              : ""
+          }
+        />
       </SurveyContents>
       <SurveyContents
         title={"다자녀 가구인가요?"}
@@ -445,7 +461,7 @@ const Home: NextPageWithLayout = () => {
       </SurveyContents>
 
       <div className="nextButtonContainer">
-        <Link href={`/result`}>
+        <Link href={`/result`} onClick={handleResult}>
           <Button
             id="nextButton"
             variant="contained"

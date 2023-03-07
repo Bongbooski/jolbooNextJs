@@ -13,8 +13,8 @@ const Navbar = () => {
           영끌 계산기
         </Typography>
         <Typography>
-          안녕하세요. 영끌이 입니다. 지금부터 입력한 내용은 이번 계산에만
-          활용하며 어떤 개인 정보도 저장하지 않습니다.
+          안녕하세요. 지금부터 입력한 내용은 이번 계산에만 활용하며 어떤 개인
+          정보도 저장하지 않습니다.
         </Typography>
       </div>
       <style jsx>{`
@@ -22,7 +22,7 @@ const Navbar = () => {
           left: 0;
           top: 0;
           position: fixed;
-          height: 247px;
+          height: 180px;
           width: 100%;
           background-color: #ffffff;
           z-index: 2;

@@ -20,7 +20,7 @@ const SurveyContents = (props: SurveyContentsProps) => {
           {props.description && (
             <>
               <div className="description">
-                <QuestionIcon />{" "}
+                <QuestionIcon fill="#6e6d6d" />{" "}
                 <Typography variant="h6"> {props.description}</Typography>
               </div>
             </>
@@ -41,6 +41,7 @@ const SurveyContents = (props: SurveyContentsProps) => {
         .descriptionContainer {
           display: flex;
           justify-content: space-between;
+          min-height: 55px;
         }
 
         .description {
