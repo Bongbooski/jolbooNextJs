@@ -35,7 +35,11 @@ import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
 import { getCommaString } from "../utils/CommonUtils";
 import Symbol from "../components/Symbol";
+<<<<<<< HEAD
 import Router from "next/router";
+=======
+// import { useNavigate } from "react-router-dom";
+>>>>>>> main
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -91,10 +95,6 @@ const Result = () => {
       },
     ],
   };
-
-  // const districtName25 = PricePerSquareMeter.filter(
-  //   (e) => e.price25 < housePrice * 10000
-  // ).pop()?.districtName;
 
   const districtName25 = PricePerSquareMeter.filter(
     (e) => e.price25 < getFinalPropertyPrice * 10000
@@ -163,16 +163,20 @@ const Result = () => {
             </div>
             <div>
               <FormControl>
-                <InputLabel id="demo-simple-select-label">평수</InputLabel>
+                <InputLabel id="demo-simple-select-label">면적</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={selectedSquareMeter}
-                  label="평수"
+                  label="면적"
                   onChange={handleChange}
                 >
-                  <MenuItem value={"25"}>25평</MenuItem>
-                  <MenuItem value={"34"}>34평</MenuItem>
+                  <MenuItem value={"25"}>
+                    59m<sup>2</sup>(25평)
+                  </MenuItem>
+                  <MenuItem value={"34"}>
+                    84m<sup>2</sup>(34평)
+                  </MenuItem>
                 </Select>
               </FormControl>
               {selectedSquareMeter === "25" ? (
