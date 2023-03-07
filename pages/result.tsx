@@ -35,7 +35,7 @@ import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
 import { getCommaString } from "../utils/CommonUtils";
 import Symbol from "../components/Symbol";
-import { useNavigate } from "react-router-dom";
+import Router from "next/router";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -68,15 +68,13 @@ const Result = () => {
     KnowingState.getFinalPropertyPrice
   );
 
-  const navigate = useNavigate();
-
   console.log("asset 확인:::", getMyAsset);
 
   useEffect(() => {
     if (!yearIncome) {
-      navigate("/");
+      Router.push("/");
     }
-  }, [navigate, yearIncome]);
+  }, [yearIncome]);
 
   const data = {
     labels: getFinalLoanResult.map((e) => e.name),

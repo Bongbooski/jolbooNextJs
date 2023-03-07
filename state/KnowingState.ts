@@ -38,7 +38,7 @@ export const KnowingState = {
 
   yearIncome: atom<string>({
     key: RecoilKey.knowing["KNOWING/yearIncome"],
-    default: "",
+    default: "0",
   }),
   supportAmount: atom<string>({
     key: RecoilKey.knowing["KNOWING/supportAmount"],
@@ -46,7 +46,7 @@ export const KnowingState = {
   }),
   depositAmount: atom<string>({
     key: RecoilKey.knowing["KNOWING/depositAmount"],
-    default: "10000",
+    default: "0",
   }),
 
   isSingleParent: atom<boolean>({
@@ -546,7 +546,6 @@ export const KnowingState = {
       const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
       const DSR: number = get(KnowingState.getDsr);
 
-      console.log("yearIncome??", yearIncome);
       return yearIncome * DSR;
     },
   }),
