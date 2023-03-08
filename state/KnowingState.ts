@@ -546,7 +546,6 @@ export const KnowingState = {
       const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
       const DSR: number = get(KnowingState.getDsr);
 
-      console.log("soulPrice:::", yearIncome * DSR);
       return yearIncome * DSR;
     },
   }),
@@ -670,12 +669,6 @@ export const KnowingState = {
             (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
           0
         ) {
-          console.log(
-            "11111specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount::::",
-            specialHomeLoanPrincipalAmount,
-            "  ",
-            specialHomeLoanInterestAmount
-          );
           result.push({
             name: LoanType.SPECIAL_HOME,
             interest: specialHomeLoanInterest,
@@ -704,13 +697,6 @@ export const KnowingState = {
               specialHomeLoanInterest,
               soulGatheringAmount
             );
-
-          console.log(
-            "22222principalAmount, interestAmount::::",
-            principalAmount,
-            "  ",
-            interestAmount
-          );
 
           result.push({
             name: LoanType.SPECIAL_HOME,
@@ -1045,14 +1031,11 @@ export const KnowingState = {
           }
         }
 
-        console.log("ltv part:::", loanAmountByLtv);
-
         if (loanAmountByLtv > 0.01) {
           const [principalAmount, interestAmount] = getPrincipalAndInterest(
             loanAmountByLtv,
             NormalLoanInterest
           );
-          console.log("ltv push");
           result.push({
             name: LoanType.NORMAL,
             interest: NormalLoanInterest,
@@ -1102,15 +1085,18 @@ export const KnowingState = {
         }
       }
 
-      if (useDidimdol) {
-        const isFirstTime = get(KnowingState.isFirstTime);
-        const havingNoHouse = get(KnowingState.havingNoHouse);
-        const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
+      const isFirstTime = get(KnowingState.isFirstTime);
+      const havingNoHouse = get(KnowingState.havingNoHouse);
+      const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
 
-        // 서민실수요자 최대 5억 제한
-        if (isFirstTime && havingNoHouse && yearIncome <= 6000) {
-          return Math.min(5, totalLoanAmount + getMyAsset);
-        }
+      // 서민실수요자 최대 5억 제한
+      if (isFirstTime && havingNoHouse && yearIncome <= 6000) {
+        return Math.min(5, totalLoanAmount + getMyAsset);
+      }
+
+      if (useDidimdol) {
+        // 디딤돌 사용시 최대 5억 제한
+        return Math.min(5, totalLoanAmount + getMyAsset);
       } else if (useSpecialHome) {
         // 특례보금자리 9억 제한
         return Math.min(9, totalLoanAmount + getMyAsset);
