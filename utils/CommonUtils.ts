@@ -37,6 +37,7 @@ export const calculateFixedPaymentLoanAmountByMonth = (
   const A = totalLoanAmount;
   const B = loanRate / 100 / 12;
   const n = loanYear * 12;
+  console.log(`원리금 균등 A : ${A}, B : ${B}, n : ${n}`);
 
   return Math.ceil((A * B * (1 + B) ** n) / ((1 + B) ** n - 1));
 };
@@ -51,6 +52,9 @@ export const calculateFixedPrincipalPaymentLoanAmountFirstMonth = (
   const loanMonth = borrowingYear * 12;
   const totalLoanAmount = loanAmount * 10000000 * loanYear;
 
+  console.log(
+    `원금 균등 loanYear : ${loanYear}, loanMonth : ${loanMonth}, totalLoanAmount : ${totalLoanAmount}`
+  );
   // 첫달 갚을 원금 : 대출금 / 개월
   // 첫달 갚을 이자 : 대출금 * (연이자율 / 100 / 12)
 

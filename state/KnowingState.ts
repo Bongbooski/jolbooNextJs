@@ -9,7 +9,11 @@ import {
   SpecialHomeLoanInterests,
 } from "../constants/Interests";
 import { Loan } from "../components/LoanInput";
-import { ConfirmingLoanBank, Criterion } from "../constants/Common";
+import {
+  ConfirmingLoanBank,
+  Criterion,
+  PaymentType,
+} from "../constants/Common";
 import { LoanResult, LoanType } from "../constants/Loan";
 import {
   calculateFixedPaymentLoanAmountByMonth,
@@ -90,6 +94,10 @@ export const KnowingState = {
   confirmingLoanBank: atom<ConfirmingLoanBank>({
     key: RecoilKey.knowing["KNOWING/confirmingLoanBank"],
     default: ConfirmingLoanBank.GYEONG_NAM,
+  }),
+  paymentType: atom<PaymentType>({
+    key: RecoilKey.knowing["KNOWING/paymentType"],
+    default: PaymentType.FIXED,
   }),
 
   isMarried: selector<boolean>({

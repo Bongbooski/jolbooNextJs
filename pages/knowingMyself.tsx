@@ -35,6 +35,7 @@ import HeaderLayout from "../components/layout/HeaderLayout";
 import SurveyContents from "../components/SurveyContents";
 import SurveyContentsGroup from "../components/SurveyContentsGroup";
 import { getCommaString } from "../utils/CommonUtils";
+import { PaymentType } from "../constants/Common";
 
 interface Movie {
   id: string;
@@ -105,6 +106,10 @@ const Home: NextPageWithLayout = () => {
   );
 
   const isMarried = useRecoilValue<boolean>(KnowingState.isMarried);
+
+  const [paymentType, setPaymentType] = useRecoilState<PaymentType>(
+    KnowingState.paymentType
+  );
 
   useEffect(() => {
     if (
@@ -196,6 +201,7 @@ const Home: NextPageWithLayout = () => {
   const handleResult = (event: React.MouseEvent<HTMLElement>) => {
     if (
       !textfieldNumberValidation(yearIncome) ||
+      yearIncome === "0" ||
       !textfieldNumberValidation(supportAmount) ||
       !textfieldNumberValidation(depositAmount)
     ) {
@@ -325,9 +331,13 @@ const Home: NextPageWithLayout = () => {
             ),
           }}
           variant="standard"
-          error={!textfieldNumberValidation(yearIncome)}
+          error={!textfieldNumberValidation(yearIncome) || yearIncome === "0"}
           helperText={
-            !textfieldNumberValidation(yearIncome) ? "숫자만 입력해주세요" : ""
+            !textfieldNumberValidation(yearIncome)
+              ? "숫자만 입력해주세요"
+              : yearIncome === "0"
+              ? "0보다 커야합니다"
+              : ""
           }
         />
       </SurveyContents>
@@ -459,7 +469,37 @@ const Home: NextPageWithLayout = () => {
           </Select>
         </FormControl>
       </SurveyContents>
-
+      <SurveyContents
+        title={
+          "대출 상환 방식은 3가지가 있어요? 어떤 방식으로 갚을 예정이신가요?"
+        }
+        description={[
+          "원리금균등은 매달 동일한 금액을 갚는 방식이예요",
+          "원금균등은 매달 갚는 원금이 같아요",
+          "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이예요",
+        ]}
+      >
+        <ToggleButtonGroup
+          color="primary"
+          value={paymentType}
+          exclusive
+          onChange={(
+            event: React.MouseEvent<HTMLElement>,
+            newSelection: string
+          ) => {
+            if (newSelection !== null) setPaymentType(newSelection);
+          }}
+          aria-label="Platform"
+        >
+          <ToggleButton value={PaymentType.FIXED}>원리금균등</ToggleButton>
+          <ToggleButton value={PaymentType.FIXED_PRINCIPAL}>
+            원금균등
+          </ToggleButton>
+          <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
+            체증식
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </SurveyContents>
       <div className="nextButtonContainer">
         <Link href={`/result`} onClick={handleResult}>
           <Button

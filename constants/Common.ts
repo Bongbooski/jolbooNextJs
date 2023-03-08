@@ -6,6 +6,12 @@ export enum ConfirmingLoanBank {
   JEJU = "제주",
 }
 
+export enum PaymentType {
+  FIXED = "fixed", // 원리금균등
+  FIXED_PRINCIPAL = "fixedPrincipal", // 원금균등
+  GRADUAL_INCREASE = "gradualIncrease", // 체증식
+}
+
 export interface PricePerSquareMeterType {
   districtName: string;
   price25: number;

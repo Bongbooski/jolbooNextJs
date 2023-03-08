@@ -5,7 +5,7 @@ interface SurveyContentsProps extends React.PropsWithChildren<object> {
   title: string;
   required?: boolean;
   vertical?: boolean;
-  description?: string;
+  description?: string | string[];
 }
 
 const SurveyContents = (props: SurveyContentsProps) => {
@@ -17,14 +17,23 @@ const SurveyContents = (props: SurveyContentsProps) => {
         </Typography>
         {props.required && <Typography>필수</Typography>}
         <div className="descriptionContainer">
-          {props.description && (
-            <>
-              <div className="description">
-                <QuestionIcon fill="#6e6d6d" />{" "}
-                <Typography variant="h6"> {props.description}</Typography>
-              </div>
-            </>
-          )}
+          <div className="descriptionArea">
+            {Array.isArray(props.description)
+              ? props.description.map((description) => {
+                  return (
+                    <div className="description">
+                      <QuestionIcon fill="#6e6d6d" />{" "}
+                      <Typography variant="h6"> {description}</Typography>
+                    </div>
+                  );
+                })
+              : props.description && (
+                  <div className="description">
+                    <QuestionIcon fill="#6e6d6d" />{" "}
+                    <Typography variant="h6"> {props.description}</Typography>
+                  </div>
+                )}
+          </div>
           <div className="contents">{props.children}</div>
         </div>
       </div>
