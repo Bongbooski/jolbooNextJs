@@ -1,5 +1,5 @@
 export interface LoanResult {
-  name: string;
+  name: LoanType;
   interest: number;
   loanAmount: string;
   interestAmount: string;

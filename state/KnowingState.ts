@@ -9,11 +9,7 @@ import {
   SpecialHomeLoanInterests,
 } from "../constants/Interests";
 import { Loan } from "../components/LoanInput";
-import {
-  ConfirmingLoanBank,
-  Criterion,
-  PaymentType,
-} from "../constants/Common";
+import { ConfirmingLoanBank, PaymentType } from "../constants/Common";
 import { LoanResult, LoanType } from "../constants/Loan";
 import {
   calculateFixedPaymentLoanAmountByMonth,
@@ -131,7 +127,7 @@ export const KnowingState = {
     },
   }),
 
-  getDidimdolInterest: selector<number | undefined>({
+  getDidimdolInterest: selector<string | undefined>({
     key: RecoilKey.knowing["KNOWING/getDidimdolInterest"],
     get: ({ get }) => {
       let result: number | undefined = undefined;
@@ -178,7 +174,7 @@ export const KnowingState = {
 
   // 다자녀 0.7 / 연소득6천이하 한부모가구 0.5/ 2자녀 가구 0.5/ 1자녀 가구 0.3/
   // 다문화가구 및 장애인가구, 생애최초 주택구입자, 신혼가구는 0.2
-  getDidimdolPrimeRate: selector<number>({
+  getDidimdolPrimeRate: selector<string>({
     key: RecoilKey.knowing["KNOWING/getDidimdolPrimeRate"],
     get: ({ get }) => {
       let result = 0;
@@ -346,7 +342,7 @@ export const KnowingState = {
   // 0.4 : 한부모, 장애인, 다문화, 자녀 >= 3 && 소득 <= 7천
   // 0.2 : 결혼 Y && 소득 <= 7천
   // 0.1 : 소득 <= 4500
-  getHomeLoanPrimeRate: selector<number>({
+  getHomeLoanPrimeRate: selector<string>({
     key: RecoilKey.knowing["KNOWING/getHomeLoanPrimeRate"],
     get: ({ get }) => {
       let result = 0;
@@ -414,7 +410,7 @@ export const KnowingState = {
     },
   }),
 
-  getSpecialHomeLoanInterest: selector<number | undefined>({
+  getSpecialHomeLoanInterest: selector<string | undefined>({
     key: RecoilKey.knowing["KNOWING/getSpecialHomeLoanInterest"],
     get: ({ get }) => {
       let result: number | undefined = undefined;
@@ -442,7 +438,7 @@ export const KnowingState = {
     },
   }),
 
-  getHomeLoanInterest: selector<number | undefined>({
+  getHomeLoanInterest: selector<string | undefined>({
     key: RecoilKey.knowing["KNOWING/getHomeLoanInterest"],
     get: ({ get }) => {
       let result: number | undefined = undefined;
@@ -568,7 +564,7 @@ export const KnowingState = {
     },
   }),
 
-  getMaxPropertyPriceByLTV: selector<number>({
+  getMaxPropertyPriceByLTV: selector<string>({
     key: RecoilKey.knowing["KNOWING/getMaxPropertyPriceByLTV"],
     get: ({ get }) => {
       const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
@@ -671,6 +667,7 @@ export const KnowingState = {
             specialHomeLoanLimit,
             specialHomeLoanInterest
           );
+
         if (
           soulGatheringAmount -
             (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
@@ -704,6 +701,7 @@ export const KnowingState = {
               specialHomeLoanInterest,
               soulGatheringAmount
             );
+
           result.push({
             name: LoanType.SPECIAL_HOME,
             interest: specialHomeLoanInterest,
@@ -1037,14 +1035,11 @@ export const KnowingState = {
           }
         }
 
-        console.log("ltv part:::", loanAmountByLtv);
-
         if (loanAmountByLtv > 0.01) {
           const [principalAmount, interestAmount] = getPrincipalAndInterest(
             loanAmountByLtv,
             NormalLoanInterest
           );
-          console.log("ltv push");
           result.push({
             name: LoanType.NORMAL,
             interest: NormalLoanInterest,
@@ -1082,8 +1077,33 @@ export const KnowingState = {
       const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
 
       let totalLoanAmount = 0;
+      let useDidimdol = false;
+      let useSpecialHome = false;
       for (const loan of finalLoanResult) {
         totalLoanAmount += Number.parseFloat(loan.loanAmount);
+
+        if (loan.name === LoanType.DIDIMDOL) {
+          useDidimdol = true;
+        } else if (loan.name === LoanType.SPECIAL_HOME) {
+          useSpecialHome = true;
+        }
+      }
+
+      const isFirstTime = get(KnowingState.isFirstTime);
+      const havingNoHouse = get(KnowingState.havingNoHouse);
+      const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
+
+      // 서민실수요자 최대 5억 제한
+      if (isFirstTime && havingNoHouse && yearIncome <= 6000) {
+        return Math.min(5, totalLoanAmount + getMyAsset);
+      }
+
+      if (useDidimdol) {
+        // 디딤돌 사용시 최대 5억 제한
+        return Math.min(5, totalLoanAmount + getMyAsset);
+      } else if (useSpecialHome) {
+        // 특례보금자리 9억 제한
+        return Math.min(9, totalLoanAmount + getMyAsset);
       }
 
       return totalLoanAmount + getMyAsset;

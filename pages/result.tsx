@@ -68,8 +68,6 @@ const Result = () => {
     KnowingState.getFinalPropertyPrice
   );
 
-  console.log("asset 확인:::", getMyAsset);
-
   useEffect(() => {
     if (!yearIncome) {
       Router.push("/");

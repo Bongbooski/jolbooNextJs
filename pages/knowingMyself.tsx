@@ -501,7 +501,7 @@ const Home: NextPageWithLayout = () => {
         </ToggleButtonGroup>
       </SurveyContents>
       <div className="nextButtonContainer">
-        <Link href={`/result`} onClick={handleResult}>
+        <Link href={`/knowingSpending`} onClick={handleResult}>
           <Button
             id="nextButton"
             variant="contained"

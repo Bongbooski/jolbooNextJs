@@ -1,4 +1,14 @@
-export const getPrincipalAndInterest = (amount: number, interest: number) => {
+export const getPrincipalAndInterest = (
+  amount: number,
+  interest: number,
+  paymentType?: string, // model로 빼기
+  borrowingYear?: number
+) => {
+  // paymentType이,
+  // 만기일시면 ->  [amount, (amount * interest) / 100];
+  // 원리금균등 -> [원금총액, 이자총액]
+  // 원금균등 -> [원금총액, 이자총액]
+  // 소수점 신경 안써도 됨
   return [amount, (amount * interest) / 100];
 };
 
