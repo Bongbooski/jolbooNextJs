@@ -487,7 +487,8 @@ const Home: NextPageWithLayout = () => {
             event: React.MouseEvent<HTMLElement>,
             newSelection: string
           ) => {
-            if (newSelection !== null) setPaymentType(newSelection);
+            if (newSelection !== null)
+              setPaymentType(newSelection as PaymentType);
           }}
           aria-label="Platform"
         >
@@ -501,7 +502,7 @@ const Home: NextPageWithLayout = () => {
         </ToggleButtonGroup>
       </SurveyContents>
       <div className="nextButtonContainer">
-        <Link href={`/knowingSpending`} onClick={handleResult}>
+        <Link href={`/result`} onClick={handleResult}>
           <Button
             id="nextButton"
             variant="contained"

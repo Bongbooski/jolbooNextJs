@@ -507,6 +507,9 @@ export const KnowingState = {
         KnowingState.confirmingLoanBank
       );
 
+      console.log(
+        `getConfirmingLoanInterest::confirmingLoanBank:${confirmingLoanBank}, borrowingYear:${borrowingYear}`
+      );
       if (isAbleConfirmingLoan) {
         result = ConfirmingLoanInterests[confirmingLoanBank][borrowingYear];
       }
@@ -578,11 +581,11 @@ export const KnowingState = {
     key: RecoilKey.knowing["KNOWING/getDsrLoanResult"],
     get: ({ get }) => {
       const result: Array<LoanResult> = [];
+      const paymentType: PaymentType = get(KnowingState.paymentType);
       const borrowingYear: number = get(KnowingState.borrowingYear);
       let soulGatheringAmount: number = get(
         KnowingState.getSoulGatheringAmount
       );
-
       soulGatheringAmount = (soulGatheringAmount * borrowingYear) / 10000;
 
       const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
@@ -594,7 +597,12 @@ export const KnowingState = {
         const didimdolInterest: number = get(KnowingState.getDidimdolInterest);
         const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
         const [didimdolPrincipalAmount, didimdolInterestAmount] =
-          getPrincipalAndInterest(didimdolLimit, didimdolInterest);
+          getPrincipalAndInterest(
+            didimdolLimit,
+            didimdolInterest,
+            paymentType,
+            borrowingYear
+          );
         if (
           soulGatheringAmount -
             (didimdolPrincipalAmount + didimdolInterestAmount) >=
@@ -626,7 +634,9 @@ export const KnowingState = {
             getPrincipalAndInterestInSoulGathering(
               didimdolLimit,
               didimdolInterest,
-              soulGatheringAmount
+              soulGatheringAmount,
+              paymentType,
+              borrowingYear
             );
           result.push({
             name: LoanType.DIDIMDOL,
@@ -665,7 +675,9 @@ export const KnowingState = {
         const [specialHomeLoanPrincipalAmount, specialHomeLoanInterestAmount] =
           getPrincipalAndInterest(
             specialHomeLoanLimit,
-            specialHomeLoanInterest
+            specialHomeLoanInterest,
+            paymentType,
+            borrowingYear
           );
 
         if (
@@ -699,7 +711,9 @@ export const KnowingState = {
             getPrincipalAndInterestInSoulGathering(
               specialHomeLoanLimit,
               specialHomeLoanInterest,
-              soulGatheringAmount
+              soulGatheringAmount,
+              paymentType,
+              borrowingYear
             );
 
           result.push({
@@ -820,7 +834,12 @@ export const KnowingState = {
       console.log("dsr part:::", soulGatheringAmount);
       if (soulGatheringAmount > 0) {
         const [normalLoanPrincipalAmount, normalLoanInterestAmount] =
-          getPrincipalAndInterest(soulGatheringAmount, NormalLoanInterest);
+          getPrincipalAndInterest(
+            soulGatheringAmount,
+            NormalLoanInterest,
+            paymentType,
+            borrowingYear
+          );
         if (
           soulGatheringAmount -
             (normalLoanPrincipalAmount + normalLoanInterestAmount) >=
@@ -854,7 +873,9 @@ export const KnowingState = {
             getPrincipalAndInterestInSoulGathering(
               soulGatheringAmount,
               NormalLoanInterest,
-              soulGatheringAmount
+              soulGatheringAmount,
+              paymentType,
+              borrowingYear
             );
           console.log("dsr push2222::", principalAmount);
 
@@ -894,6 +915,7 @@ export const KnowingState = {
     key: RecoilKey.knowing["KNOWING/getFinalLoanResult"],
     get: ({ get }) => {
       const dsrResult: Array<LoanResult> = get(KnowingState.getDsrLoanResult);
+      const paymentType: PaymentType = get(KnowingState.paymentType);
       const borrowingYear: number = get(KnowingState.borrowingYear);
       const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
       const getLtv = Number.parseInt(get(KnowingState.getLtv));
@@ -901,7 +923,6 @@ export const KnowingState = {
       let loanAmountByLtv = (getMyAsset * getLtv) / (100 - getLtv);
 
       let result: Array<LoanResult> = [];
-
       let totalLoanAmountByDsr = 0;
       for (const loan of dsrResult) {
         totalLoanAmountByDsr += Number.parseFloat(loan.loanAmount);
@@ -922,7 +943,12 @@ export const KnowingState = {
 
           if (loanAmountByLtv - didimdolLimit >= 0) {
             const [didimdolPrincipalAmount, didimdolInterestAmount] =
-              getPrincipalAndInterest(didimdolLimit, didimdolInterest);
+              getPrincipalAndInterest(
+                didimdolLimit,
+                didimdolInterest,
+                paymentType,
+                borrowingYear
+              );
 
             result.push({
               name: LoanType.DIDIMDOL,
@@ -946,7 +972,9 @@ export const KnowingState = {
           } else if (loanAmountByLtv > 0) {
             const [principalAmount, interestAmount] = getPrincipalAndInterest(
               loanAmountByLtv,
-              didimdolInterest
+              didimdolInterest,
+              paymentType,
+              borrowingYear
             );
 
             result.push({
@@ -972,6 +1000,7 @@ export const KnowingState = {
         }
 
         if (isAbleSpecialHomeLoan && loanAmountByLtv > 0) {
+          debugger;
           const specialHomeLoanInterest: number = get(
             KnowingState.getSpecialHomeLoanInterest
           );
@@ -985,7 +1014,9 @@ export const KnowingState = {
               specialHomeLoanInterestAmount,
             ] = getPrincipalAndInterest(
               specialHomeLoanLimit,
-              specialHomeLoanInterest
+              specialHomeLoanInterest,
+              paymentType,
+              borrowingYear
             );
 
             result.push({
@@ -1010,7 +1041,9 @@ export const KnowingState = {
           } else if (loanAmountByLtv > 0) {
             const [principalAmount, interestAmount] = getPrincipalAndInterest(
               loanAmountByLtv,
-              specialHomeLoanInterest
+              specialHomeLoanInterest,
+              paymentType,
+              borrowingYear
             );
 
             result.push({
@@ -1034,11 +1067,13 @@ export const KnowingState = {
             loanAmountByLtv = loanAmountByLtv - principalAmount;
           }
         }
-
+        debugger;
         if (loanAmountByLtv > 0.01) {
           const [principalAmount, interestAmount] = getPrincipalAndInterest(
             loanAmountByLtv,
-            NormalLoanInterest
+            NormalLoanInterest,
+            paymentType,
+            borrowingYear
           );
           result.push({
             name: LoanType.NORMAL,
