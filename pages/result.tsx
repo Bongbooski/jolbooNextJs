@@ -36,6 +36,7 @@ import DistrictDescription from "../components/DistrictDescription";
 import { getCommaString } from "../utils/CommonUtils";
 import Symbol from "../components/Symbol";
 import Router from "next/router";
+import emailjs from "emailjs-com";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -67,6 +68,36 @@ const Result = () => {
   const getFinalPropertyPrice = useRecoilValue<number>(
     KnowingState.getFinalPropertyPrice
   );
+
+  const [userEmail, setUserEmail] = useState<string>("");
+  const [showEmailSentInfo, setShowEmailSentInfo] = useState<boolean>(false);
+  const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
+
+  const sendEmail = (e: any) => {
+    e.preventDefault();
+
+    emailjs
+      .sendForm(
+        "service_7tlrb3l",
+        "template_ug88foh",
+        e.target,
+        "K0NWGAFo_98PZcIO9"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          if (result.text === "OK") {
+            setIsEmailSent(true);
+            setShowEmailSentInfo(true);
+          }
+        },
+        (error) => {
+          console.log(error.text);
+          setIsEmailSent(false);
+          setShowEmailSentInfo(true);
+        }
+      );
+  };
 
   useEffect(() => {
     if (!yearIncome) {
@@ -291,21 +322,49 @@ const Result = () => {
             </Step>
           </Stepper>
         </div>
+        <form className="contact-form" onSubmit={sendEmail}>
+          <div className="verticalContainer">
+            <Typography gutterBottom>
+              관심있으시면 이메일을 남겨주세요. 준비가 되면 제일 먼저
+              알려드릴게요.
+              {"   "}
+            </Typography>
+            <TextField
+              id="outlined-basic"
+              label="email"
+              variant="outlined"
+              size="small"
+              name="userEmail"
+              value={userEmail}
+              onChange={(e: any) => setUserEmail(e.target.value)}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              size="small"
+              sx={{ height: 40, ml: 1 }}
+            >
+              <Typography variant="body1">등록</Typography>
+            </Button>
+          </div>
+        </form>
+        {showEmailSentInfo &&
+          (isEmailSent ? (
+            <div className="verticalContainer">
+              <Typography gutterBottom>
+                등록에 성공했습니다, 완성되는대로 메일드릴게요!
+              </Typography>
+            </div>
+          ) : (
+            <Typography gutterBottom>
+              등록에 실패했습니다, 아래 메일로 문의 남겨주세요
+            </Typography>
+          ))}
+
         <div className="verticalContainer">
           <Typography gutterBottom>
-            관심있으시면 이메일을 남겨주세요. 준비가 되면 제일 먼저
-            알려드릴게요.
-            {"   "}
+            제안 또는 문의 사항이 있으시면 p9346420@gmail.com으로 메일 주세요!
           </Typography>
-          <TextField
-            id="outlined-basic"
-            label="email"
-            variant="outlined"
-            size="small"
-          />
-          <Button variant="contained" size="small" sx={{ height: 40, ml: 1 }}>
-            <Typography variant="body1">메일보내기</Typography>
-          </Button>
         </div>
       </div>
       <div className="contentsArea">
