@@ -1,18 +1,10 @@
 import { ReactElement, useEffect, useState } from "react";
-import Seo from "../components/Seo";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import QuestionIcon from "../asset/svg/Question.svg";
 import {
-  FormControlLabel,
   FormControl,
   Typography,
   TextField,
-  Box,
-  RadioGroup,
-  Radio,
-  Switch,
-  InputLabel,
   Input,
   InputAdornment,
   Button,
@@ -21,9 +13,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  FormHelperText,
 } from "@mui/material";
-import { NumericFormat } from "react-number-format";
 import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -33,8 +23,8 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import type { NextPageWithLayout } from "./_app";
 import HeaderLayout from "../components/layout/HeaderLayout";
 import SurveyContents from "../components/SurveyContents";
-import SurveyContentsGroup from "../components/SurveyContentsGroup";
 import { getCommaString } from "../utils/CommonUtils";
+import { FamilyType } from "../constants/Loan";
 import { PaymentType } from "../constants/Common";
 
 interface Movie {
@@ -44,15 +34,12 @@ interface Movie {
 }
 
 const Home: NextPageWithLayout = () => {
-  // const [birthday, setBirthday] = useState<Dayjs | null>(null);
   const [birthday, setBirthday] = useRecoilState<Dayjs | null>(
     KnowingState.birthday
   );
-  // const [isMarriedValue, setisMarriedValue] = useState<string | null>(null);
   const [isMarriedValue, setisMarriedValue] = useRecoilState<string | null>(
     KnowingState.isMarriedValue
   );
-  // const [isNewCouple, setIsNewCouple] = useState<boolean | null>(null);
   const [isNewCouple, setIsNewCouple] = useRecoilState<boolean | null>(
     KnowingState.isNewCouple
   );
@@ -63,40 +50,36 @@ const Home: NextPageWithLayout = () => {
   const [showSecondSection, setShowSecondSection] = useState<boolean | null>(
     null
   );
-  // const [yearIncome, setYearIncome] = useState<string>();
   const [yearIncome, setYearIncome] = useRecoilState<string>(
     KnowingState.yearIncome
   );
-  // const [supportAmount, setSupportAmount] = useState<string>();
   const [supportAmount, setSupportAmount] = useRecoilState<string>(
     KnowingState.supportAmount
   );
-  // const [depositAmount, setDepositAmount] = useState<string>();
   const [depositAmount, setDepositAmount] = useRecoilState<string>(
     KnowingState.depositAmount
   );
-
-  // const [isSingleParent, setIsSingleParent] = useState<boolean>(false);
+  const [showSingleParentInfo, setShowSingleParentInfo] =
+    useState<boolean>(false);
   const [isSingleParent, setIsSingleParent] = useRecoilState<boolean>(
     KnowingState.isSingleParent
   );
-  // const [isHavingKids, setisHavingKids] = useState<boolean>(false);
   const [isHavingKids, setisHavingKids] = useRecoilState<boolean>(
     KnowingState.isHavingKids
   );
-  // const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [showDisabledInfo, setShowDisabledInfo] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useRecoilState<boolean>(
     KnowingState.isDisabled
   );
-  // const [isMultiCultural, setIsMultiCultural] = useState<boolean>(false);
+  const [showMultiCulturalInfo, setShowMultiCulturalInfo] =
+    useState<boolean>(false);
   const [isMultiCultural, setIsMultiCultural] = useRecoilState<boolean>(
     KnowingState.isMultiCultural
   );
-  // const [havingNoHouse, setHavingNoHouse] = useState<boolean>(true);
+
   const [havingNoHouse, setHavingNoHouse] = useRecoilState<boolean>(
     KnowingState.havingNoHouse
   );
-  // const [kidsCount, setKidsCount] = useState<string>();
   const [kidsCount, setKidsCount] = useRecoilState<string>(
     KnowingState.kidsCount
   );
@@ -129,51 +112,6 @@ const Home: NextPageWithLayout = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setKidsCount(event.target.value);
-  };
-
-  const handleChangeIsSingleParent = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setIsSingleParent(event.target.checked);
-  };
-  const handleChangeisHavingKids = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setisHavingKids(event.target.checked);
-  };
-  const handleChangeIsDisabled = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setIsDisabled(event.target.checked);
-  };
-  const handleChangeIsMultiCultural = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setIsMultiCultural(event.target.checked);
-  };
-  const handleChangeHavingNoHouse = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setHavingNoHouse(event.target.checked);
-  };
-
-  const handleChangeisMarriedValue = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setisMarriedValue((event.target as HTMLInputElement).value);
-    setIsNewCouple(false);
-  };
-
-  const handleChangeIsNewCouple = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setIsNewCouple(event.target.checked);
-  };
-
-  const handleChangeIsFirstTime = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setIsFirstTime(event.target.checked);
   };
 
   const handleChangeYearIncome = (
@@ -421,6 +359,7 @@ const Home: NextPageWithLayout = () => {
       )}
       <SurveyContents
         title={"해당되는 항목을 선택해주세요. 여러개 선택 가능해요."}
+        description={"항목별 상세 정보는 각 항목을 선택하면 표시됩니다."}
       >
         <ToggleButtonGroup
           color="primary"
@@ -435,14 +374,17 @@ const Home: NextPageWithLayout = () => {
 
             if (newSelections.includes("singleParent")) {
               setIsSingleParent(true);
+              setShowSingleParentInfo(true);
             }
 
             if (newSelections.includes("multiCultural")) {
               setIsMultiCultural(true);
+              setShowMultiCulturalInfo(true);
             }
 
             if (newSelections.includes("disabled")) {
               setIsDisabled(true);
+              setShowDisabledInfo(true);
             }
           }}
           aria-label="Platform"
@@ -452,6 +394,28 @@ const Home: NextPageWithLayout = () => {
           <ToggleButton value="disabled">장애인 가구</ToggleButton>
         </ToggleButtonGroup>
       </SurveyContents>
+      {(showDisabledInfo || showMultiCulturalInfo || showSingleParentInfo) && (
+        <div className="descriptionContainer">
+          {showDisabledInfo && (
+            <div className="description">
+              <QuestionIcon fill="#6e6d6d" />{" "}
+              <Typography variant="h6"> {FamilyType.DISABLED}</Typography>
+            </div>
+          )}
+          {showMultiCulturalInfo && (
+            <div className="description">
+              <QuestionIcon fill="#6e6d6d" />{" "}
+              <Typography variant="h6"> {FamilyType.MULTI_CULTURAL}</Typography>
+            </div>
+          )}
+          {showSingleParentInfo && (
+            <div className="description">
+              <QuestionIcon fill="#6e6d6d" />{" "}
+              <Typography variant="h6"> {FamilyType.SINGLE_PARENT}</Typography>
+            </div>
+          )}
+        </div>
+      )}
 
       <SurveyContents title={"대출은 몇 년에 걸쳐 갚을 예정이신가요?"}>
         <FormControl>
@@ -528,7 +492,18 @@ const Home: NextPageWithLayout = () => {
           flex-direction: column;
           padding-bottom: 60px;
         }
+        .descriptionContainer {
+          padding: 0px 50px;
+          display: flex;
+          justify-content: space-between;
+          min-height: 55px;
+          white-space: break-spaces;
+          flex-direction: column;
+        }
 
+        .description {
+          display: flex;
+        }
         /* .container {
           display: grid;
           grid-template-columns: 1fr 1fr;
