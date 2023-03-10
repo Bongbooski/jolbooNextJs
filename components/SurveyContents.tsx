@@ -19,9 +19,12 @@ const SurveyContents = (props: SurveyContentsProps) => {
         <div className="descriptionContainer">
           <div className="descriptionArea">
             {Array.isArray(props.description)
-              ? props.description.map((description) => {
+              ? props.description.map((description, index) => {
                   return (
-                    <div className="description">
+                    <div
+                      key={`${props.title}_description_${index}`}
+                      className="description"
+                    >
                       <QuestionIcon fill="#6e6d6d" />{" "}
                       <Typography variant="h6"> {description}</Typography>
                     </div>

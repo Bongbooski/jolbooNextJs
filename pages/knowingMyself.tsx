@@ -359,63 +359,47 @@ const Home: NextPageWithLayout = () => {
       )}
       <SurveyContents
         title={"해당되는 항목을 선택해주세요. 여러개 선택 가능해요."}
-        description={"항목별 상세 정보는 각 항목을 선택하면 표시됩니다."}
+        description={[
+          FamilyType.SINGLE_PARENT,
+          FamilyType.MULTI_CULTURAL,
+          FamilyType.DISABLED,
+        ]}
       >
-        <ToggleButtonGroup
-          color="primary"
-          value={singleParentMultiCultureDisabled}
-          onChange={(
-            event: React.MouseEvent<HTMLElement>,
-            newSelections: string
-          ) => {
-            setIsSingleParent(false);
-            setIsDisabled(false);
-            setIsMultiCultural(false);
+        <div className="moreFamilyInfo">
+          <ToggleButtonGroup
+            color="primary"
+            value={singleParentMultiCultureDisabled}
+            onChange={(
+              event: React.MouseEvent<HTMLElement>,
+              newSelections: string
+            ) => {
+              setIsSingleParent(false);
+              setIsDisabled(false);
+              setIsMultiCultural(false);
 
-            if (newSelections.includes("singleParent")) {
-              setIsSingleParent(true);
-              setShowSingleParentInfo(true);
-            }
+              if (newSelections.includes("singleParent")) {
+                setIsSingleParent(true);
+                setShowSingleParentInfo(true);
+              }
 
-            if (newSelections.includes("multiCultural")) {
-              setIsMultiCultural(true);
-              setShowMultiCulturalInfo(true);
-            }
+              if (newSelections.includes("multiCultural")) {
+                setIsMultiCultural(true);
+                setShowMultiCulturalInfo(true);
+              }
 
-            if (newSelections.includes("disabled")) {
-              setIsDisabled(true);
-              setShowDisabledInfo(true);
-            }
-          }}
-          aria-label="Platform"
-        >
-          <ToggleButton value="singleParent">한부모 가정</ToggleButton>
-          <ToggleButton value="multiCultural">다문화 가구</ToggleButton>
-          <ToggleButton value="disabled">장애인 가구</ToggleButton>
-        </ToggleButtonGroup>
-      </SurveyContents>
-      {(showDisabledInfo || showMultiCulturalInfo || showSingleParentInfo) && (
-        <div className="descriptionContainer">
-          {showDisabledInfo && (
-            <div className="description">
-              <QuestionIcon fill="#6e6d6d" />{" "}
-              <Typography variant="h6"> {FamilyType.DISABLED}</Typography>
-            </div>
-          )}
-          {showMultiCulturalInfo && (
-            <div className="description">
-              <QuestionIcon fill="#6e6d6d" />{" "}
-              <Typography variant="h6"> {FamilyType.MULTI_CULTURAL}</Typography>
-            </div>
-          )}
-          {showSingleParentInfo && (
-            <div className="description">
-              <QuestionIcon fill="#6e6d6d" />{" "}
-              <Typography variant="h6"> {FamilyType.SINGLE_PARENT}</Typography>
-            </div>
-          )}
+              if (newSelections.includes("disabled")) {
+                setIsDisabled(true);
+                setShowDisabledInfo(true);
+              }
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="singleParent">한부모 가정</ToggleButton>
+            <ToggleButton value="multiCultural">다문화 가구</ToggleButton>
+            <ToggleButton value="disabled">장애인 가구</ToggleButton>
+          </ToggleButtonGroup>
         </div>
-      )}
+      </SurveyContents>
 
       <SurveyContents title={"대출은 몇 년에 걸쳐 갚을 예정이신가요?"}>
         <FormControl>
@@ -503,6 +487,9 @@ const Home: NextPageWithLayout = () => {
 
         .description {
           display: flex;
+        }
+        .moreFamilyInfo {
+          min-width: 260px;
         }
         /* .container {
           display: grid;
