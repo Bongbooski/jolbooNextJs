@@ -37,6 +37,7 @@ import { getCommaString } from "../utils/CommonUtils";
 import Symbol from "../components/Symbol";
 import Router from "next/router";
 import emailjs from "emailjs-com";
+import { Dayjs } from "dayjs";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -64,9 +65,19 @@ const Result = () => {
     KnowingState.getFinalLoanResult
   );
   const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
+  const getLtv = useRecoilValue<number>(KnowingState.getLtv);
   const yearIncome = useRecoilValue<string>(KnowingState.yearIncome);
+  const depositAmount = useRecoilValue<string>(KnowingState.depositAmount);
+  const supportAmount = useRecoilValue<string>(KnowingState.supportAmount);
   const getFinalPropertyPrice = useRecoilValue<number>(
     KnowingState.getFinalPropertyPrice
+  );
+  const getSoulGatheringAmount = useRecoilValue<number>(
+    KnowingState.getSoulGatheringAmount
+  );
+  const birthday = useRecoilValue<Dayjs>(KnowingState.birthday);
+  const getMaxPropertyPriceByLTV = useRecoilValue<number>(
+    KnowingState.getMaxPropertyPriceByLTV
   );
 
   const [userEmail, setUserEmail] = useState<string>("");
@@ -344,6 +355,39 @@ const Result = () => {
               size="small"
               sx={{ height: 40, ml: 1 }}
             >
+              <input type={"hidden"} name="yearIncome" value={yearIncome} />
+              <input
+                type={"hidden"}
+                name="birthday"
+                value={birthday.toString()}
+              />
+              <input
+                type={"hidden"}
+                name="supportAmount"
+                value={supportAmount}
+              />
+              <input
+                type={"hidden"}
+                name="depositAmount"
+                value={depositAmount}
+              />
+
+              <input
+                type={"hidden"}
+                name="getSoulGatheringAmount"
+                value={getSoulGatheringAmount}
+              />
+              <input
+                type={"hidden"}
+                name="maxLoanAmountByLTV"
+                value={(getMyAsset * getLtv) / (100 - getLtv)}
+              />
+              <input
+                type={"hidden"}
+                name="getMaxPropertyPriceByLTV"
+                value={getMaxPropertyPriceByLTV}
+              />
+
               <Typography variant="body1">등록</Typography>
             </Button>
           </div>
