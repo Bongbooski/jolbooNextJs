@@ -276,7 +276,7 @@ const Result = () => {
                   <TableCell align="right">이자</TableCell>
                   <TableCell align="right">원금균등(매월)</TableCell>
                   <TableCell align="right">원리금균등(첫달)</TableCell>
-                  <TableCell align="right">거치식(첫달)</TableCell>
+                  <TableCell align="right">체증식(첫달)</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

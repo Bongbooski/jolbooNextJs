@@ -17,6 +17,7 @@ const keyArr = [
   "KNOWING/isAbleSpecialHomeLoan",
   "KNOWING/monthlySpending",
   "KNOWING/residualLoan",
+  "KNOWING/paymentType",
   "KNOWING/borrowingYear",
   "KNOWING/confirmingLoanBank",
   "KNOWING/getDidimdolInterest",
