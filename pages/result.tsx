@@ -300,6 +300,44 @@ const Result = () => {
                     </TableCell>
                   </TableRow>
                 ))}
+                <TableRow
+                  key={"합계"}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {"합계"}
+                  </TableCell>
+                  <TableCell align="right">
+                    {getFinalLoanResult.reduce(function (prev, next) {
+                      return prev + Number(next.loanAmount);
+                    }, 0)}
+                    억
+                  </TableCell>
+                  <TableCell align="right">{""}</TableCell>
+                  <TableCell align="right">
+                    {getCommaString(
+                      getFinalLoanResult.reduce(function (prev, next) {
+                        return (
+                          prev + Number(next.fixedPaymentLoanAmountByMonth)
+                        );
+                      }, 0)
+                    )}
+                    {/* {getCommaString(row.fixedPaymentLoanAmountByMonth)} */}
+                  </TableCell>
+                  <TableCell align="right">
+                    {getCommaString(
+                      getFinalLoanResult.reduce(function (prev, next) {
+                        return (
+                          prev +
+                          Number(next.fixedPrincipalPaymentLoanAmountFirstMonth)
+                        );
+                      }, 0)
+                    )}
+                    {/* {getCommaString(
+                      row.fixedPrincipalPaymentLoanAmountFirstMonth
+                    )} */}
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
