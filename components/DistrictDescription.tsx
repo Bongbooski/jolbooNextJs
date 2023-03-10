@@ -7,7 +7,7 @@ import {
 
 import SearchIcon from "../asset/svg/Search.svg";
 import { useState } from "react";
-
+import QuestionIcon from "../asset/svg/Question.svg";
 interface DistrictDescriptionProps extends React.PropsWithChildren<object> {
   squareMeter: string;
   districts: PricePerSquareMeterType[];
@@ -69,11 +69,14 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
                     horizontal: "right",
                   }}
                 >
-                  <Typography sx={{ p: 2 }}>
+                  <Typography sx={{ pt: 2, pl: 2, pr: 2 }}>
                     {props.districts
                       .filter((e, i) => i < props.districts.length - 1)
                       .map((e) => e.districtName)
                       .join(", ")}
+                  </Typography>
+                  <Typography variant="h6" sx={{ pl: 2, pr: 2, pb: 2 }}>
+                    <QuestionIcon fill="#6e6d6d" /> 평균가격 순서예요
                   </Typography>
                 </Popover>
               </Typography>
