@@ -1,10 +1,12 @@
-import { Tooltip, Typography } from "@mui/material";
+import { IconButton, Popover, Typography } from "@mui/material";
+
 import {
   PricePerSquareMeterType,
   PricePerSquareMeter,
 } from "../constants/Common";
 
 import SearchIcon from "../asset/svg/Search.svg";
+import { useState } from "react";
 
 interface DistrictDescriptionProps extends React.PropsWithChildren<object> {
   squareMeter: string;
@@ -12,6 +14,25 @@ interface DistrictDescriptionProps extends React.PropsWithChildren<object> {
 }
 
 const DistrictDescription = (props: DistrictDescriptionProps) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  console.log(props.districts);
+  console.log(props.districts.filter((e, i) => i < props.districts.length - 1));
+  console.log(
+    props.districts
+      .filter((e, i) => i < props.districts.length - 1)
+      .map((e) => e.districtName)
+  );
   return (
     <div className="container">
       {props.districts.length > 0 ? (
@@ -21,7 +42,7 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
               {props.squareMeter}평은
             </Typography>
             <Typography variant="h2" gutterBottom>
-              {props.districts.pop()?.districtName}
+              {props.districts[props.districts.length - 1].districtName}
             </Typography>
             <Typography variant="h5" gutterBottom>
               에 집을 살 수 있어요 &#128516;
@@ -31,15 +52,30 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
             <div className="verticalContainer">
               <Typography>
                 그 외에도 추가로 구매할 수 있는 지역이 있어요! 확인해보세요
-                <Tooltip
-                  title={props.districts.map((e) => e.districtName).join(", ")}
-                  //   open={isOpen}
-                  //   onOpen={() => setIsOpen(true)}
+                <IconButton aria-describedby={id} onClick={handleClick}>
+                  <SearchIcon width="24" height="24" className="searchIcon" />
+                </IconButton>
+                <Popover
+                  id={id}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
                 >
-                  <span>
-                    <SearchIcon width="24" height="24" className="searchIcon" />
-                  </span>
-                </Tooltip>
+                  <Typography sx={{ p: 2 }}>
+                    {props.districts
+                      .filter((e, i) => i < props.districts.length - 1)
+                      .map((e) => e.districtName)
+                      .join(", ")}
+                  </Typography>
+                </Popover>
               </Typography>
             </div>
           )}

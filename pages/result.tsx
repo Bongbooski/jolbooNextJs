@@ -105,7 +105,6 @@ const Result = () => {
     }
   }, [yearIncome]);
 
-  debugger;
   const data = {
     labels: getFinalLoanResult.map((e) => e.name),
     datasets: [
