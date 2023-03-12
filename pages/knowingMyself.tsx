@@ -136,13 +136,22 @@ const Home: NextPageWithLayout = () => {
     setBorrowingYear(event.target.value);
   };
 
-  const handleResult = (event: React.MouseEvent<HTMLElement>) => {
+  const checkValidation = () => {
     if (
       !textfieldNumberValidation(yearIncome) ||
       yearIncome === "0" ||
       !textfieldNumberValidation(supportAmount) ||
-      !textfieldNumberValidation(depositAmount)
+      !textfieldNumberValidation(depositAmount) ||
+      birthday === null
     ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const handleResult = (event: React.MouseEvent<HTMLElement>) => {
+    if (!checkValidation()) {
       event.preventDefault();
     }
   };
@@ -168,7 +177,13 @@ const Home: NextPageWithLayout = () => {
             onChange={(newValue) => {
               setBirthday(newValue);
             }}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={birthday === null ? true : false}
+                helperText={birthday === null ? "생년월일을 입력해주세요" : ""}
+              />
+            )}
             inputFormat="YYYY/MM/DD"
           />
         </LocalizationProvider>
@@ -456,11 +471,20 @@ const Home: NextPageWithLayout = () => {
             variant="contained"
             size="large"
             disableElevation
+            disabled={checkValidation() ? false : true}
           >
             <h4>결과보기</h4>
           </Button>
         </Link>
       </div>
+      {!checkValidation() && (
+        <div className="errorArea">
+          <Typography color={"error"}>
+            입력되지 않거나 올바르지 않은 형식으로 입력된 항목이 있어요!
+          </Typography>
+        </div>
+      )}
+
       {/* </> */}
       {/* )} */}
       <style jsx>{`
@@ -491,28 +515,10 @@ const Home: NextPageWithLayout = () => {
         .moreFamilyInfo {
           min-width: 260px;
         }
-        /* .container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          padding: 20px;
-          gap: 20px;
+        .errorArea {
+          display: flex;
+          justify-content: center;
         }
-        .movie{
-          cursor: pointer
-        }
-        .movie img {
-          max-width: 100%;
-          border-radius: 12px;
-          transition: transform 0.2s ease-in-out;
-          box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-        }
-        .movie:hover img {
-          transform: scale(1.05) translateY(-10px);
-        }
-        .movie h4 {
-          font-size: 18px;
-          text-align: center;
-        } */
       `}</style>
     </div>
   );
