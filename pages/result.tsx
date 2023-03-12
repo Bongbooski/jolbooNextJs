@@ -159,7 +159,7 @@ const Result = () => {
             내가 살 수 있는 주택 가격 최대 금액은{` `}
           </Typography>
           <Typography variant="h1" gutterBottom>
-            {getFinalPropertyPrice.toFixed(2)}억
+            {Number(getFinalPropertyPrice.toFixed(2))}억
           </Typography>
           <Typography variant="h5" gutterBottom>
             이예요
@@ -288,15 +288,18 @@ const Result = () => {
                     <TableCell component="th" scope="row">
                       {row.name}
                     </TableCell>
-                    <TableCell align="right">{row.loanAmount}억</TableCell>
+                    <TableCell align="right">
+                      {Number(row.loanAmount)}억
+                    </TableCell>
                     <TableCell align="right">{row.interest}%</TableCell>
                     <TableCell align="right">
-                      {getCommaString(row.fixedPaymentLoanAmountByMonth)}
+                      {getCommaString(row.fixedPaymentLoanAmountByMonth)}원
                     </TableCell>
                     <TableCell align="right">
                       {getCommaString(
                         row.fixedPrincipalPaymentLoanAmountFirstMonth
                       )}
+                      원
                     </TableCell>
                   </TableRow>
                 ))}
@@ -322,6 +325,7 @@ const Result = () => {
                         );
                       }, 0)
                     )}
+                    원
                     {/* {getCommaString(row.fixedPaymentLoanAmountByMonth)} */}
                   </TableCell>
                   <TableCell align="right">
@@ -333,6 +337,7 @@ const Result = () => {
                         );
                       }, 0)
                     )}
+                    원
                     {/* {getCommaString(
                       row.fixedPrincipalPaymentLoanAmountFirstMonth
                     )} */}
