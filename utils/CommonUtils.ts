@@ -115,3 +115,61 @@ export const calculateFixedPrincipalPaymentLoanAmountFirstMonth = (
 export const getCommaString = (original: string | number) => {
   return original.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
+
+export const convertPriceToKorean = (price: string) => {
+  const numKor = new Array(
+    "",
+    "일",
+    "이",
+    "삼",
+    "사",
+    "오",
+    "육",
+    "칠",
+    "팔",
+    "구",
+    "십"
+  ); // 숫자 문자
+  const danKor = new Array(
+    "",
+    "십",
+    "백",
+    "천",
+    "",
+    "십",
+    "백",
+    "천",
+    "",
+    "십",
+    "백",
+    "천",
+    "",
+    "십",
+    "백",
+    "천"
+  ); // 만위 문자열
+  let result = "";
+
+  if (price && !isNaN(Number(price))) {
+    for (let i = 0; i < price.length; i++) {
+      let str = "";
+      const num = numKor[Number(price.slice(-1 - i, -i))];
+      if (num != "") str += num + danKor[i]; // 숫자가 0인 경우 텍스트를 표현하지 않음
+      switch (i) {
+        case 4:
+          str += "억";
+          break; // 4자리인 경우 '만'을 붙여줌 ex) 10000 -> 일만
+        case 8:
+          str += "조";
+          break; // 8자리인 경우 '억'을 붙여줌 ex) 100000000 -> 일억
+      }
+
+      result = str + result;
+    }
+
+    result = result + "만원";
+    if (result.indexOf("억만") > 0) result = result.replace("억만", "억");
+  }
+
+  return result;
+};

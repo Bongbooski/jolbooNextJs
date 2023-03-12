@@ -23,7 +23,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import type { NextPageWithLayout } from "./_app";
 import HeaderLayout from "../components/layout/HeaderLayout";
 import SurveyContents from "../components/SurveyContents";
-import { getCommaString } from "../utils/CommonUtils";
+import { convertPriceToKorean, getCommaString } from "../utils/CommonUtils";
 import { FamilyType } from "../constants/Loan";
 import { PaymentType } from "../constants/Common";
 
@@ -290,7 +290,7 @@ const Home: NextPageWithLayout = () => {
               ? "숫자만 입력해주세요"
               : yearIncome === "0"
               ? "0보다 커야합니다"
-              : ""
+              : convertPriceToKorean(yearIncome)
           }
         />
       </SurveyContents>
@@ -310,7 +310,7 @@ const Home: NextPageWithLayout = () => {
           helperText={
             !textfieldNumberValidation(supportAmount)
               ? "숫자만 입력해주세요"
-              : ""
+              : convertPriceToKorean(supportAmount)
           }
         />
       </SurveyContents>
@@ -333,7 +333,7 @@ const Home: NextPageWithLayout = () => {
           helperText={
             !textfieldNumberValidation(depositAmount)
               ? "숫자만 입력해주세요"
-              : ""
+              : convertPriceToKorean(depositAmount)
           }
         />
       </SurveyContents>
