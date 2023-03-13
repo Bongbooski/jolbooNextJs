@@ -346,7 +346,7 @@ const Result = () => {
             주택가격{" "}
           </Typography>
           <Typography variant="h4" gutterBottom>
-            {Number(getFinalPropertyPrice.toFixed(2))}억
+            {Number(getFinalResult.finalPropertyPrice.toFixed(2))}억
           </Typography>
           <Typography variant="h5" gutterBottom>
             에 대출금{" "}
@@ -360,7 +360,8 @@ const Result = () => {
           <Typography variant="h4" gutterBottom>
             {Number(
               (
-                (totalLoanAmount / Number(getFinalPropertyPrice.toFixed(2))) *
+                (totalLoanAmount /
+                  Number(getFinalResult.finalPropertyPrice.toFixed(2))) *
                 100
               ).toFixed(2)
             )}
