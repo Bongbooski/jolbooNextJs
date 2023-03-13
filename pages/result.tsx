@@ -326,7 +326,7 @@ const Result = () => {
               {getMyAsset}억
             </Typography>
             <Typography variant="h5" gutterBottom>
-              원이고,
+              원이고,{" "}
             </Typography>
           </div>
           <div className="verticalContainer">
