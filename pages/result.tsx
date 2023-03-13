@@ -336,7 +336,12 @@ const Result = () => {
             으로 LTV는{" "}
           </Typography>
           <Typography variant="h4" gutterBottom>
-            {(totalLoanAmount / Number(getFinalPropertyPrice.toFixed(2))) * 100}
+            {Number(
+              (
+                (totalLoanAmount / Number(getFinalPropertyPrice.toFixed(2))) *
+                100
+              ).toFixed(2)
+            )}
             %
           </Typography>
           <Typography variant="h5" gutterBottom>
@@ -360,7 +365,7 @@ const Result = () => {
             이므로 DSR은{" "}
           </Typography>
           <Typography variant="h4" gutterBottom>
-            {calculateDSRPercentage().averageDsr}%
+            {Number(calculateDSRPercentage().averageDsr)}%
           </Typography>
           <Typography variant="h5" gutterBottom>
             이구요
