@@ -28,12 +28,20 @@ import {
 import MuiTooltip from "@mui/material/Tooltip";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { FinalResult, PricePerSquareMeter } from "../constants/Common";
+import {
+  FinalResult,
+  PaymentType,
+  PricePerSquareMeter,
+} from "../constants/Common";
 import { LoanResult } from "../constants/Loan";
 import { useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
-import { getCommaString } from "../utils/CommonUtils";
+import {
+  calculateFixedPaymentLoanAmountByMonth,
+  getCommaString,
+  getFixedPrincipalInterest,
+} from "../utils/CommonUtils";
 import Symbol from "../components/Symbol";
 import Router from "next/router";
 import emailjs from "emailjs-com";
@@ -79,10 +87,62 @@ const Result = () => {
   const getMaxPropertyPriceByLTV = useRecoilValue<number>(
     KnowingState.getMaxPropertyPriceByLTV
   );
+  const borrowingYear = useRecoilValue<number>(KnowingState.borrowingYear);
+  const paymentType = useRecoilValue<PaymentType>(KnowingState.paymentType);
 
   const [userEmail, setUserEmail] = useState<string>("");
   const [showEmailSentInfo, setShowEmailSentInfo] = useState<boolean>(false);
   const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
+
+  const calculateDSRPercentage = () => {
+    let paymentForYear = 0;
+    let sumDsr = 0;
+
+    getFinalLoanResult.forEach((value) => {
+      if (paymentType === PaymentType.FIXED_PRINCIPAL) {
+        sumDsr +=
+          (Number(
+            getFixedPrincipalInterest(
+              Number(value.loanAmount),
+              borrowingYear,
+              value.interest,
+              1
+            ).totalPayment.toFixed(2)
+          ) /
+            (Number(yearIncome) * 10000)) *
+          100;
+        paymentForYear += Number(
+          getFixedPrincipalInterest(
+            Number(value.loanAmount),
+            borrowingYear,
+            value.interest,
+            1
+          ).totalPayment.toFixed(2)
+        );
+      } else if (paymentType === PaymentType.FIXED) {
+        sumDsr +=
+          ((calculateFixedPaymentLoanAmountByMonth(
+            borrowingYear,
+            Number(value.loanAmount),
+            value.interest
+          ) *
+            12) /
+            (Number(yearIncome) * 10000)) *
+          100;
+        paymentForYear +=
+          calculateFixedPaymentLoanAmountByMonth(
+            borrowingYear,
+            Number(value.loanAmount),
+            value.interest
+          ) * 12;
+      }
+    });
+
+    return {
+      averageDsr: (sumDsr / getFinalLoanResult.length).toFixed(2),
+      paymentForYear: getCommaString(Math.round(paymentForYear)),
+    };
+  };
 
   const sendEmail = (e: any) => {
     e.preventDefault();
@@ -281,6 +341,53 @@ const Result = () => {
             </Typography>
           </div>
         </div>
+        <div className="verticalContainer">
+          <Typography variant="h5" gutterBottom>
+            주택가격{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {Number(getFinalPropertyPrice.toFixed(2))}억
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            에 대출금{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {totalLoanAmount}억
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            으로 LTV는{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {(totalLoanAmount / Number(getFinalPropertyPrice.toFixed(2))) * 100}
+            %
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            이네요
+          </Typography>
+        </div>
+        <div className="verticalContainer">
+          <Typography variant="h5" gutterBottom>
+            연봉{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {getCommaString(yearIncome)}만원
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            에 1년 상환 총 원리금은{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {calculateDSRPercentage().paymentForYear}원
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            이므로 DSR은{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {calculateDSRPercentage().averageDsr}%
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            이구요
+          </Typography>
+        </div>
         <div className="chartContainer">
           <Doughnut data={data} />
         </div>
@@ -292,9 +399,11 @@ const Result = () => {
                   <TableCell>대출명</TableCell>
                   <TableCell align="right">원금</TableCell>
                   <TableCell align="right">이자율</TableCell>
-                  <TableCell align="right">원금균등(매월)</TableCell>
-                  <TableCell align="right">원리금균등(첫달)</TableCell>
-                  <TableCell align="right">체증식(첫달)</TableCell>
+                  <TableCell align="right">
+                    {paymentType === PaymentType.FIXED
+                      ? "원리금균등(매월)"
+                      : "원금균등(첫달)"}
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -311,12 +420,11 @@ const Result = () => {
                     </TableCell>
                     <TableCell align="right">{row.interest}%</TableCell>
                     <TableCell align="right">
-                      {getCommaString(row.fixedPaymentLoanAmountByMonth)}원
-                    </TableCell>
-                    <TableCell align="right">
-                      {getCommaString(
-                        row.fixedPrincipalPaymentLoanAmountFirstMonth
-                      )}
+                      {paymentType === PaymentType.FIXED
+                        ? getCommaString(row.fixedPaymentLoanAmountByMonth)
+                        : getCommaString(
+                            row.fixedPrincipalPaymentLoanAmountFirstMonth
+                          )}
                       원
                     </TableCell>
                   </TableRow>
@@ -336,29 +444,25 @@ const Result = () => {
                   </TableCell>
                   <TableCell align="right">{""}</TableCell>
                   <TableCell align="right">
-                    {getCommaString(
-                      getFinalLoanResult.reduce(function (prev, next) {
-                        return (
-                          prev + Number(next.fixedPaymentLoanAmountByMonth)
-                        );
-                      }, 0)
-                    )}
+                    {paymentType === PaymentType.FIXED
+                      ? getCommaString(
+                          getFinalLoanResult.reduce(function (prev, next) {
+                            return (
+                              prev + Number(next.fixedPaymentLoanAmountByMonth)
+                            );
+                          }, 0)
+                        )
+                      : getCommaString(
+                          getFinalLoanResult.reduce(function (prev, next) {
+                            return (
+                              prev +
+                              Number(
+                                next.fixedPrincipalPaymentLoanAmountFirstMonth
+                              )
+                            );
+                          }, 0)
+                        )}
                     원
-                    {/* {getCommaString(row.fixedPaymentLoanAmountByMonth)} */}
-                  </TableCell>
-                  <TableCell align="right">
-                    {getCommaString(
-                      getFinalLoanResult.reduce(function (prev, next) {
-                        return (
-                          prev +
-                          Number(next.fixedPrincipalPaymentLoanAmountFirstMonth)
-                        );
-                      }, 0)
-                    )}
-                    원
-                    {/* {getCommaString(
-                      row.fixedPrincipalPaymentLoanAmountFirstMonth
-                    )} */}
                   </TableCell>
                 </TableRow>
               </TableBody>

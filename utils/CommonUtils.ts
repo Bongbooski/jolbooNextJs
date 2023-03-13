@@ -29,22 +29,47 @@ export const getPrincipalAndInterest = (
     ];
   } else if (paymentType === PaymentType.FIXED_PRINCIPAL) {
     // 매달 갚아야 할 원금 (원금 / 개월수)
-    let amountForCalculate = amount * 100000000;
-    let totalBorrowingMonth = borrowingYear * 12;
-    const monthlyPayment = (amount * 100000000) / totalBorrowingMonth;
-    let monthlyInterest = 0;
-    let totalInterest = 0;
-    const monthlyInterestRate = interest / 100 / 12;
-
-    while (totalBorrowingMonth > 0) {
-      monthlyInterest = amountForCalculate * monthlyInterestRate;
-      amountForCalculate -= monthlyPayment;
-      totalInterest += monthlyInterest;
-      totalBorrowingMonth--;
-    }
-    return [amount, totalInterest / 100000000];
+    const fixedPrincipal = getFixedPrincipalInterest(
+      amount,
+      borrowingYear,
+      interest
+    );
+    return [amount, fixedPrincipal.totalInterest / 100000000];
   }
   return [amount, (amount * interest) / 100];
+};
+
+export const getFixedPrincipalInterest = (
+  amount: number, // 총 대출금, 단위 억
+  borrowingYear: number, // 빌린기간, 단위 년
+  interest: number, // 이율
+  loopingYear?: number
+) => {
+  let amountForCalculate = amount * 100000000;
+  let totalBorrowingMonth = (loopingYear ?? borrowingYear) * 12;
+  const monthlyPrincipal = (amount * 100000000) / (borrowingYear * 12);
+  let monthlyInterest = 0;
+
+  let totalInterest = 0; // 총 이자
+  let totalPrincipal = 0; // 총 원금
+  let totalPayment = 0; // 총 원리금
+
+  const monthlyInterestRate = interest / 100 / 12;
+
+  while (totalBorrowingMonth > 0) {
+    monthlyInterest = amountForCalculate * monthlyInterestRate;
+    amountForCalculate -= monthlyPrincipal;
+    totalPayment += monthlyPrincipal + monthlyInterest;
+    totalPrincipal += monthlyPrincipal;
+    totalInterest += monthlyInterest;
+    totalBorrowingMonth--;
+  }
+
+  return {
+    totalInterest,
+    totalPrincipal,
+    totalPayment,
+  };
 };
 
 export const getPrincipalAndInterestInSoulGathering = (
