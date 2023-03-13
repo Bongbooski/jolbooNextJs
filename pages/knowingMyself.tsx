@@ -386,7 +386,7 @@ const Home: NextPageWithLayout = () => {
           FamilyType.DISABLED,
         ]}
       >
-        <div className="moreFamilyInfo">
+        <div className="minWidthWrapper">
           <ToggleButtonGroup
             color="primary"
             value={singleParentMultiCultureDisabled}
@@ -448,27 +448,29 @@ const Home: NextPageWithLayout = () => {
           "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이예요",
         ]}
       >
-        <ToggleButtonGroup
-          color="primary"
-          value={paymentType}
-          exclusive
-          onChange={(
-            event: React.MouseEvent<HTMLElement>,
-            newSelection: string
-          ) => {
-            if (newSelection !== null)
-              setPaymentType(newSelection as PaymentType);
-          }}
-          aria-label="Platform"
-        >
-          <ToggleButton value={PaymentType.FIXED}>원리금균등</ToggleButton>
-          <ToggleButton value={PaymentType.FIXED_PRINCIPAL}>
-            원금균등
-          </ToggleButton>
-          <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
-            체증식
-          </ToggleButton>
-        </ToggleButtonGroup>
+        <div className="minWidthWrapper">
+          <ToggleButtonGroup
+            color="primary"
+            value={paymentType}
+            exclusive
+            onChange={(
+              event: React.MouseEvent<HTMLElement>,
+              newSelection: string
+            ) => {
+              if (newSelection !== null)
+                setPaymentType(newSelection as PaymentType);
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value={PaymentType.FIXED}>원리금균등</ToggleButton>
+            <ToggleButton value={PaymentType.FIXED_PRINCIPAL}>
+              원금균등
+            </ToggleButton>
+            <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
+              체증식
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
       </SurveyContents>
       <div className="nextButtonContainer">
         <Link href={`/result`} onClick={handleResult}>
@@ -518,7 +520,7 @@ const Home: NextPageWithLayout = () => {
         .description {
           display: flex;
         }
-        .moreFamilyInfo {
+        .minWidthWrapper {
           min-width: 260px;
         }
         .errorArea {
