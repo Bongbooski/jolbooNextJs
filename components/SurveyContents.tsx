@@ -25,7 +25,9 @@ const SurveyContents = (props: SurveyContentsProps) => {
                       key={`${props.title}_description_${index}`}
                       className="description"
                     >
-                      <QuestionIcon fill="#6e6d6d" />{" "}
+                      <div>
+                        <QuestionIcon fill="#6e6d6d" />{" "}
+                      </div>
                       <Typography variant="h6"> {description}</Typography>
                     </div>
                   );

@@ -117,19 +117,25 @@ const Home: NextPageWithLayout = () => {
   const handleChangeYearIncome = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setYearIncome(event.target.value.replaceAll(",", ""));
+    const value = Number.parseInt(event.target.value.replaceAll(",", ""));
+
+    setYearIncome(value ? value.toString() : "0");
   };
 
   const handleChangeSupportAmount = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSupportAmount(event.target.value.replaceAll(",", ""));
+    const value = Number.parseInt(event.target.value.replaceAll(",", ""));
+
+    setSupportAmount(value ? value.toString() : "0");
   };
 
   const handleChangeDepositAmount = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setDepositAmount(event.target.value.replaceAll(",", ""));
+    const value = Number.parseInt(event.target.value.replaceAll(",", ""));
+
+    setDepositAmount(value ? value.toString() : "0");
   };
 
   const handleChangeBorrowingYear = (event: SelectChangeEvent) => {
