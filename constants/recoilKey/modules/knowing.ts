@@ -41,7 +41,7 @@ const keyArr = [
   "KNOWING/getDsrLoanResult",
   "KNOWING/getFinalLoanResult",
   "KNOWING/getMyAsset",
-  "KNOWING/getFinalPropertyPrice",
+  "KNOWING/getFinalResult",
 ] as const;
 
 export default keyArr;

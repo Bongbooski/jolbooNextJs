@@ -28,7 +28,7 @@ import {
 import MuiTooltip from "@mui/material/Tooltip";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { PricePerSquareMeter } from "../constants/Common";
+import { FinalResult, PricePerSquareMeter } from "../constants/Common";
 import { LoanResult } from "../constants/Loan";
 import { useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
@@ -69,8 +69,8 @@ const Result = () => {
   const yearIncome = useRecoilValue<string>(KnowingState.yearIncome);
   const depositAmount = useRecoilValue<string>(KnowingState.depositAmount);
   const supportAmount = useRecoilValue<string>(KnowingState.supportAmount);
-  const getFinalPropertyPrice = useRecoilValue<number>(
-    KnowingState.getFinalPropertyPrice
+  const getFinalResult = useRecoilValue<FinalResult>(
+    KnowingState.getFinalResult
   );
   const getSoulGatheringAmount = useRecoilValue<number>(
     KnowingState.getSoulGatheringAmount
@@ -133,11 +133,11 @@ const Result = () => {
   };
 
   const districtName25 = PricePerSquareMeter.filter(
-    (e) => e.price25 < getFinalPropertyPrice * 10000
+    (e) => e.price25 < getFinalResult.finalPropertyPrice * 10000
   );
 
   const districtName34 = PricePerSquareMeter.filter(
-    (e) => e.price34 < getFinalPropertyPrice * 10000
+    (e) => e.price34 < getFinalResult.finalPropertyPrice * 10000
   );
 
   const totalLoanAmount = getFinalLoanResult.reduce((sum, currValue) => {
@@ -159,12 +159,23 @@ const Result = () => {
             내가 살 수 있는 주택 가격 최대 금액은{` `}
           </Typography>
           <Typography variant="h1" gutterBottom>
-            {Number(getFinalPropertyPrice.toFixed(2))}억
+            {Number(getFinalResult.finalPropertyPrice.toFixed(2))}억
           </Typography>
           <Typography variant="h5" gutterBottom>
             이예요
           </Typography>
         </div>
+
+        {getFinalResult.additionalMessage && (
+          <div className="verticalContainer">
+            <div>
+              <QuestionIcon fill="#6e6d6d" />{" "}
+            </div>
+            <Typography variant="h6" gutterBottom>
+              {getFinalResult.additionalMessage}
+            </Typography>
+          </div>
+        )}
       </div>
       <div className="contentsArea">
         <div className="districtContainer">
@@ -247,21 +258,28 @@ const Result = () => {
       </div>
       <div className="contentsArea">
         <div className="verticalContainer">
-          <Typography variant="h5" gutterBottom>
-            현재 내가 가진돈은{" "}
-          </Typography>
-          <Typography variant="h1" gutterBottom>
-            {getMyAsset}억
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            원이고, 필요한 대출금은 총
-          </Typography>
-          <Typography variant="h1" gutterBottom>
-            {totalLoanAmount}억
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            원이예요
-          </Typography>
+          <div className="verticalContainer">
+            <Typography variant="h5" gutterBottom>
+              현재 내가 가진돈은{" "}
+            </Typography>
+            <Typography variant="h1" gutterBottom>
+              {getMyAsset}억
+            </Typography>
+            <Typography variant="h5" gutterBottom>
+              원이고,
+            </Typography>
+          </div>
+          <div className="verticalContainer">
+            <Typography variant="h5" gutterBottom>
+              필요한 대출금은 총
+            </Typography>
+            <Typography variant="h1" gutterBottom>
+              {totalLoanAmount}억
+            </Typography>
+            <Typography variant="h5" gutterBottom>
+              원이예요
+            </Typography>
+          </div>
         </div>
         <div className="chartContainer">
           <Doughnut data={data} />
@@ -273,7 +291,7 @@ const Result = () => {
                 <TableRow>
                   <TableCell>대출명</TableCell>
                   <TableCell align="right">원금</TableCell>
-                  <TableCell align="right">이자</TableCell>
+                  <TableCell align="right">이자율</TableCell>
                   <TableCell align="right">원금균등(매월)</TableCell>
                   <TableCell align="right">원리금균등(첫달)</TableCell>
                   <TableCell align="right">체증식(첫달)</TableCell>

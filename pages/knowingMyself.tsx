@@ -473,7 +473,7 @@ const Home: NextPageWithLayout = () => {
         </div>
       </SurveyContents>
       <div className="nextButtonContainer">
-        <Link href={`/result`} onClick={handleResult}>
+        <Link href={`/knowingSpending`} onClick={handleResult}>
           <Button
             id="nextButton"
             variant="contained"
@@ -522,6 +522,7 @@ const Home: NextPageWithLayout = () => {
         }
         .minWidthWrapper {
           min-width: 260px;
+          text-align: end;
         }
         .errorArea {
           display: flex;

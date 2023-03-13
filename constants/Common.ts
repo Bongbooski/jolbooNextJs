@@ -171,3 +171,8 @@ export const PricePerSquareMeter: PricePerSquareMeterType[] = [
     districtEngName: "GangNam",
   },
 ];
+
+export interface FinalResult {
+  finalPropertyPrice: number;
+  additionalMessage?: string;
+}
