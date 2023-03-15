@@ -25,7 +25,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import LoanInput from "../components/LoanInput";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
-import { ConfirmingLoanBank } from "../constants/Common";
+import { ConfirmingLoanBank, FinalLoanResult } from "../constants/Common";
 import { LoanResult } from "../constants/Loan";
 import { getCommaString } from "../utils/CommonUtils";
 import { NormalLoanInterest } from "../constants/Interests";
@@ -105,7 +105,7 @@ const Home = () => {
   const getLtv = useRecoilValue<number>(KnowingState.getLtv);
   const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
 
-  const getFinalLoanResult = useRecoilValue<Array<LoanResult>>(
+  const getFinalLoanResult = useRecoilValue<FinalLoanResult>(
     KnowingState.getFinalLoanResult
   );
 
@@ -306,7 +306,7 @@ const Home = () => {
       <Typography variant="subtitle2" gutterBottom>
         대출 구성
       </Typography>
-      {getFinalLoanResult.map((result) => (
+      {getFinalLoanResult.finalLoanResult.map((result) => (
         <Box key={`loan_${result.name}`} style={wrapperBoxCss}>
           <Typography variant="subtitle2" gutterBottom>
             {result.name}

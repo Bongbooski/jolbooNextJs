@@ -1,8 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
 import AppLayout from "../components/layout/AppLayout";
-import SymbolIcon from "../asset/svg/Symbol.svg";
 import PlaceBlack from "../asset/svg/Place_black_24dp.svg";
-import SearchIcon from "../asset/svg/Search.svg";
 import QuestionIcon from "../asset/svg/Question.svg";
 import {
   Button,
@@ -29,11 +27,10 @@ import MuiTooltip from "@mui/material/Tooltip";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import {
-  FinalResult,
+  FinalLoanResult,
   PaymentType,
   PricePerSquareMeter,
 } from "../constants/Common";
-import { LoanResult } from "../constants/Loan";
 import { useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
@@ -69,7 +66,7 @@ const chartBorderColor = [
 
 const Result = () => {
   const [selectedSquareMeter, setSelectedSquareMeter] = useState<string>("25");
-  const getFinalLoanResult = useRecoilValue<Array<LoanResult>>(
+  const getFinalLoanResult = useRecoilValue<FinalLoanResult>(
     KnowingState.getFinalLoanResult
   );
   const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
@@ -77,9 +74,6 @@ const Result = () => {
   const yearIncome = useRecoilValue<string>(KnowingState.yearIncome);
   const depositAmount = useRecoilValue<string>(KnowingState.depositAmount);
   const supportAmount = useRecoilValue<string>(KnowingState.supportAmount);
-  const getFinalResult = useRecoilValue<FinalResult>(
-    KnowingState.getFinalResult
-  );
   const getSoulGatheringAmount = useRecoilValue<number>(
     KnowingState.getSoulGatheringAmount
   );
@@ -98,7 +92,7 @@ const Result = () => {
     let paymentForYear = 0;
     let sumDsr = 0;
 
-    getFinalLoanResult.forEach((value) => {
+    getFinalLoanResult.finalLoanResult.forEach((value) => {
       if (paymentType === PaymentType.FIXED_PRINCIPAL) {
         sumDsr +=
           (Number(
@@ -139,7 +133,9 @@ const Result = () => {
     });
 
     return {
-      averageDsr: (sumDsr / getFinalLoanResult.length).toFixed(2),
+      averageDsr: (sumDsr / getFinalLoanResult.finalLoanResult.length).toFixed(
+        2
+      ),
       paymentForYear: getCommaString(Math.round(paymentForYear)),
     };
   };
@@ -177,38 +173,42 @@ const Result = () => {
   }, [yearIncome]);
 
   const data = {
-    labels: getFinalLoanResult.map((e) => e.name),
+    labels: getFinalLoanResult.finalLoanResult.map((e) => e.name),
     datasets: [
       {
         label: "원금",
-        data: getFinalLoanResult.map((e) => e.loanAmount),
+        data: getFinalLoanResult.finalLoanResult.map((e) => e.loanAmount),
         backgroundColor: chartBackgroundColor.slice(
           0,
-          getFinalLoanResult.length
+          getFinalLoanResult.finalLoanResult.length
         ),
-        borderColor: chartBorderColor.slice(0, getFinalLoanResult.length),
+        borderColor: chartBorderColor.slice(
+          0,
+          getFinalLoanResult.finalLoanResult.length
+        ),
         borderWidth: 1,
       },
     ],
   };
 
   const districtName25 = PricePerSquareMeter.filter(
-    (e) => e.price25 < getFinalResult.finalPropertyPrice * 10000
+    (e) => e.price25 < getFinalLoanResult.finalPropertyPrice * 10000
   );
 
   const districtName34 = PricePerSquareMeter.filter(
-    (e) => e.price34 < getFinalResult.finalPropertyPrice * 10000
+    (e) => e.price34 < getFinalLoanResult.finalPropertyPrice * 10000
   );
 
-  const totalLoanAmount = getFinalLoanResult.reduce((sum, currValue) => {
-    return sum + Number(currValue.loanAmount);
-  }, 0);
+  const totalLoanAmount = getFinalLoanResult.finalLoanResult.reduce(
+    (sum, currValue) => {
+      return sum + Number(currValue.loanAmount);
+    },
+    0
+  );
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedSquareMeter(event.target.value);
   };
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -219,20 +219,20 @@ const Result = () => {
             내가 살 수 있는 주택 가격 최대 금액은{` `}
           </Typography>
           <Typography variant="h1" gutterBottom>
-            {Number(getFinalResult.finalPropertyPrice.toFixed(2))}억
+            {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
           </Typography>
           <Typography variant="h5" gutterBottom>
             이예요
           </Typography>
         </div>
 
-        {getFinalResult.additionalMessage && (
+        {getFinalLoanResult.additionalMessage && (
           <div className="verticalContainer">
             <div>
               <QuestionIcon fill="#6e6d6d" />{" "}
             </div>
             <Typography variant="h6" gutterBottom>
-              {getFinalResult.additionalMessage}
+              {getFinalLoanResult.additionalMessage}
             </Typography>
           </div>
         )}
@@ -346,7 +346,7 @@ const Result = () => {
             주택가격{" "}
           </Typography>
           <Typography variant="h4" gutterBottom>
-            {Number(getFinalResult.finalPropertyPrice.toFixed(2))}억
+            {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
           </Typography>
           <Typography variant="h5" gutterBottom>
             에 대출금{" "}
@@ -361,7 +361,7 @@ const Result = () => {
             {Number(
               (
                 (totalLoanAmount /
-                  Number(getFinalResult.finalPropertyPrice.toFixed(2))) *
+                  Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))) *
                 100
               ).toFixed(2)
             )}
@@ -413,7 +413,7 @@ const Result = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getFinalLoanResult.map((row) => (
+                {getFinalLoanResult.finalLoanResult.map((row) => (
                   <TableRow
                     key={row.name}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -443,30 +443,42 @@ const Result = () => {
                     {"합계"}
                   </TableCell>
                   <TableCell align="right">
-                    {getFinalLoanResult.reduce(function (prev, next) {
+                    {getFinalLoanResult.finalLoanResult.reduce(function (
+                      prev,
+                      next
+                    ) {
                       return prev + Number(next.loanAmount);
-                    }, 0)}
+                    },
+                    0)}
                     억
                   </TableCell>
                   <TableCell align="right">{""}</TableCell>
                   <TableCell align="right">
                     {paymentType === PaymentType.FIXED
                       ? getCommaString(
-                          getFinalLoanResult.reduce(function (prev, next) {
+                          getFinalLoanResult.finalLoanResult.reduce(function (
+                            prev,
+                            next
+                          ) {
                             return (
                               prev + Number(next.fixedPaymentLoanAmountByMonth)
                             );
-                          }, 0)
+                          },
+                          0)
                         )
                       : getCommaString(
-                          getFinalLoanResult.reduce(function (prev, next) {
+                          getFinalLoanResult.finalLoanResult.reduce(function (
+                            prev,
+                            next
+                          ) {
                             return (
                               prev +
                               Number(
                                 next.fixedPrincipalPaymentLoanAmountFirstMonth
                               )
                             );
-                          }, 0)
+                          },
+                          0)
                         )}
                     원
                   </TableCell>

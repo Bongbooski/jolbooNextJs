@@ -1,3 +1,5 @@
+import { LoanResult } from "./Loan";
+
 export enum ConfirmingLoanBank {
   BUSAN = "부산",
   GYEONG_NAM = "경남",
@@ -173,6 +175,12 @@ export const PricePerSquareMeter: PricePerSquareMeterType[] = [
 ];
 
 export interface FinalResult {
+  finalPropertyPrice: number;
+  additionalMessage?: string;
+}
+
+export interface FinalLoanResult {
+  finalLoanResult: Array<LoanResult>;
   finalPropertyPrice: number;
   additionalMessage?: string;
 }

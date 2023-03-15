@@ -11,6 +11,7 @@ import {
 import { Loan } from "../components/LoanInput";
 import {
   ConfirmingLoanBank,
+  FinalLoanResult,
   FinalResult,
   PaymentType,
 } from "../constants/Common";
@@ -612,6 +613,7 @@ export const KnowingState = {
             (didimdolPrincipalAmount + didimdolInterestAmount) >=
           0
         ) {
+          console.log("dsr didimol 그대로");
           result.push({
             name: LoanType.DIDIMDOL,
             interest: didimdolInterest,
@@ -643,6 +645,8 @@ export const KnowingState = {
               borrowingYear
             );
           if (principalAmount >= 0.01) {
+            console.log("dsr didimol 줄여서::", principalAmount.toFixed(2));
+
             result.push({
               name: LoanType.DIDIMDOL,
               interest: didimdolInterest,
@@ -691,7 +695,10 @@ export const KnowingState = {
             (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
           0
         ) {
-          console.log("dsr special home part1111:::", soulGatheringAmount);
+          console.log(
+            "dsr SPECIAL_HOME 그대로::",
+            specialHomeLoanPrincipalAmount.toFixed(2)
+          );
 
           result.push({
             name: LoanType.SPECIAL_HOME,
@@ -715,8 +722,6 @@ export const KnowingState = {
             soulGatheringAmount -
             (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount);
         } else {
-          console.log("dsr special home part2222:::", soulGatheringAmount);
-
           const [principalAmount, interestAmount] =
             getPrincipalAndInterestInSoulGathering(
               specialHomeLoanLimit,
@@ -727,6 +732,10 @@ export const KnowingState = {
             );
 
           if (principalAmount >= 0.01) {
+            console.log(
+              "dsr SPECIAL_HOME 줄여서::",
+              principalAmount.toFixed(2)
+            );
             result.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
@@ -856,7 +865,10 @@ export const KnowingState = {
             (normalLoanPrincipalAmount + normalLoanInterestAmount) >=
           0
         ) {
-          console.log("dsr push111");
+          console.log(
+            "dsr 일반대출 그대로::",
+            normalLoanPrincipalAmount.toFixed(2)
+          );
 
           result.push({
             name: LoanType.NORMAL,
@@ -888,9 +900,10 @@ export const KnowingState = {
               paymentType,
               borrowingYear
             );
-          console.log("dsr push2222::", principalAmount);
 
           if (principalAmount > 0.01) {
+            console.log("dsr 일반대출 줄여서::", principalAmount.toFixed(2));
+
             result.push({
               name: LoanType.NORMAL,
               interest: NormalLoanInterest,
@@ -922,7 +935,7 @@ export const KnowingState = {
     },
   }),
 
-  getFinalLoanResult: selector<Array<LoanResult>>({
+  getFinalLoanResult: selector<FinalLoanResult>({
     key: RecoilKey.knowing["KNOWING/getFinalLoanResult"],
     get: ({ get }) => {
       const dsrResult: Array<LoanResult> = get(KnowingState.getDsrLoanResult);
@@ -933,12 +946,17 @@ export const KnowingState = {
 
       let loanAmountByLtv = (getMyAsset * getLtv) / (100 - getLtv);
 
-      let result: Array<LoanResult> = [];
+      let result: FinalLoanResult = {
+        finalLoanResult: [],
+        finalPropertyPrice: 0,
+      };
       let totalLoanAmountByDsr = 0;
+
       for (const loan of dsrResult) {
         totalLoanAmountByDsr += Number.parseFloat(loan.loanAmount);
       }
 
+      // LTV기준 대출가능 금엑이 DSR기준보다 적다면 LTV기준으로 재계산
       if (totalLoanAmountByDsr > loanAmountByLtv) {
         const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
         const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
@@ -960,8 +978,12 @@ export const KnowingState = {
                 paymentType,
                 borrowingYear
               );
+            console.log(
+              "ltv DIDIMDOL 그대로::",
+              didimdolPrincipalAmount.toFixed(2)
+            );
 
-            result.push({
+            result.finalLoanResult.push({
               name: LoanType.DIDIMDOL,
               interest: didimdolInterest,
               loanAmount: didimdolPrincipalAmount.toFixed(2),
@@ -988,30 +1010,33 @@ export const KnowingState = {
               borrowingYear
             );
 
-            result.push({
-              name: LoanType.DIDIMDOL,
-              interest: didimdolInterest,
-              loanAmount: principalAmount.toFixed(2),
-              interestAmount: interestAmount.toFixed(2),
-              fixedPaymentLoanAmountByMonth:
-                calculateFixedPaymentLoanAmountByMonth(
-                  borrowingYear,
-                  principalAmount,
-                  didimdolInterest
-                ),
-              fixedPrincipalPaymentLoanAmountFirstMonth:
-                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
-                  borrowingYear,
-                  principalAmount,
-                  didimdolInterest
-                ),
-            });
-            loanAmountByLtv = loanAmountByLtv - principalAmount;
+            if (principalAmount > 0.01) {
+              console.log("ltv DIDIMDOL 줄여서::", principalAmount.toFixed(2));
+
+              result.finalLoanResult.push({
+                name: LoanType.DIDIMDOL,
+                interest: didimdolInterest,
+                loanAmount: principalAmount.toFixed(2),
+                interestAmount: interestAmount.toFixed(2),
+                fixedPaymentLoanAmountByMonth:
+                  calculateFixedPaymentLoanAmountByMonth(
+                    borrowingYear,
+                    principalAmount,
+                    didimdolInterest
+                  ),
+                fixedPrincipalPaymentLoanAmountFirstMonth:
+                  calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                    borrowingYear,
+                    principalAmount,
+                    didimdolInterest
+                  ),
+              });
+              loanAmountByLtv = loanAmountByLtv - principalAmount;
+            }
           }
         }
 
         if (isAbleSpecialHomeLoan && loanAmountByLtv > 0) {
-          debugger;
           const specialHomeLoanInterest: number = get(
             KnowingState.getSpecialHomeLoanInterest
           );
@@ -1029,8 +1054,12 @@ export const KnowingState = {
               paymentType,
               borrowingYear
             );
+            console.log(
+              "ltv SPECIAL_HOME 그대로::",
+              specialHomeLoanPrincipalAmount.toFixed(2)
+            );
 
-            result.push({
+            result.finalLoanResult.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
               loanAmount: specialHomeLoanPrincipalAmount.toFixed(2),
@@ -1057,28 +1086,35 @@ export const KnowingState = {
               borrowingYear
             );
 
-            result.push({
-              name: LoanType.SPECIAL_HOME,
-              interest: specialHomeLoanInterest,
-              loanAmount: principalAmount.toFixed(2),
-              interestAmount: interestAmount.toFixed(2),
-              fixedPaymentLoanAmountByMonth:
-                calculateFixedPaymentLoanAmountByMonth(
-                  borrowingYear,
-                  principalAmount,
-                  specialHomeLoanInterest
-                ),
-              fixedPrincipalPaymentLoanAmountFirstMonth:
-                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
-                  borrowingYear,
-                  principalAmount,
-                  specialHomeLoanInterest
-                ),
-            });
-            loanAmountByLtv = loanAmountByLtv - principalAmount;
+            if (principalAmount > 0.01) {
+              console.log(
+                "ltv SPECIAL_HOME 줄여서::",
+                principalAmount.toFixed(2)
+              );
+
+              result.finalLoanResult.push({
+                name: LoanType.SPECIAL_HOME,
+                interest: specialHomeLoanInterest,
+                loanAmount: principalAmount.toFixed(2),
+                interestAmount: interestAmount.toFixed(2),
+                fixedPaymentLoanAmountByMonth:
+                  calculateFixedPaymentLoanAmountByMonth(
+                    borrowingYear,
+                    principalAmount,
+                    specialHomeLoanInterest
+                  ),
+                fixedPrincipalPaymentLoanAmountFirstMonth:
+                  calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                    borrowingYear,
+                    principalAmount,
+                    specialHomeLoanInterest
+                  ),
+              });
+              loanAmountByLtv = loanAmountByLtv - principalAmount;
+            }
           }
         }
-        debugger;
+
         if (loanAmountByLtv > 0.01) {
           const [principalAmount, interestAmount] = getPrincipalAndInterest(
             loanAmountByLtv,
@@ -1086,7 +1122,9 @@ export const KnowingState = {
             paymentType,
             borrowingYear
           );
-          result.push({
+          console.log("ltv 일반대출::", principalAmount.toFixed(2));
+
+          result.finalLoanResult.push({
             name: LoanType.NORMAL,
             interest: NormalLoanInterest,
             loanAmount: principalAmount.toFixed(2),
@@ -1107,29 +1145,15 @@ export const KnowingState = {
           loanAmountByLtv = loanAmountByLtv - principalAmount;
         }
       } else {
-        result = dsrResult;
+        result.finalLoanResult = dsrResult;
       }
 
-      return result;
-    },
-  }),
-
-  getFinalResult: selector<FinalResult>({
-    key: RecoilKey.knowing["KNOWING/getFinalResult"],
-    get: ({ get }) => {
-      const finalLoanResult: Array<LoanResult> = get(
-        KnowingState.getFinalLoanResult
-      );
-      const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
-
+      // 주택가격 제한에 걸리는 경우, 재계산
       let totalLoanAmount = 0;
       let useDidimdol = false;
       let useSpecialHome = false;
 
-      const result: FinalResult = {
-        finalPropertyPrice: 0,
-      };
-      for (const loan of finalLoanResult) {
+      for (const loan of result.finalLoanResult) {
         totalLoanAmount += Number.parseFloat(loan.loanAmount);
 
         if (loan.name === LoanType.DIDIMDOL) {
@@ -1143,16 +1167,16 @@ export const KnowingState = {
       const havingNoHouse = get(KnowingState.havingNoHouse);
       const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
 
+      let isLimited = false;
+      result.finalPropertyPrice = totalLoanAmount + getMyAsset;
+
       // 서민실수요자 최대 5억 제한
       if (isFirstTime && havingNoHouse && yearIncome <= 6000) {
         if (totalLoanAmount + getMyAsset > 5) {
           result.finalPropertyPrice = 5;
           result.additionalMessage =
             "서민 실수요자 대출에 해당되어 주택가격이 5억까지로 제한돼요";
-          return result;
-        } else {
-          result.finalPropertyPrice = totalLoanAmount + getMyAsset;
-          return result;
+          isLimited = true;
         }
       }
 
@@ -1162,10 +1186,7 @@ export const KnowingState = {
           result.finalPropertyPrice = 5;
           result.additionalMessage =
             "디딤돌 대출 사용시 주택가격이 5억까지로 제한돼요";
-          return result;
-        } else {
-          result.finalPropertyPrice = totalLoanAmount + getMyAsset;
-          return result;
+          isLimited = true;
         }
       } else if (useSpecialHome) {
         // 특례보금자리 9억 제한
@@ -1173,15 +1194,290 @@ export const KnowingState = {
           result.finalPropertyPrice = 9;
           result.additionalMessage =
             "특례보금자리 대출 사용시 주택가격이 9억까지로 제한돼요";
-          return result;
-        } else {
-          result.finalPropertyPrice = totalLoanAmount + getMyAsset;
-          return result;
+          isLimited = true;
         }
       }
 
-      result.finalPropertyPrice = totalLoanAmount + getMyAsset;
+      console.log("useSpecial:::", useSpecialHome);
+      console.log(
+        "totalLoanAmount + getMyAsset:::",
+        totalLoanAmount + getMyAsset
+      );
+
+      if (isLimited) {
+        // 9*(40*0.01)
+        let loanAmountByLimitedPrice =
+          result.finalPropertyPrice * (getLtv * 0.01) - getMyAsset;
+        result.finalLoanResult = [];
+
+        console.log(
+          "recalculate by limited property price::",
+          result.finalPropertyPrice
+        );
+
+        const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
+        const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
+        // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
+        // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
+
+        if (isAbleDidimdol && loanAmountByLimitedPrice > 0) {
+          const didimdolInterest: number = get(
+            KnowingState.getDidimdolInterest
+          );
+          const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
+
+          if (loanAmountByLimitedPrice - didimdolLimit >= 0) {
+            const [didimdolPrincipalAmount, didimdolInterestAmount] =
+              getPrincipalAndInterest(
+                didimdolLimit,
+                didimdolInterest,
+                paymentType,
+                borrowingYear
+              );
+            console.log(
+              "limited didimdol 그대로::",
+              didimdolPrincipalAmount.toFixed(2)
+            );
+            result.finalLoanResult.push({
+              name: LoanType.DIDIMDOL,
+              interest: didimdolInterest,
+              loanAmount: didimdolPrincipalAmount.toFixed(2),
+              interestAmount: didimdolInterestAmount.toFixed(2),
+              fixedPaymentLoanAmountByMonth:
+                calculateFixedPaymentLoanAmountByMonth(
+                  borrowingYear,
+                  didimdolPrincipalAmount,
+                  didimdolInterest
+                ),
+              fixedPrincipalPaymentLoanAmountFirstMonth:
+                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  didimdolPrincipalAmount,
+                  didimdolInterest
+                ),
+            });
+            loanAmountByLimitedPrice = loanAmountByLimitedPrice - didimdolLimit;
+          } else if (loanAmountByLimitedPrice > 0) {
+            const [principalAmount, interestAmount] = getPrincipalAndInterest(
+              loanAmountByLimitedPrice,
+              didimdolInterest,
+              paymentType,
+              borrowingYear
+            );
+
+            if (principalAmount > 0.01) {
+              console.log(
+                "limited didimdol 줄여서::",
+                principalAmount.toFixed(2)
+              );
+              result.finalLoanResult.push({
+                name: LoanType.DIDIMDOL,
+                interest: didimdolInterest,
+                loanAmount: principalAmount.toFixed(2),
+                interestAmount: interestAmount.toFixed(2),
+                fixedPaymentLoanAmountByMonth:
+                  calculateFixedPaymentLoanAmountByMonth(
+                    borrowingYear,
+                    principalAmount,
+                    didimdolInterest
+                  ),
+                fixedPrincipalPaymentLoanAmountFirstMonth:
+                  calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                    borrowingYear,
+                    principalAmount,
+                    didimdolInterest
+                  ),
+              });
+              loanAmountByLimitedPrice =
+                loanAmountByLimitedPrice - principalAmount;
+            }
+          }
+        }
+
+        if (isAbleSpecialHomeLoan && loanAmountByLimitedPrice > 0) {
+          debugger;
+          const specialHomeLoanInterest: number = get(
+            KnowingState.getSpecialHomeLoanInterest
+          );
+          const specialHomeLoanLimit: number = get(
+            KnowingState.getSpecialHomeLoanLimit
+          );
+
+          if (loanAmountByLimitedPrice - specialHomeLoanLimit >= 0) {
+            const [
+              specialHomeLoanPrincipalAmount,
+              specialHomeLoanInterestAmount,
+            ] = getPrincipalAndInterest(
+              specialHomeLoanLimit,
+              specialHomeLoanInterest,
+              paymentType,
+              borrowingYear
+            );
+
+            console.log(
+              "limited SPECIAL_HOME 그대로::",
+              specialHomeLoanPrincipalAmount.toFixed(2)
+            );
+            result.finalLoanResult.push({
+              name: LoanType.SPECIAL_HOME,
+              interest: specialHomeLoanInterest,
+              loanAmount: specialHomeLoanPrincipalAmount.toFixed(2),
+              interestAmount: specialHomeLoanInterestAmount.toFixed(2),
+              fixedPaymentLoanAmountByMonth:
+                calculateFixedPaymentLoanAmountByMonth(
+                  borrowingYear,
+                  specialHomeLoanPrincipalAmount,
+                  specialHomeLoanInterest
+                ),
+              fixedPrincipalPaymentLoanAmountFirstMonth:
+                calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  specialHomeLoanPrincipalAmount,
+                  specialHomeLoanInterest
+                ),
+            });
+            loanAmountByLimitedPrice =
+              loanAmountByLimitedPrice - specialHomeLoanLimit;
+          } else if (loanAmountByLimitedPrice > 0) {
+            const [principalAmount, interestAmount] = getPrincipalAndInterest(
+              loanAmountByLimitedPrice,
+              specialHomeLoanInterest,
+              paymentType,
+              borrowingYear
+            );
+
+            if (principalAmount > 0.01) {
+              console.log(
+                "limited SPECIAL_HOME 줄여서::",
+                principalAmount.toFixed(2)
+              );
+
+              result.finalLoanResult.push({
+                name: LoanType.SPECIAL_HOME,
+                interest: specialHomeLoanInterest,
+                loanAmount: principalAmount.toFixed(2),
+                interestAmount: interestAmount.toFixed(2),
+                fixedPaymentLoanAmountByMonth:
+                  calculateFixedPaymentLoanAmountByMonth(
+                    borrowingYear,
+                    principalAmount,
+                    specialHomeLoanInterest
+                  ),
+                fixedPrincipalPaymentLoanAmountFirstMonth:
+                  calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                    borrowingYear,
+                    principalAmount,
+                    specialHomeLoanInterest
+                  ),
+              });
+              loanAmountByLimitedPrice =
+                loanAmountByLimitedPrice - principalAmount;
+            }
+          }
+        }
+
+        if (loanAmountByLimitedPrice > 0.01) {
+          const [principalAmount, interestAmount] = getPrincipalAndInterest(
+            loanAmountByLimitedPrice,
+            NormalLoanInterest,
+            paymentType,
+            borrowingYear
+          );
+          console.log("limited 일반대출::", principalAmount.toFixed(2));
+          result.finalLoanResult.push({
+            name: LoanType.NORMAL,
+            interest: NormalLoanInterest,
+            loanAmount: principalAmount.toFixed(2),
+            interestAmount: interestAmount.toFixed(2),
+            fixedPaymentLoanAmountByMonth:
+              calculateFixedPaymentLoanAmountByMonth(
+                borrowingYear,
+                principalAmount,
+                NormalLoanInterest
+              ),
+            fixedPrincipalPaymentLoanAmountFirstMonth:
+              calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                principalAmount,
+                NormalLoanInterest
+              ),
+          });
+          loanAmountByLimitedPrice = loanAmountByLimitedPrice - principalAmount;
+        }
+      }
+
       return result;
     },
   }),
+
+  // getFinalResult: selector<FinalResult>({
+  //   key: RecoilKey.knowing["KNOWING/getFinalResult"],
+  //   get: ({ get }) => {
+  //     const finalLoanResult: Array<LoanResult> = get(
+  //       KnowingState.getFinalLoanResult
+  //     );
+  //     const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
+
+  //     let totalLoanAmount = 0;
+  //     let useDidimdol = false;
+  //     let useSpecialHome = false;
+
+  //     const result: FinalResult = {
+  //       finalPropertyPrice: 0,
+  //     };
+  //     for (const loan of finalLoanResult) {
+  //       totalLoanAmount += Number.parseFloat(loan.loanAmount);
+
+  //       if (loan.name === LoanType.DIDIMDOL) {
+  //         useDidimdol = true;
+  //       } else if (loan.name === LoanType.SPECIAL_HOME) {
+  //         useSpecialHome = true;
+  //       }
+  //     }
+
+  //     const isFirstTime = get(KnowingState.isFirstTime);
+  //     const havingNoHouse = get(KnowingState.havingNoHouse);
+  //     const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
+
+  //     // 서민실수요자 최대 5억 제한
+  //     if (isFirstTime && havingNoHouse && yearIncome <= 6000) {
+  //       if (totalLoanAmount + getMyAsset > 5) {
+  //         result.finalPropertyPrice = 5;
+  //         result.additionalMessage =
+  //           "서민 실수요자 대출에 해당되어 주택가격이 5억까지로 제한돼요";
+  //         return result;
+  //       } else {
+  //         result.finalPropertyPrice = totalLoanAmount + getMyAsset;
+  //         return result;
+  //       }
+  //     }
+
+  //     if (useDidimdol) {
+  //       // 디딤돌 사용시 최대 5억 제한
+  //       if (totalLoanAmount + getMyAsset > 5) {
+  //         result.finalPropertyPrice = 5;
+  //         result.additionalMessage =
+  //           "디딤돌 대출 사용시 주택가격이 5억까지로 제한돼요";
+  //         return result;
+  //       } else {
+  //         result.finalPropertyPrice = totalLoanAmount + getMyAsset;
+  //         return result;
+  //       }
+  //     } else if (useSpecialHome) {
+  //       // 특례보금자리 9억 제한
+  //       if (totalLoanAmount + getMyAsset > 9) {
+  //         result.finalPropertyPrice = 9;
+  //         result.additionalMessage =
+  //           "특례보금자리 대출 사용시 주택가격이 9억까지로 제한돼요";
+  //         return result;
+  //       } else {
+  //         result.finalPropertyPrice = totalLoanAmount + getMyAsset;
+  //         return result;
+  //       }
+  //     }
+
+  //     result.finalPropertyPrice = totalLoanAmount + getMyAsset;
+  //     return result;
+  //   },
+  // }),
 };
