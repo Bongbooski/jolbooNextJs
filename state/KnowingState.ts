@@ -956,7 +956,7 @@ export const KnowingState = {
         totalLoanAmountByDsr += Number.parseFloat(loan.loanAmount);
       }
 
-      // LTV기준 대출가능 금엑이 DSR기준보다 적다면 LTV기준으로 재계산
+      // // LTV기준 대출가능 금엑이 DSR기준보다 적다면 LTV기준으로 재계산
       if (totalLoanAmountByDsr > loanAmountByLtv) {
         const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
         const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
@@ -1205,16 +1205,24 @@ export const KnowingState = {
       );
 
       if (isLimited) {
-        // 9*(40*0.01)
-        let loanAmountByLimitedPrice =
-          result.finalPropertyPrice * (getLtv * 0.01) - getMyAsset;
+        // LTV기준으로 최대 대출금액과 한도에서 내가 가진 돈을 제한 금액중 더 작은 값 사용(실제 필요한 대출금액 계산하기 위한 목적)
+        let loanAmountByLimitedPrice = Math.min(
+          result.finalPropertyPrice * (getLtv * 0.01),
+          result.finalPropertyPrice - getMyAsset
+        );
+
         result.finalLoanResult = [];
 
         console.log(
           "recalculate by limited property price::",
           result.finalPropertyPrice
         );
-
+        console.log("result.finalPropertyPrice::", result.finalPropertyPrice);
+        console.log(
+          "result.finalPropertyPrice * (getLtv * 0.01)::",
+          result.finalPropertyPrice * (getLtv * 0.01)
+        );
+        console.log("getMyAsset::", getMyAsset);
         const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
         const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
         // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
@@ -1295,7 +1303,6 @@ export const KnowingState = {
         }
 
         if (isAbleSpecialHomeLoan && loanAmountByLimitedPrice > 0) {
-          debugger;
           const specialHomeLoanInterest: number = get(
             KnowingState.getSpecialHomeLoanInterest
           );
