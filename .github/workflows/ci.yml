@@ -8,5 +8,5 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: npm
-      - run: npm ci
+      - run: npm ci --force
       - run: npm run build
