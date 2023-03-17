@@ -77,11 +77,13 @@ const Result = () => {
   const getSoulGatheringAmount = useRecoilValue<number>(
     KnowingState.getSoulGatheringAmount
   );
-  const birthday = useRecoilValue<Dayjs>(KnowingState.birthday);
-  const getMaxPropertyPriceByLTV = useRecoilValue<number>(
+  const birthday = useRecoilValue<Dayjs | null>(KnowingState.birthday);
+  const getMaxPropertyPriceByLTV = useRecoilValue<string>(
     KnowingState.getMaxPropertyPriceByLTV
   );
-  const borrowingYear = useRecoilValue<number>(KnowingState.borrowingYear);
+  const borrowingYear = Number.parseInt(
+    useRecoilValue<string>(KnowingState.borrowingYear)
+  );
   const paymentType = useRecoilValue<PaymentType>(KnowingState.paymentType);
 
   const [userEmail, setUserEmail] = useState<string>("");
@@ -543,7 +545,7 @@ const Result = () => {
               <input
                 type={"hidden"}
                 name="birthday"
-                value={birthday.toString()}
+                value={birthday!.toString()}
               />
               <input
                 type={"hidden"}

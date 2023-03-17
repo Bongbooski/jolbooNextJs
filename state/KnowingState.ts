@@ -13,6 +13,7 @@ import {
   ConfirmingLoanBank,
   FinalLoanResult,
   FinalResult,
+  KnowingStateType,
   PaymentType,
 } from "../constants/Common";
 import { LoanResult, LoanType } from "../constants/Loan";
@@ -23,7 +24,7 @@ import {
   getPrincipalAndInterestInSoulGathering,
 } from "../utils/CommonUtils";
 
-export const KnowingState = {
+export const KnowingState: KnowingStateType = {
   birthday: atom<Dayjs | null>({
     key: RecoilKey.knowing["KNOWING/birthday"],
     default: dayjs("1988-04-18", "YYYY-MM-DD"),
@@ -138,8 +139,8 @@ export const KnowingState = {
       let result: number | undefined = undefined;
       const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
       const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
-      const getDidimdolPrimeRate: number = get(
-        KnowingState.getDidimdolPrimeRate
+      const getDidimdolPrimeRate: number = Number.parseFloat(
+        get(KnowingState.getDidimdolPrimeRate)
       );
       const borrowingYear: string = get(KnowingState.borrowingYear);
 
@@ -164,7 +165,10 @@ export const KnowingState = {
   internationalAge: selector<number>({
     key: RecoilKey.knowing["KNOWING/internationalAge"],
     get: ({ get }) => {
-      const birthday = new Date(get(KnowingState.birthday));
+      const inputBirthday = get(KnowingState.birthday);
+      const birthday = new Date(
+        inputBirthday ? inputBirthday.toString() : "1988-01-01"
+      );
       const today = new Date();
 
       let age = today.getFullYear() - birthday.getFullYear();
@@ -448,8 +452,8 @@ export const KnowingState = {
     get: ({ get }) => {
       let result: number | undefined = undefined;
       const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
-      const getHomeLoanPrimeRate: number = get(
-        KnowingState.getHomeLoanPrimeRate
+      const getHomeLoanPrimeRate: number = Number.parseFloat(
+        get(KnowingState.getHomeLoanPrimeRate)
       );
       const borrowingYear: string = get(KnowingState.borrowingYear);
 
@@ -575,8 +579,8 @@ export const KnowingState = {
   getMaxPropertyPriceByLTV: selector<string>({
     key: RecoilKey.knowing["KNOWING/getMaxPropertyPriceByLTV"],
     get: ({ get }) => {
-      const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
-      const getLtv = Number.parseInt(get(KnowingState.getLtv));
+      const getMyAsset = get(KnowingState.getMyAsset);
+      const getLtv = get(KnowingState.getLtv);
 
       return ((getMyAsset * 100) / (100 - getLtv)).toFixed(2);
     },
@@ -587,7 +591,9 @@ export const KnowingState = {
     get: ({ get }) => {
       const result: Array<LoanResult> = [];
       const paymentType: PaymentType = get(KnowingState.paymentType);
-      const borrowingYear: number = get(KnowingState.borrowingYear);
+      const borrowingYear: number = Number.parseInt(
+        get(KnowingState.borrowingYear)
+      );
       let soulGatheringAmount: number = get(
         KnowingState.getSoulGatheringAmount
       );
@@ -599,7 +605,10 @@ export const KnowingState = {
       // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
       if (isAbleDidimdol && soulGatheringAmount > 0) {
-        const didimdolInterest: number = get(KnowingState.getDidimdolInterest);
+        const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
+        const didimdolInterest: number = Number.parseFloat(
+          didimdolInterestResult ? didimdolInterestResult : "0"
+        );
         const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
         const [didimdolPrincipalAmount, didimdolInterestAmount] =
           getPrincipalAndInterest(
@@ -676,9 +685,12 @@ export const KnowingState = {
       }
 
       if (isAbleSpecialHomeLoan && soulGatheringAmount > 0) {
-        const specialHomeLoanInterest: number = get(
+        const specialHomeLoanInterestResult = get(
           KnowingState.getSpecialHomeLoanInterest
         );
+        const specialHomeLoanInterest: number = specialHomeLoanInterestResult
+          ? Number.parseFloat(specialHomeLoanInterestResult)
+          : 0;
         const specialHomeLoanLimit: number = get(
           KnowingState.getSpecialHomeLoanLimit
         );
@@ -940,9 +952,11 @@ export const KnowingState = {
     get: ({ get }) => {
       const dsrResult: Array<LoanResult> = get(KnowingState.getDsrLoanResult);
       const paymentType: PaymentType = get(KnowingState.paymentType);
-      const borrowingYear: number = get(KnowingState.borrowingYear);
-      const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
-      const getLtv = Number.parseInt(get(KnowingState.getLtv));
+      const borrowingYear: number = Number.parseInt(
+        get(KnowingState.borrowingYear)
+      );
+      const getMyAsset = get(KnowingState.getMyAsset);
+      const getLtv = get(KnowingState.getLtv);
 
       let loanAmountByLtv = (getMyAsset * getLtv) / (100 - getLtv);
 
@@ -965,9 +979,11 @@ export const KnowingState = {
 
         if (isAbleDidimdol && loanAmountByLtv > 0) {
           console.log("recalculate by LTV");
-          const didimdolInterest: number = get(
-            KnowingState.getDidimdolInterest
+          const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
+          const didimdolInterest: number = Number.parseFloat(
+            didimdolInterestResult ? didimdolInterestResult : "0"
           );
+
           const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
 
           if (loanAmountByLtv - didimdolLimit >= 0) {
@@ -1037,9 +1053,13 @@ export const KnowingState = {
         }
 
         if (isAbleSpecialHomeLoan && loanAmountByLtv > 0) {
-          const specialHomeLoanInterest: number = get(
+          const specialHomeLoanInterestResult = get(
             KnowingState.getSpecialHomeLoanInterest
           );
+          const specialHomeLoanInterest: number = specialHomeLoanInterestResult
+            ? Number.parseFloat(specialHomeLoanInterestResult)
+            : 0;
+
           const specialHomeLoanLimit: number = get(
             KnowingState.getSpecialHomeLoanLimit
           );
@@ -1229,9 +1249,11 @@ export const KnowingState = {
         // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
         if (isAbleDidimdol && loanAmountByLimitedPrice > 0) {
-          const didimdolInterest: number = get(
-            KnowingState.getDidimdolInterest
+          const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
+          const didimdolInterest: number = Number.parseFloat(
+            didimdolInterestResult ? didimdolInterestResult : "0"
           );
+
           const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
 
           if (loanAmountByLimitedPrice - didimdolLimit >= 0) {
@@ -1303,9 +1325,13 @@ export const KnowingState = {
         }
 
         if (isAbleSpecialHomeLoan && loanAmountByLimitedPrice > 0) {
-          const specialHomeLoanInterest: number = get(
+          const specialHomeLoanInterestResult = get(
             KnowingState.getSpecialHomeLoanInterest
           );
+          const specialHomeLoanInterest: number = specialHomeLoanInterestResult
+            ? Number.parseFloat(specialHomeLoanInterestResult)
+            : 0;
+
           const specialHomeLoanLimit: number = get(
             KnowingState.getSpecialHomeLoanLimit
           );

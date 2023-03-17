@@ -1,3 +1,6 @@
+import { Dayjs } from "dayjs";
+import { RecoilState, RecoilValueReadOnly } from "recoil";
+import { Loan } from "../components/LoanInput";
 import { LoanResult } from "./Loan";
 
 export enum ConfirmingLoanBank {
@@ -183,4 +186,49 @@ export interface FinalLoanResult {
   finalLoanResult: Array<LoanResult>;
   finalPropertyPrice: number;
   additionalMessage?: string;
+}
+
+export interface KnowingStateType {
+  birthday: RecoilState<Dayjs | null>;
+  isMarriedValue: RecoilState<string | null>;
+  isNewCouple: RecoilState<boolean | null>;
+  isFirstTime: RecoilState<boolean>;
+  yearIncome: RecoilState<string>;
+  supportAmount: RecoilState<string>;
+  depositAmount: RecoilState<string>;
+  isSingleParent: RecoilState<boolean>;
+  isHavingKids: RecoilState<boolean>;
+  isDisabled: RecoilState<boolean>;
+  isMultiCultural: RecoilState<boolean>;
+  havingNoHouse: RecoilState<boolean>;
+  kidsCount: RecoilState<string>;
+  monthlySpending: RecoilState<string>;
+  residualLoan: RecoilState<Loan[]>;
+  borrowingYear: RecoilState<string>;
+  confirmingLoanBank: RecoilState<ConfirmingLoanBank>;
+  paymentType: RecoilState<PaymentType>;
+  isMarried: RecoilValueReadOnly<boolean>;
+  isAbleDidimdol: RecoilValueReadOnly<boolean>;
+  getDidimdolInterest: RecoilValueReadOnly<string | undefined>;
+  internationalAge: RecoilValueReadOnly<number>;
+  getDidimdolPrimeRate: RecoilValueReadOnly<string>;
+  getDidimdolLimit: RecoilValueReadOnly<number>;
+  isAbleHomeLoan: RecoilValueReadOnly<boolean>;
+  isAbleSpecialHomeLoan: RecoilValueReadOnly<boolean>;
+  getSpecialHomeLoanPrimeRate: RecoilValueReadOnly<number>;
+  getHomeLoanPrimeRate: RecoilValueReadOnly<string>;
+  getSpecialHomeLoanInterest: RecoilValueReadOnly<string | undefined>;
+  getHomeLoanInterest: RecoilValueReadOnly<string | undefined>;
+  getSpecialHomeLoanLimit: RecoilValueReadOnly<number>;
+  getHomeLoanLimit: RecoilValueReadOnly<number>;
+  isAbleConfirmingLoan: RecoilValueReadOnly<boolean>;
+  getConfirmingLoanInterest: RecoilValueReadOnly<number | undefined>;
+  getConfirmingLoanLimit: RecoilValueReadOnly<number>;
+  getDsr: RecoilValueReadOnly<number>;
+  getLtv: RecoilValueReadOnly<number>;
+  getSoulGatheringAmount: RecoilValueReadOnly<number>;
+  getMyAsset: RecoilValueReadOnly<number>;
+  getMaxPropertyPriceByLTV: RecoilValueReadOnly<string>;
+  getDsrLoanResult: RecoilValueReadOnly<Array<LoanResult>>;
+  getFinalLoanResult: RecoilValueReadOnly<FinalLoanResult>;
 }

@@ -53,7 +53,7 @@ const Home = () => {
     useRecoilState<ConfirmingLoanBank>(KnowingState.confirmingLoanBank);
 
   const isAbleDidimdol = useRecoilValue<boolean>(KnowingState.isAbleDidimdol);
-  const getDidimdolInterest = useRecoilValue<boolean>(
+  const getDidimdolInterest = useRecoilValue<string | undefined>(
     KnowingState.getDidimdolInterest
   );
 
@@ -69,7 +69,7 @@ const Home = () => {
     KnowingState.isAbleSpecialHomeLoan
   );
 
-  const getSpecialHomeLoanInterest = useRecoilValue<number>(
+  const getSpecialHomeLoanInterest = useRecoilValue<string | undefined>(
     KnowingState.getSpecialHomeLoanInterest
   );
 
@@ -77,7 +77,7 @@ const Home = () => {
     KnowingState.getSpecialHomeLoanLimit
   );
 
-  const getConfirmingLoanInterest = useRecoilValue<boolean>(
+  const getConfirmingLoanInterest = useRecoilValue<number | undefined>(
     KnowingState.getConfirmingLoanInterest
   );
 
@@ -98,7 +98,7 @@ const Home = () => {
     KnowingState.getSoulGatheringAmount
   );
 
-  const getMaxPropertyPriceByLTV = useRecoilValue<number>(
+  const getMaxPropertyPriceByLTV = useRecoilValue<string>(
     KnowingState.getMaxPropertyPriceByLTV
   );
 
