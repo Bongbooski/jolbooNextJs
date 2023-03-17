@@ -243,7 +243,12 @@ const Result = () => {
         <div className="districtContainer">
           <div className="districtContents">
             <div className="mapArea">
-              <Image alt={"seoulMap"} src="/seoul_map.png" />
+              <Image
+                width={480}
+                height={394}
+                alt={"seoulMap"}
+                src="/seoul_map.png"
+              />
               {selectedSquareMeter === "25" && districtName25.length > 0 ? (
                 districtName25.map((e, i) => {
                   return (
