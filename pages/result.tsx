@@ -308,6 +308,7 @@ const Result = () => {
                 target="_blank"
                 href="https://data.kbland.kr/kbstats/wmh?tIdx=HT07&tsIdx=aptM2SaleAvgPrice"
                 className="link"
+                rel="noreferrer"
               >
                 여기
               </a>
