@@ -23,7 +23,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import MuiTooltip from "@mui/material/Tooltip";
+import Image from "next/image";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import {
@@ -241,7 +241,7 @@ const Result = () => {
         <div className="districtContainer">
           <div className="districtContents">
             <div className="mapArea">
-              <img src="/seoul_map.png" />
+              <Image alt={"seoulMap"} src="/seoul_map.png" />
               {selectedSquareMeter === "25" && districtName25.length > 0 ? (
                 districtName25.map((e, i) => {
                   return (
