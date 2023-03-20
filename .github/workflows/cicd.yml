@@ -19,7 +19,7 @@ jobs:
         run: npm run build
 
       - name: Build Searching
-        run: ls
+        run: cd .next
 
       - name: Deploy
         env:
