@@ -3,19 +3,20 @@ import { useRouter } from "next/router";
 // import Seo from "../../components/Seo";
 
 // const Movie = ({ params }: InferGetServerSidePropsType<GetServerSideProps>) => {
-//   const router = useRouter();
-//   const [title, id] = params || [];
+const Movie = () => {
+  const router = useRouter();
+  //   const [title, id] = params || [];
 
-//   console.log("params:", params);
-//   return (
-//     <div>
-//       <Seo title={title} />
-//       <h4>{title}</h4>
-//     </div>
-//   );
-// };
+  //   console.log("params:", params);
+  return (
+    <div>
+      {/* <Seo title={title} /> */}
+      {/* <h4>{title}</h4> */}
+    </div>
+  );
+};
 
-// export default Movie;
+export default Movie;
 
 // export const getServerSideProps = async ({
 //   params: { params },
