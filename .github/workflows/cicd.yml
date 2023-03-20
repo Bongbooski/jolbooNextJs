@@ -18,8 +18,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Build Searching
-        run: cd .next
+      # - name: Build Searching
+      #   run: cd .next
 
       - name: Deploy
         env:
@@ -29,4 +29,4 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            dist s3://soul-gathering-calculator
+            .next s3://soul-gathering-calculator
