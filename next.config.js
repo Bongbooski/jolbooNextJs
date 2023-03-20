@@ -10,7 +10,6 @@ const nextConfig = {
   },
   distDir: "build",
   trailingSlash: true,
-  assetPrefix: "https://jolboo.com",
   images: {
     loader: "akamai",
     path: "/",
