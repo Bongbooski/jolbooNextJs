@@ -1,31 +1,22 @@
-name: mainh
-
-on:
-  push:
-    branches:
-      - main # master 브랜치에서 push 이벤트가 일어났을 때 실행
-
+name: Our CI
+on: push
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
       - name: Cache node modules # node modules 캐싱
-        uses: actions/cache@v1
+        uses: actions/setup-node@v3
         with:
-          path: node_modules
-          key: ${{ runner.OS }}-master-build-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-
-            ${{ runner.OS }}-
+          cache: npm
 
       - name: Install Dependencies
-        run: yarn
+        run: npm ci --force
 
       - name: Build
-        run: yarn build
+        run: npm run build
 
       - name: Deploy
         env:
