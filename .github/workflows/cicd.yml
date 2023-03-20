@@ -3,6 +3,9 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    artifacts:
+      paths:
+        - build/
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
