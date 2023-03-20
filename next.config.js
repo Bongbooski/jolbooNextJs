@@ -8,6 +8,9 @@ const nextConfig = {
   compiler: {
     emotion: true,
   },
+  distDir: "build",
+  trailingSlash: true,
+  assetPrefix: "https://jolboo.com",
   async redirects() {
     return [
       {
