@@ -13,6 +13,7 @@ import {
   ConfirmingLoanBank,
   FinalLoanResult,
   FinalResult,
+  HousePriceLitmitation,
   KnowingStateType,
   PaymentType,
 } from "../constants/Common";
@@ -100,6 +101,14 @@ export const KnowingState: KnowingStateType = {
   paymentType: atom<PaymentType>({
     key: RecoilKey.knowing["KNOWING/paymentType"],
     default: PaymentType.FIXED,
+  }),
+  useDidimdol: atom<boolean>({
+    key: RecoilKey.knowing["KNOWING/useDidimdol"],
+    default: true,
+  }),
+  useSpecialHome: atom<boolean>({
+    key: RecoilKey.knowing["KNOWING/useSpecialHome"],
+    default: true,
   }),
 
   isMarried: selector<boolean>({
@@ -600,11 +609,14 @@ export const KnowingState: KnowingStateType = {
       soulGatheringAmount = (soulGatheringAmount * borrowingYear) / 10000;
 
       const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
+      const useDidimdol = get(KnowingState.useDidimdol);
+
       const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
+      const useSpecialHome = get(KnowingState.useDidimdol);
       // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
       // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
-      if (isAbleDidimdol && soulGatheringAmount > 0) {
+      if (useDidimdol && isAbleDidimdol && soulGatheringAmount > 0) {
         const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
         const didimdolInterest: number = Number.parseFloat(
           didimdolInterestResult ? didimdolInterestResult : "0"
@@ -684,7 +696,7 @@ export const KnowingState: KnowingStateType = {
         //   (didimdolPrincipalAmount + didimdolInterestAmount);
       }
 
-      if (isAbleSpecialHomeLoan && soulGatheringAmount > 0) {
+      if (useSpecialHome && isAbleSpecialHomeLoan && soulGatheringAmount > 0) {
         const specialHomeLoanInterestResult = get(
           KnowingState.getSpecialHomeLoanInterest
         );
@@ -970,14 +982,23 @@ export const KnowingState: KnowingStateType = {
         totalLoanAmountByDsr += Number.parseFloat(loan.loanAmount);
       }
 
+      const useDidimdol = get(KnowingState.useDidimdol);
+      const useSpecialHome = get(KnowingState.useSpecialHome);
       // // LTV기준 대출가능 금엑이 DSR기준보다 적다면 LTV기준으로 재계산
+      console.log(
+        "재계산11111::::",
+        totalLoanAmountByDsr,
+        ",  ",
+        loanAmountByLtv
+      );
       if (totalLoanAmountByDsr > loanAmountByLtv) {
         const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
+
         const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
         // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
         // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
-        if (isAbleDidimdol && loanAmountByLtv > 0) {
+        if (useDidimdol && isAbleDidimdol && loanAmountByLtv > 0) {
           console.log("recalculate by LTV");
           const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
           const didimdolInterest: number = Number.parseFloat(
@@ -1052,7 +1073,7 @@ export const KnowingState: KnowingStateType = {
           }
         }
 
-        if (isAbleSpecialHomeLoan && loanAmountByLtv > 0) {
+        if (useSpecialHome && isAbleSpecialHomeLoan && loanAmountByLtv > 0) {
           const specialHomeLoanInterestResult = get(
             KnowingState.getSpecialHomeLoanInterest
           );
@@ -1170,16 +1191,16 @@ export const KnowingState: KnowingStateType = {
 
       // 주택가격 제한에 걸리는 경우, 재계산
       let totalLoanAmount = 0;
-      let useDidimdol = false;
-      let useSpecialHome = false;
+      let includeDidimdol = false;
+      let includeSpecialHome = false;
 
       for (const loan of result.finalLoanResult) {
         totalLoanAmount += Number.parseFloat(loan.loanAmount);
 
         if (loan.name === LoanType.DIDIMDOL) {
-          useDidimdol = true;
+          includeDidimdol = true;
         } else if (loan.name === LoanType.SPECIAL_HOME) {
-          useSpecialHome = true;
+          includeSpecialHome = true;
         }
       }
 
@@ -1191,38 +1212,30 @@ export const KnowingState: KnowingStateType = {
       result.finalPropertyPrice = totalLoanAmount + getMyAsset;
 
       // 서민실수요자 최대 5억 제한
-      if (isFirstTime && havingNoHouse && yearIncome <= 6000) {
-        if (totalLoanAmount + getMyAsset > 5) {
-          result.finalPropertyPrice = 5;
-          result.additionalMessage =
-            "서민 실수요자 대출에 해당되어 주택가격이 5억까지로 제한돼요";
-          isLimited = true;
-        }
-      }
+      // if (isFirstTime && havingNoHouse && yearIncome <= 6000) {
+      //   if (totalLoanAmount + getMyAsset > 6) {
+      //     result.finalPropertyPrice = 6;
+      //     result.additionalMessage =
+      //       "서민 실수요자 대출에 해당되어 주택가격이 5억까지로 제한돼요";
+      //     isLimited = true;
+      //   }
+      // }
 
-      if (useDidimdol) {
+      if (useDidimdol && includeDidimdol) {
         // 디딤돌 사용시 최대 5억 제한
-        if (totalLoanAmount + getMyAsset > 5) {
-          result.finalPropertyPrice = 5;
-          result.additionalMessage =
-            "디딤돌 대출 사용시 주택가격이 5억까지로 제한돼요";
+        if (totalLoanAmount + getMyAsset > HousePriceLitmitation.DIDIMDOL) {
+          result.finalPropertyPrice = HousePriceLitmitation.DIDIMDOL;
+          result.additionalMessage = `디딤돌 대출 사용시 주택가격이 ${HousePriceLitmitation.DIDIMDOL}억까지로 제한돼요`;
           isLimited = true;
         }
-      } else if (useSpecialHome) {
+      } else if (useSpecialHome && includeSpecialHome) {
         // 특례보금자리 9억 제한
-        if (totalLoanAmount + getMyAsset > 9) {
-          result.finalPropertyPrice = 9;
-          result.additionalMessage =
-            "특례보금자리 대출 사용시 주택가격이 9억까지로 제한돼요";
+        if (totalLoanAmount + getMyAsset > HousePriceLitmitation.SPECIAL_HOME) {
+          result.finalPropertyPrice = HousePriceLitmitation.SPECIAL_HOME;
+          result.additionalMessage = `특례보금자리 대출 사용시 주택가격이 ${HousePriceLitmitation.SPECIAL_HOME}억까지로 제한돼요`;
           isLimited = true;
         }
       }
-
-      console.log("useSpecial:::", useSpecialHome);
-      console.log(
-        "totalLoanAmount + getMyAsset:::",
-        totalLoanAmount + getMyAsset
-      );
 
       if (isLimited) {
         // LTV기준으로 최대 대출금액과 한도에서 내가 가진 돈을 제한 금액중 더 작은 값 사용(실제 필요한 대출금액 계산하기 위한 목적)
@@ -1248,7 +1261,7 @@ export const KnowingState: KnowingStateType = {
         // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
         // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
-        if (isAbleDidimdol && loanAmountByLimitedPrice > 0) {
+        if (useDidimdol && isAbleDidimdol && loanAmountByLimitedPrice > 0) {
           const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
           const didimdolInterest: number = Number.parseFloat(
             didimdolInterestResult ? didimdolInterestResult : "0"
@@ -1324,7 +1337,11 @@ export const KnowingState: KnowingStateType = {
           }
         }
 
-        if (isAbleSpecialHomeLoan && loanAmountByLimitedPrice > 0) {
+        if (
+          useSpecialHome &&
+          isAbleSpecialHomeLoan &&
+          loanAmountByLimitedPrice > 0
+        ) {
           const specialHomeLoanInterestResult = get(
             KnowingState.getSpecialHomeLoanInterest
           );
@@ -1442,75 +1459,4 @@ export const KnowingState: KnowingStateType = {
       return result;
     },
   }),
-
-  // getFinalResult: selector<FinalResult>({
-  //   key: RecoilKey.knowing["KNOWING/getFinalResult"],
-  //   get: ({ get }) => {
-  //     const finalLoanResult: Array<LoanResult> = get(
-  //       KnowingState.getFinalLoanResult
-  //     );
-  //     const getMyAsset = Number.parseFloat(get(KnowingState.getMyAsset));
-
-  //     let totalLoanAmount = 0;
-  //     let useDidimdol = false;
-  //     let useSpecialHome = false;
-
-  //     const result: FinalResult = {
-  //       finalPropertyPrice: 0,
-  //     };
-  //     for (const loan of finalLoanResult) {
-  //       totalLoanAmount += Number.parseFloat(loan.loanAmount);
-
-  //       if (loan.name === LoanType.DIDIMDOL) {
-  //         useDidimdol = true;
-  //       } else if (loan.name === LoanType.SPECIAL_HOME) {
-  //         useSpecialHome = true;
-  //       }
-  //     }
-
-  //     const isFirstTime = get(KnowingState.isFirstTime);
-  //     const havingNoHouse = get(KnowingState.havingNoHouse);
-  //     const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
-
-  //     // 서민실수요자 최대 5억 제한
-  //     if (isFirstTime && havingNoHouse && yearIncome <= 6000) {
-  //       if (totalLoanAmount + getMyAsset > 5) {
-  //         result.finalPropertyPrice = 5;
-  //         result.additionalMessage =
-  //           "서민 실수요자 대출에 해당되어 주택가격이 5억까지로 제한돼요";
-  //         return result;
-  //       } else {
-  //         result.finalPropertyPrice = totalLoanAmount + getMyAsset;
-  //         return result;
-  //       }
-  //     }
-
-  //     if (useDidimdol) {
-  //       // 디딤돌 사용시 최대 5억 제한
-  //       if (totalLoanAmount + getMyAsset > 5) {
-  //         result.finalPropertyPrice = 5;
-  //         result.additionalMessage =
-  //           "디딤돌 대출 사용시 주택가격이 5억까지로 제한돼요";
-  //         return result;
-  //       } else {
-  //         result.finalPropertyPrice = totalLoanAmount + getMyAsset;
-  //         return result;
-  //       }
-  //     } else if (useSpecialHome) {
-  //       // 특례보금자리 9억 제한
-  //       if (totalLoanAmount + getMyAsset > 9) {
-  //         result.finalPropertyPrice = 9;
-  //         result.additionalMessage =
-  //           "특례보금자리 대출 사용시 주택가격이 9억까지로 제한돼요";
-  //         return result;
-  //       } else {
-  //         result.finalPropertyPrice = totalLoanAmount + getMyAsset;
-  //         return result;
-  //       }
-  //     }
-
-  //     result.finalPropertyPrice = totalLoanAmount + getMyAsset;
-  //     return result;
-  //   },
-  // }),
 };

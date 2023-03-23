@@ -24,6 +24,11 @@ export interface PricePerSquareMeterType {
   districtEngName: string;
 }
 
+export enum HousePriceLitmitation {
+  DIDIMDOL = 5,
+  SPECIAL_HOME = 9,
+}
+
 export const PricePerSquareMeter: PricePerSquareMeterType[] = [
   {
     districtName: "도봉구",
@@ -207,6 +212,8 @@ export interface KnowingStateType {
   borrowingYear: RecoilState<string>;
   confirmingLoanBank: RecoilState<ConfirmingLoanBank>;
   paymentType: RecoilState<PaymentType>;
+  useDidimdol: RecoilState<boolean>;
+  useSpecialHome: RecoilState<boolean>;
   isMarried: RecoilValueReadOnly<boolean>;
   isAbleDidimdol: RecoilValueReadOnly<boolean>;
   getDidimdolInterest: RecoilValueReadOnly<string | undefined>;
