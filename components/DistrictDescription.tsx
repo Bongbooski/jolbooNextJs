@@ -39,7 +39,7 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
         <>
           <div className="verticalContainer">
             <Typography variant="h5" gutterBottom>
-              {props.squareMeter}평은
+              {props.squareMeter}평은{" "}
             </Typography>
             <Typography variant="h2" gutterBottom>
               {props.districts[props.districts.length - 1].districtName}

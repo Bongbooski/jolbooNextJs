@@ -625,14 +625,37 @@ const Result = () => {
         </div>
       </div>
       <div className="contentsArea">
-        <Typography variant="h5" gutterBottom>
-          현재 {saveAmount}만원 저축하고 있어요. 매월{" "}
-          {getCommaString(getTotalPayment())}원을 원리금으로 내고 나면{" "}
-          {getCommaString(
-            Number(saveAmount) * 10000 - Number(getTotalPayment())
-          )}
-          원이 남아요
-        </Typography>
+        {Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
+          <>
+            <Typography variant="h5" gutterBottom>
+              현재 매달 {saveAmount}만원을 저축하고 있어요. 매월{" "}
+              {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
+              부족하네요 &#128517;
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              (저축액을 적용해서 대출금을 다시 계산해볼까요)
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="h5" gutterBottom>
+              현재 {saveAmount}만원 저축하고 있어요. 매월{" "}
+              {getCommaString(getTotalPayment())}원을 원리금으로 내고 나면{" "}
+              {getCommaString(
+                Number(saveAmount) * 10000 - Number(getTotalPayment())
+              )}
+              원이 남아요
+            </Typography>
+            <Typography variant="h5" gutterBottom>
+              월 저축액 중{" "}
+              {(
+                (Number(getTotalPayment()) / (Number(saveAmount) * 10000)) *
+                100
+              ).toFixed(2)}
+              %를 원리금 상환에 사용하겠네요
+            </Typography>
+          </>
+        )}
       </div>
 
       <div className="contentsArea">
