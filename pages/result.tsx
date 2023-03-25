@@ -24,6 +24,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Stack,
 } from "@mui/material";
 import Image from "next/image";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -33,7 +34,7 @@ import {
   PaymentType,
   PricePerSquareMeter,
 } from "../constants/Common";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { KnowingState } from "../state/KnowingState";
 import DistrictDescription from "../components/DistrictDescription";
 import {
@@ -46,6 +47,7 @@ import Router from "next/router";
 import emailjs from "emailjs-com";
 import { Dayjs } from "dayjs";
 import SearchIcon from "../asset/svg/Search.svg";
+import AntSwitch from "../components/AntSwitch";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -69,6 +71,8 @@ const chartBorderColor = [
 
 const Result = () => {
   const [selectedSquareMeter, setSelectedSquareMeter] = useState<string>("25");
+  // const [includeDidimdol, setIncludeDidimdol] = useState<boolean>(false);
+  // const [includeSpecialHome, setIncludeSpecialHome] = useState<boolean>(false);
   const getFinalLoanResult = useRecoilValue<FinalLoanResult>(
     KnowingState.getFinalLoanResult
   );
@@ -79,6 +83,16 @@ const Result = () => {
   const supportAmount = useRecoilValue<string>(KnowingState.supportAmount);
   const saveAmount = useRecoilValue<string>(KnowingState.saveAmount);
 
+  const isAbleDidimdol = useRecoilValue<boolean>(KnowingState.isAbleDidimdol);
+  const [useDidimdol, setUseDidimdol] = useRecoilState<boolean>(
+    KnowingState.useDidimdol
+  );
+  const isAbleSpecialHomeLoan = useRecoilValue<boolean>(
+    KnowingState.isAbleSpecialHomeLoan
+  );
+  const [useSpecialHome, setUseSpecialHome] = useRecoilState<boolean>(
+    KnowingState.useSpecialHome
+  );
   const getSoulGatheringAmount = useRecoilValue<number>(
     KnowingState.getSoulGatheringAmount
   );
@@ -181,6 +195,18 @@ const Result = () => {
     }
   }, [yearIncome]);
 
+  // useEffect(() => {
+  //   setIncludeDidimdol(false);
+  //   setIncludeSpecialHome(false);
+  //   for (const loan of getFinalLoanResult.finalLoanResult) {
+  //     if (loan.name === LoanType.DIDIMDOL) {
+  //       setIncludeDidimdol(true);
+  //     } else if (loan.name === LoanType.SPECIAL_HOME) {
+  //       setIncludeSpecialHome(true);
+  //     }
+  //   }
+  // }, [getFinalLoanResult]);
+
   const data = {
     labels: getFinalLoanResult.finalLoanResult.map((e) => e.name),
     datasets: [
@@ -266,6 +292,50 @@ const Result = () => {
             </Typography>
           </div>
         )}
+        {isAbleDidimdol && (
+          <div className="verticalContainer">
+            <div>
+              <QuestionIcon fill="#6e6d6d" />{" "}
+            </div>
+            <Typography variant="h6" gutterBottom>
+              {"디딤돌대출을 받으실 건가요?"}
+            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography>{"받지않기"}</Typography>
+              <AntSwitch
+                checked={useDidimdol}
+                value={useDidimdol}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setUseDidimdol(e.target.checked);
+                }}
+                inputProps={{ "aria-label": "ant design" }}
+              />
+              <Typography>{"받기"}</Typography>
+            </Stack>
+          </div>
+        )}
+        {isAbleSpecialHomeLoan && (
+          <div className="verticalContainer">
+            <div>
+              <QuestionIcon fill="#6e6d6d" />{" "}
+            </div>
+            <Typography variant="h6" gutterBottom>
+              {"특례보금자리론을 받으실 건가요?"}
+            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography>{"받지않기"}</Typography>
+              <AntSwitch
+                checked={useSpecialHome}
+                value={useSpecialHome}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setUseSpecialHome(e.target.checked);
+                }}
+                inputProps={{ "aria-label": "ant design" }}
+              />
+              <Typography>{"받기"}</Typography>
+            </Stack>
+          </div>
+        )}
       </div>
       <div className="contentsArea">
         <div className="districtContainer">
@@ -275,7 +345,7 @@ const Result = () => {
                 width={480}
                 height={394}
                 alt={"seoulMap"}
-                src="/seoul_map.png"
+                src={"/seoul_map.png"}
               />
               {selectedSquareMeter === "25" && districtName25.length > 0 ? (
                 districtName25.map((e, i) => {
