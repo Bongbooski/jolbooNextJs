@@ -528,9 +528,6 @@ export const KnowingState: KnowingStateType = {
         KnowingState.confirmingLoanBank
       );
 
-      console.log(
-        `getConfirmingLoanInterest::confirmingLoanBank:${confirmingLoanBank}, borrowingYear:${borrowingYear}`
-      );
       if (isAbleConfirmingLoan) {
         result = ConfirmingLoanInterests[confirmingLoanBank][borrowingYear];
       }
@@ -615,7 +612,7 @@ export const KnowingState: KnowingStateType = {
       const useDidimdol = get(KnowingState.useDidimdol);
 
       const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
-      const useSpecialHome = get(KnowingState.useDidimdol);
+      const useSpecialHome = get(KnowingState.useSpecialHome);
       // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
       // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
@@ -1252,11 +1249,6 @@ export const KnowingState: KnowingStateType = {
         console.log(
           "recalculate by limited property price::",
           result.finalPropertyPrice
-        );
-        console.log("result.finalPropertyPrice::", result.finalPropertyPrice);
-        console.log(
-          "result.finalPropertyPrice * (getLtv * 0.01)::",
-          result.finalPropertyPrice * (getLtv * 0.01)
         );
         console.log("getMyAsset::", getMyAsset);
         const isAbleDidimdol = get(KnowingState.isAbleDidimdol);

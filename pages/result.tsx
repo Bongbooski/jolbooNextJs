@@ -48,6 +48,7 @@ import emailjs from "emailjs-com";
 import { Dayjs } from "dayjs";
 import SearchIcon from "../asset/svg/Search.svg";
 import AntSwitch from "../components/AntSwitch";
+import { LoanResult, LoanType } from "../constants/Loan";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -75,6 +76,9 @@ const Result = () => {
   // const [includeSpecialHome, setIncludeSpecialHome] = useState<boolean>(false);
   const getFinalLoanResult = useRecoilValue<FinalLoanResult>(
     KnowingState.getFinalLoanResult
+  );
+  const getDsrLoanResult = useRecoilValue<Array<LoanResult>>(
+    KnowingState.getDsrLoanResult
   );
   const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
   const getLtv = useRecoilValue<number>(KnowingState.getLtv);
@@ -195,17 +199,14 @@ const Result = () => {
     }
   }, [yearIncome]);
 
-  // useEffect(() => {
-  //   setIncludeDidimdol(false);
-  //   setIncludeSpecialHome(false);
-  //   for (const loan of getFinalLoanResult.finalLoanResult) {
-  //     if (loan.name === LoanType.DIDIMDOL) {
-  //       setIncludeDidimdol(true);
-  //     } else if (loan.name === LoanType.SPECIAL_HOME) {
-  //       setIncludeSpecialHome(true);
-  //     }
-  //   }
-  // }, [getFinalLoanResult]);
+  useEffect(() => {
+    if (getMyAsset > 5) {
+      setUseDidimdol(false);
+    } else if (getMyAsset > 9) {
+      setUseSpecialHome(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const data = {
     labels: getFinalLoanResult.finalLoanResult.map((e) => e.name),
@@ -341,7 +342,7 @@ const Result = () => {
         <div className="districtContainer">
           <div className="districtContents">
             <div className="mapArea">
-              <Image
+              <img
                 width={480}
                 height={394}
                 alt={"seoulMap"}

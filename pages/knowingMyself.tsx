@@ -159,7 +159,8 @@ const Home: NextPageWithLayout = () => {
       yearIncome === "0" ||
       !textfieldNumberValidation(supportAmount) ||
       !textfieldNumberValidation(depositAmount) ||
-      birthday === null
+      birthday === null ||
+      Number.parseInt(depositAmount) < 100
     ) {
       return false;
     } else {
@@ -268,7 +269,10 @@ const Home: NextPageWithLayout = () => {
         </ToggleButtonGroup>
       </SurveyContents>
 
-      <SurveyContents title={"현재 무주택인가요?"}>
+      <SurveyContents
+        title={"현재 무주택인가요?"}
+        description={"다주택자(2주택 이상)시면 결과가 부정확할 수 있어요"}
+      >
         <ToggleButtonGroup
           color="primary"
           value={havingNoHouse.toString()}
@@ -333,7 +337,7 @@ const Home: NextPageWithLayout = () => {
       </SurveyContents>
 
       <SurveyContents
-        title={"지금까지 모은돈은 얼마인가요?"}
+        title={"지금까지 모은 돈은 얼마인가요?"}
         description="가용 할 수 있는 금액을 입력해주세요. 전세에 묶여있는 내 돈 모두 포함해서요"
       >
         <TextField
@@ -346,10 +350,21 @@ const Home: NextPageWithLayout = () => {
             ),
           }}
           variant="standard"
-          error={!textfieldNumberValidation(depositAmount)}
+          // error={!textfieldNumberValidation(depositAmount)}
+          // helperText={
+          //   !textfieldNumberValidation(depositAmount)
+          //     ? "숫자만 입력해주세요"
+          //     : convertPriceToKorean(depositAmount)
+          // }
+          error={
+            !textfieldNumberValidation(depositAmount) ||
+            Number.parseInt(depositAmount) < 100
+          }
           helperText={
             !textfieldNumberValidation(depositAmount)
               ? "숫자만 입력해주세요"
+              : Number.parseInt(depositAmount) < 100
+              ? "최소 금액은 100만원입니다"
               : convertPriceToKorean(depositAmount)
           }
         />

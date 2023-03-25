@@ -26,13 +26,13 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  console.log(props.districts);
-  console.log(props.districts.filter((e, i) => i < props.districts.length - 1));
-  console.log(
-    props.districts
-      .filter((e, i) => i < props.districts.length - 1)
-      .map((e) => e.districtName)
-  );
+  // console.log(props.districts);
+  // console.log(props.districts.filter((e, i) => i < props.districts.length - 1));
+  // console.log(
+  //   props.districts
+  //     .filter((e, i) => i < props.districts.length - 1)
+  //     .map((e) => e.districtName)
+  // );
   return (
     <div className="container">
       {props.districts.length > 0 ? (
