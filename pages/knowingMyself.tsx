@@ -59,6 +59,9 @@ const Home: NextPageWithLayout = () => {
   const [depositAmount, setDepositAmount] = useRecoilState<string>(
     KnowingState.depositAmount
   );
+  const [saveAmount, setSaveAmount] = useRecoilState<string>(
+    KnowingState.saveAmount
+  );
   const [showSingleParentInfo, setShowSingleParentInfo] =
     useState<boolean>(false);
   const [isSingleParent, setIsSingleParent] = useRecoilState<boolean>(
@@ -136,6 +139,14 @@ const Home: NextPageWithLayout = () => {
     const value = Number.parseInt(event.target.value.replaceAll(",", ""));
 
     setDepositAmount(value ? value.toString() : "0");
+  };
+
+  const handleChangeSaveAmount = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = Number.parseInt(event.target.value.replaceAll(",", ""));
+
+    setSaveAmount(value ? value.toString() : "0");
   };
 
   const handleChangeBorrowingYear = (event: SelectChangeEvent) => {
@@ -340,6 +351,28 @@ const Home: NextPageWithLayout = () => {
             !textfieldNumberValidation(depositAmount)
               ? "숫자만 입력해주세요"
               : convertPriceToKorean(depositAmount)
+          }
+        />
+      </SurveyContents>
+      <SurveyContents
+        title={"한달 저축 금액은 얼마인가요?"}
+        description="월급에서 고정비, 용돈 등을 제외하고 남는(저축하시는) 금액을 입력해주세요"
+      >
+        <TextField
+          value={getCommaString(saveAmount)}
+          onChange={handleChangeSaveAmount}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">₩</InputAdornment>,
+            endAdornment: (
+              <InputAdornment position="start">만원</InputAdornment>
+            ),
+          }}
+          variant="standard"
+          error={!textfieldNumberValidation(saveAmount)}
+          helperText={
+            !textfieldNumberValidation(saveAmount)
+              ? "숫자만 입력해주세요"
+              : convertPriceToKorean(saveAmount)
           }
         />
       </SurveyContents>

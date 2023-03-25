@@ -5,10 +5,12 @@ import QuestionIcon from "../asset/svg/Question.svg";
 import {
   Button,
   FormControl,
+  IconButton,
   InputLabel,
   Link,
   MenuItem,
   Paper,
+  Popover,
   Select,
   SelectChangeEvent,
   Step,
@@ -43,6 +45,7 @@ import Symbol from "../components/Symbol";
 import Router from "next/router";
 import emailjs from "emailjs-com";
 import { Dayjs } from "dayjs";
+import SearchIcon from "../asset/svg/Search.svg";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -74,6 +77,8 @@ const Result = () => {
   const yearIncome = useRecoilValue<string>(KnowingState.yearIncome);
   const depositAmount = useRecoilValue<string>(KnowingState.depositAmount);
   const supportAmount = useRecoilValue<string>(KnowingState.supportAmount);
+  const saveAmount = useRecoilValue<string>(KnowingState.saveAmount);
+
   const getSoulGatheringAmount = useRecoilValue<number>(
     KnowingState.getSoulGatheringAmount
   );
@@ -89,6 +94,8 @@ const Result = () => {
   const [userEmail, setUserEmail] = useState<string>("");
   const [showEmailSentInfo, setShowEmailSentInfo] = useState<boolean>(false);
   const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const calculateDSRPercentage = () => {
     let paymentForYear = 0;
@@ -208,8 +215,29 @@ const Result = () => {
     0
   );
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedSquareMeter(event.target.value);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  const getTotalPayment = () => {
+    return paymentType === PaymentType.FIXED
+      ? getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
+          return prev + Number(next.fixedPaymentLoanAmountByMonth);
+        }, 0)
+      : getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
+          return prev + Number(next.fixedPrincipalPaymentLoanAmountFirstMonth);
+        }, 0);
   };
 
   return (
@@ -428,6 +456,29 @@ const Result = () => {
                   >
                     <TableCell component="th" scope="row">
                       {row.name}
+                      <IconButton aria-describedby={id} onClick={handleClick}>
+                        <SearchIcon
+                          width="24"
+                          height="24"
+                          className="searchIcon"
+                        />
+                      </IconButton>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleClose}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "right",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                      >
+                        asdfadsfadsfdsf
+                      </Popover>
                     </TableCell>
                     <TableCell align="right">
                       {Number(row.loanAmount)}억
@@ -496,13 +547,24 @@ const Result = () => {
           </TableContainer>
         </div>
         <div className="verticalContainer">
-          <QuestionIcon />
-          <Typography>
+          <Typography variant="h6">
+            <QuestionIcon fill="#6e6d6d" />
             {"  "}위 계산된 데이터는 참고용입니다. 정확한 수치는 은행에 가서
             확인하셔야 해요
           </Typography>
         </div>
       </div>
+      <div className="contentsArea">
+        <Typography variant="h5" gutterBottom>
+          현재 {saveAmount}만원 저축하고 있어요. 매월{" "}
+          {getCommaString(getTotalPayment())}원을 원리금으로 내고 나면{" "}
+          {getCommaString(
+            Number(saveAmount) * 10000 - Number(getTotalPayment())
+          )}
+          원이 남아요
+        </Typography>
+      </div>
+
       <div className="contentsArea">
         <Typography gutterBottom>
           내가 살 수 있는 아파트 가격을 확인했으면 이제 후보 지역을 선정해야

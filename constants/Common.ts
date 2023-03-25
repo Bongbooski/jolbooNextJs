@@ -196,6 +196,7 @@ export interface KnowingStateType {
   yearIncome: RecoilState<string>;
   supportAmount: RecoilState<string>;
   depositAmount: RecoilState<string>;
+  saveAmount: RecoilState<string>;
   isSingleParent: RecoilState<boolean>;
   isHavingKids: RecoilState<boolean>;
   isDisabled: RecoilState<boolean>;

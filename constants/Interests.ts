@@ -49,6 +49,14 @@ export const SpecialHomeLoanInterests: Interest = {
   },
 };
 
+export const GradualIncreaseRate: InterestDetail = {
+  "10": 0.0115,
+  "15": 0.0046,
+  "20": 0.0023,
+  "30": 0.0008,
+  "40": 0,
+};
+
 interface Interest {
   [index: string]: InterestDetail;
 }

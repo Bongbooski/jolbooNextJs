@@ -6,6 +6,7 @@ const keyArr = [
   "KNOWING/yearIncome",
   "KNOWING/supportAmount",
   "KNOWING/depositAmount",
+  "KNOWING/saveAmount",
   "KNOWING/isSingleParent",
   "KNOWING/isHavingKids",
   "KNOWING/isDisabled",

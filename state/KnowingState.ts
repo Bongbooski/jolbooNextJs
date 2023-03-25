@@ -54,7 +54,10 @@ export const KnowingState: KnowingStateType = {
     key: RecoilKey.knowing["KNOWING/depositAmount"],
     default: "0",
   }),
-
+  saveAmount: atom<string>({
+    key: RecoilKey.knowing["KNOWING/saveAmount"],
+    default: "0",
+  }),
   isSingleParent: atom<boolean>({
     key: RecoilKey.knowing["KNOWING/isSingleParent"],
     default: false,
