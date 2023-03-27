@@ -568,6 +568,7 @@ export const KnowingState: KnowingStateType = {
   getSoulGatheringAmount: selector<number>({
     key: RecoilKey.knowing["KNOWING/getSoulGatheringAmount"],
     get: ({ get }) => {
+      // yearIncom = 월 여유자금으로 계산 여부 ? 여유자금*12 : 연소득
       const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
       const DSR: number = get(KnowingState.getDsr);
 

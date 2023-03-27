@@ -302,7 +302,7 @@ const Result = () => {
               {"디딤돌대출을 받으실 건가요?"}
             </Typography>
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography>{"받지않기"}</Typography>
+              {/* <Typography>{"받지않기"}</Typography> */}
               <AntSwitch
                 checked={useDidimdol}
                 value={useDidimdol}
@@ -324,7 +324,7 @@ const Result = () => {
               {"특례보금자리론을 받으실 건가요?"}
             </Typography>
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography>{"받지않기"}</Typography>
+              {/* <Typography>{"받지않기"}</Typography> */}
               <AntSwitch
                 checked={useSpecialHome}
                 value={useSpecialHome}
