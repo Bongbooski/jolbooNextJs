@@ -18,14 +18,14 @@ import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { KnowingState } from "../state/KnowingState";
+import { KnowingState } from "../../state/KnowingState";
 import { useRecoilState, useRecoilValue } from "recoil";
-import type { NextPageWithLayout } from "./_app";
-import HeaderLayout from "../components/layout/HeaderLayout";
-import SurveyContents from "../components/SurveyContents";
-import { convertPriceToKorean, getCommaString } from "../utils/CommonUtils";
-import { FamilyType } from "../constants/Loan";
-import { PaymentType } from "../constants/Common";
+import type { NextPageWithLayout } from "./../_app";
+import HeaderLayout from "../../components/layout/HeaderLayout";
+import SurveyContents from "../../components/SurveyContents";
+import { convertPriceToKorean, getCommaString } from "../../utils/CommonUtils";
+import { FamilyType } from "../../constants/Loan";
+import { PaymentType } from "../../constants/Common";
 
 interface Movie {
   id: string;
@@ -521,7 +521,10 @@ const Home: NextPageWithLayout = () => {
         </div>
       </SurveyContents>
       <div className="nextButtonContainer">
-        <Link href={`/knowingSpending`} onClick={handleResult}>
+        <Link
+          href={`/soulGatheringCalculator/knowingSpending`}
+          onClick={handleResult}
+        >
           <Button
             id="nextButton"
             variant="contained"

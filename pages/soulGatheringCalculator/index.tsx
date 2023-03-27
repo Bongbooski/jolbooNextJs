@@ -1,11 +1,11 @@
-import Seo from "../components/Seo";
+import Seo from "../../components/Seo";
 import Link from "next/link";
 import { Typography, Button } from "@mui/material";
-import MainIcon from "../asset/svg/Main.svg";
-import SymbolIcon from "../asset/svg/Symbol.svg";
+import MainIcon from "../../asset/svg/Main.svg";
+import SymbolIcon from "../../asset/svg/Symbol.svg";
 import { ReactElement } from "react";
-import AppLayout from "../components/layout/AppLayout";
-import Symbol from "../components/Symbol";
+import AppLayout from "../../components/layout/AppLayout";
+import Symbol from "../../components/Symbol";
 const Home = () => {
   return (
     <>
@@ -18,7 +18,7 @@ const Home = () => {
       <div className="iconArea">
         <MainIcon />
       </div>
-      <Link href={`/knowingMyself`}>
+      <Link href={`/soulGatheringCalculator/knowingMyself`}>
         <Button variant="contained" size="large" disableElevation>
           <Typography variant="body1">시작하기</Typography>
         </Button>

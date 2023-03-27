@@ -207,6 +207,7 @@ export interface KnowingStateType {
   isDisabled: RecoilState<boolean>;
   isMultiCultural: RecoilState<boolean>;
   havingNoHouse: RecoilState<boolean>;
+  useOnlyExtraMoney: RecoilState<boolean>;
   kidsCount: RecoilState<string>;
   monthlySpending: RecoilState<string>;
   residualLoan: RecoilState<Loan[]>;

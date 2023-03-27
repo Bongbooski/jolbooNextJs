@@ -75,6 +75,11 @@ export const KnowingState: KnowingStateType = {
     key: RecoilKey.knowing["KNOWING/isMultiCultural"],
     default: false,
   }),
+  useOnlyExtraMoney: atom<boolean>({
+    key: RecoilKey.knowing["KNOWING/useOnlyExtraMoney"],
+    default: false,
+  }),
+
   havingNoHouse: atom<boolean>({
     key: RecoilKey.knowing["KNOWING/havingNoHouse"],
     default: true,
@@ -570,9 +575,16 @@ export const KnowingState: KnowingStateType = {
     get: ({ get }) => {
       // yearIncom = 월 여유자금으로 계산 여부 ? 여유자금*12 : 연소득
       const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
+      const saveAmount = Number.parseInt(get(KnowingState.saveAmount));
       const DSR: number = get(KnowingState.getDsr);
 
-      return yearIncome * DSR;
+      const useOnlyExtraMoney = get(KnowingState.useOnlyExtraMoney);
+
+      if (useOnlyExtraMoney) {
+        return Math.min(saveAmount * 12, yearIncome * DSR);
+      } else {
+        return yearIncome * DSR;
+      }
     },
   }),
 

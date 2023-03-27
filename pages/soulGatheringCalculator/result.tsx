@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
-import AppLayout from "../components/layout/AppLayout";
-import PlaceBlack from "../asset/svg/Place_black_24dp.svg";
-import QuestionIcon from "../asset/svg/Question.svg";
+import AppLayout from "../../components/layout/AppLayout";
+import PlaceBlack from "../../asset/svg/Place_black_24dp.svg";
+import QuestionIcon from "../../asset/svg/Question.svg";
 import {
   Button,
   FormControl,
@@ -25,6 +25,8 @@ import {
   TextField,
   Typography,
   Stack,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import Image from "next/image";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -33,22 +35,22 @@ import {
   FinalLoanResult,
   PaymentType,
   PricePerSquareMeter,
-} from "../constants/Common";
+} from "../../constants/Common";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { KnowingState } from "../state/KnowingState";
-import DistrictDescription from "../components/DistrictDescription";
+import { KnowingState } from "../../state/KnowingState";
+import DistrictDescription from "../../components/DistrictDescription";
 import {
   calculateFixedPaymentLoanAmountByMonth,
   getCommaString,
   getFixedPrincipalInterest,
-} from "../utils/CommonUtils";
-import Symbol from "../components/Symbol";
+} from "../../utils/CommonUtils";
+import Symbol from "../../components/Symbol";
 import Router from "next/router";
 import emailjs from "emailjs-com";
 import { Dayjs } from "dayjs";
-import SearchIcon from "../asset/svg/Search.svg";
-import AntSwitch from "../components/AntSwitch";
-import { LoanResult, LoanType } from "../constants/Loan";
+import SearchIcon from "../../asset/svg/Search.svg";
+import AntSwitch from "../../components/AntSwitch";
+import { LoanResult, LoanType } from "../../constants/Loan";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -97,6 +99,10 @@ const Result = () => {
   const [useSpecialHome, setUseSpecialHome] = useRecoilState<boolean>(
     KnowingState.useSpecialHome
   );
+  const [useOnlyExtraMoney, setUseOnlyExtraMoney] = useRecoilState<boolean>(
+    KnowingState.useOnlyExtraMoney
+  );
+
   const getSoulGatheringAmount = useRecoilValue<number>(
     KnowingState.getSoulGatheringAmount
   );
@@ -299,10 +305,11 @@ const Result = () => {
               <QuestionIcon fill="#6e6d6d" />{" "}
             </div>
             <Typography variant="h6" gutterBottom>
-              {"디딤돌대출을 받으실 건가요?"}
+              {"디딤돌대출을 사용하실 건가요?"}
             </Typography>
-            <Stack direction="row" spacing={1} alignItems="center">
-              {/* <Typography>{"받지않기"}</Typography> */}
+
+            {/* <Stack direction="row" spacing={1} alignItems="center">
+              <Typography>{"받지않기"}</Typography>
               <AntSwitch
                 checked={useDidimdol}
                 value={useDidimdol}
@@ -312,7 +319,26 @@ const Result = () => {
                 inputProps={{ "aria-label": "ant design" }}
               />
               <Typography>{"받기"}</Typography>
-            </Stack>
+            </Stack> */}
+            <div className="toggleButtonWrapper">
+              <ToggleButtonGroup
+                color="primary"
+                value={useDidimdol.toString()}
+                size="small"
+                exclusive
+                onChange={(
+                  event: React.MouseEvent<HTMLElement>,
+                  newSelection: string
+                ) => {
+                  if (newSelection !== null)
+                    setUseDidimdol(JSON.parse(newSelection));
+                }}
+                aria-label="Platform"
+              >
+                <ToggleButton value="true">사용</ToggleButton>
+                <ToggleButton value="false">제외</ToggleButton>
+              </ToggleButtonGroup>
+            </div>
           </div>
         )}
         {isAbleSpecialHomeLoan && (
@@ -321,10 +347,10 @@ const Result = () => {
               <QuestionIcon fill="#6e6d6d" />{" "}
             </div>
             <Typography variant="h6" gutterBottom>
-              {"특례보금자리론을 받으실 건가요?"}
+              {"특례보금자리론을 사용하실 건가요?"}
             </Typography>
-            <Stack direction="row" spacing={1} alignItems="center">
-              {/* <Typography>{"받지않기"}</Typography> */}
+            {/* <Stack direction="row" spacing={1} alignItems="center">
+              <Typography>{"받지않기"}</Typography>
               <AntSwitch
                 checked={useSpecialHome}
                 value={useSpecialHome}
@@ -334,7 +360,26 @@ const Result = () => {
                 inputProps={{ "aria-label": "ant design" }}
               />
               <Typography>{"받기"}</Typography>
-            </Stack>
+            </Stack> */}
+            <div className="toggleButtonWrapper">
+              <ToggleButtonGroup
+                color="primary"
+                value={useSpecialHome.toString()}
+                size="small"
+                exclusive
+                onChange={(
+                  event: React.MouseEvent<HTMLElement>,
+                  newSelection: string
+                ) => {
+                  if (newSelection !== null)
+                    setUseSpecialHome(JSON.parse(newSelection));
+                }}
+                aria-label="Platform"
+              >
+                <ToggleButton value="true">사용</ToggleButton>
+                <ToggleButton value="false">제외</ToggleButton>
+              </ToggleButtonGroup>
+            </div>
           </div>
         )}
       </div>
@@ -629,18 +674,42 @@ const Result = () => {
         {Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
           <>
             <Typography variant="h5" gutterBottom>
-              현재 매달 {saveAmount}만원을 저축하고 있어요. 매월{" "}
+              현재 매월 {saveAmount}만원의 여유가 있어요. 매월{" "}
               {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
               부족하네요 &#128517;
             </Typography>
-            <Typography variant="h6" gutterBottom>
-              (저축액을 적용해서 대출금을 다시 계산해볼까요)
-            </Typography>
+            <div className="verticalContainer">
+              <div>
+                <QuestionIcon fill="#6e6d6d" />{" "}
+              </div>
+              <Typography variant="h6" gutterBottom>
+                {"여윳돈으로 감당 가능한 대출금을 계산해볼까요?!"}
+              </Typography>
+              <div className="toggleButtonWrapper">
+                <ToggleButtonGroup
+                  color="primary"
+                  value={useOnlyExtraMoney.toString()}
+                  size="small"
+                  exclusive
+                  onChange={(
+                    event: React.MouseEvent<HTMLElement>,
+                    newSelection: string
+                  ) => {
+                    if (newSelection !== null)
+                      setUseOnlyExtraMoney(JSON.parse(newSelection));
+                  }}
+                  aria-label="Platform"
+                >
+                  <ToggleButton value="true">적용</ToggleButton>
+                  <ToggleButton value="false">미적용</ToggleButton>
+                </ToggleButtonGroup>
+              </div>
+            </div>
           </>
         ) : (
           <>
             <Typography variant="h5" gutterBottom>
-              현재 {saveAmount}만원 저축하고 있어요. 매월{" "}
+              현재 매월 {saveAmount}만원의 여유가 있어요. 매월{" "}
               {getCommaString(getTotalPayment())}원을 원리금으로 내고 나면{" "}
               {getCommaString(
                 Number(saveAmount) * 10000 - Number(getTotalPayment())
@@ -648,7 +717,7 @@ const Result = () => {
               원이 남아요
             </Typography>
             <Typography variant="h5" gutterBottom>
-              월 저축액 중{" "}
+              월 여유자금 중{" "}
               {(
                 (Number(getTotalPayment()) / (Number(saveAmount) * 10000)) *
                 100
@@ -760,7 +829,7 @@ const Result = () => {
       </div>
       <div className="contentsArea">
         <div className="linkContainer">
-          <Link href={`/`}>
+          <Link href={`/soulGatheringCalculator/knowingMyself`}>
             <Button variant="contained" size="large" disableElevation>
               <Typography variant="body1">다시하기</Typography>
             </Button>
@@ -1024,6 +1093,9 @@ const Result = () => {
         .link {
           color: #367cff;
           font-size: 20px;
+        }
+        .toggleButtonWrapper {
+          margin: 5px 0px 5px 10px;
         }
       `}</style>
     </>

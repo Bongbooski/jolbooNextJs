@@ -21,6 +21,11 @@ const nextConfig = {
         destination: "/new-path/:path*",
         permanent: false,
       },
+      {
+        source: "/",
+        destination: "/soulGatheringCalculator",
+        permanent: false,
+      },
     ];
   },
   async rewrites() {

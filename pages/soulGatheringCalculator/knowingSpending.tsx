@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Seo from "../components/Seo";
+import Seo from "../../components/Seo";
 import Link from "next/link";
 import {
   FormControlLabel,
@@ -22,13 +22,13 @@ import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import LoanInput from "../components/LoanInput";
+import LoanInput from "../../components/LoanInput";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { KnowingState } from "../state/KnowingState";
-import { ConfirmingLoanBank, FinalLoanResult } from "../constants/Common";
-import { LoanResult } from "../constants/Loan";
-import { getCommaString } from "../utils/CommonUtils";
-import { NormalLoanInterest } from "../constants/Interests";
+import { KnowingState } from "../../state/KnowingState";
+import { ConfirmingLoanBank, FinalLoanResult } from "../../constants/Common";
+import { LoanResult } from "../../constants/Loan";
+import { getCommaString } from "../../utils/CommonUtils";
+import { NormalLoanInterest } from "../../constants/Interests";
 
 interface Loan {
   name: string;
@@ -332,12 +332,12 @@ const Home = () => {
       ))}
 
       <Button variant="contained" disableElevation>
-        <Link href={`/knowingMyself`}>
+        <Link href={`/soulGatheringCalculator/knowingMyself`}>
           <h4>뒤로가기(나를 좀더 알아보기)</h4>
         </Link>
       </Button>
       <Button variant="contained" disableElevation>
-        <Link href={`/result`}>
+        <Link href={`/soulGatheringCalculator/result`}>
           <h4>결과보기</h4>
         </Link>
       </Button>
