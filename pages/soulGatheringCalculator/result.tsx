@@ -44,7 +44,7 @@ import {
   getCommaString,
   getFixedPrincipalInterest,
 } from "../../utils/CommonUtils";
-import Symbol from "../../components/Symbol";
+import SymbolSmall from "../../components/SymbolSmall";
 import Router from "next/router";
 import emailjs from "emailjs-com";
 import { Dayjs } from "dayjs";
@@ -275,8 +275,8 @@ const Result = () => {
 
   return (
     <>
-      <Symbol />
-      <div className="contentsArea">
+      <SymbolSmall />
+      <div className="firstArea contentsArea">
         <div className="verticalContainer">
           <Typography variant="h5" gutterBottom>
             내가 살 수 있는 주택 가격 최대 금액은{` `}
@@ -383,7 +383,7 @@ const Result = () => {
           </div>
         )}
       </div>
-      <div className="contentsArea">
+      <div className="seoulArea contentsArea">
         <div className="districtContainer">
           <div className="districtContents">
             <div className="mapArea">
@@ -419,8 +419,8 @@ const Result = () => {
                 <></>
               )}
             </div>
-            <div>
-              <FormControl>
+            <div className="descriptionArea">
+              <FormControl style={{ width: "fit-content" }}>
                 <InputLabel id="demo-simple-select-label">면적</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -450,7 +450,7 @@ const Result = () => {
               )}
             </div>
           </div>
-          <div className="verticalContainer">
+          <div className="topMargin10 verticalContainer">
             <QuestionIcon />
             <Typography>
               {"  "}위 데이터는 KB부동산에서 제공한 아파트 ㎡당 매매평균가격
@@ -469,12 +469,12 @@ const Result = () => {
         </div>
       </div>
       <div className="contentsArea">
-        <div className="verticalContainer">
+        <div className="flexableArea">
           <div className="verticalContainer">
             <Typography variant="h5" gutterBottom>
               현재 내가 가진돈은{" "}
             </Typography>
-            <Typography variant="h1" gutterBottom>
+            <Typography variant="h2" gutterBottom>
               {getMyAsset}억
             </Typography>
             <Typography variant="h5" gutterBottom>
@@ -485,7 +485,7 @@ const Result = () => {
             <Typography variant="h5" gutterBottom>
               필요한 대출금은 총
             </Typography>
-            <Typography variant="h1" gutterBottom>
+            <Typography variant="h2" gutterBottom>
               {totalLoanAmount}억
             </Typography>
             <Typography variant="h5" gutterBottom>
@@ -721,8 +721,10 @@ const Result = () => {
           (Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
             <>
               <Typography variant="h5" gutterBottom>
-                현재 매월 {saveAmount}만원의 여유가 있어요. 매월{" "}
-                {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
+                현재 매월 {saveAmount}만원의 여유가 있어요.
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                매월 {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
                 부족하네요 &#128517;
               </Typography>
               <div className="verticalContainer">
@@ -756,8 +758,11 @@ const Result = () => {
           ) : (
             <>
               <Typography variant="h5" gutterBottom>
-                현재 매월 {saveAmount}만원의 여유가 있어요. 매월{" "}
-                {getCommaString(getTotalPayment())}원을 원리금으로 내고 나면{" "}
+                현재 매월 {saveAmount}만원의 여유가 있어요.
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                매월 {getCommaString(getTotalPayment())}원을 원리금으로 내고
+                나면{" "}
                 {getCommaString(
                   Number(saveAmount) * 10000 - Number(getTotalPayment())
                 )}
@@ -890,6 +895,25 @@ const Result = () => {
           flex-direction: column;
           align-items: center;
         }
+        .descriptionArea {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          max-width: 480px;
+        }
+        .flexableArea {
+          flex-wrap: wrap;
+          flex-direction: row;
+          max-width: 960px;
+          display: flex;
+        }
+        .firstArea {
+          padding: 0px;
+          padding-top: 10px;
+        }
+        .seoulArea {
+          padding-top: 0px;
+        }
         .districtContainer {
           display: flex;
           flex-direction: column;
@@ -897,9 +921,14 @@ const Result = () => {
         }
         .districtContents {
           display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
         }
         .districtDescription {
           margin: 10px;
+        }
+        .topMargin10 {
+          margin-top: 10px;
         }
         .verticalContainer {
           display: flex;
