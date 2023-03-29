@@ -38,6 +38,7 @@ const SurveyContents = (props: SurveyContentsProps) => {
                     <Typography variant="h6"> {props.description}</Typography>
                   </div>
                 )}
+            {!props.description && <div className="description" />}
           </div>
           <div className="contents">{props.children}</div>
         </div>
@@ -55,16 +56,17 @@ const SurveyContents = (props: SurveyContentsProps) => {
         .descriptionContainer {
           display: flex;
           justify-content: space-between;
-          min-height: 55px;
           flex-wrap: wrap;
         }
 
         .description {
           display: flex;
           max-width: 600px;
+          min-width: 600px;
         }
         .contents {
-          margin-left: ${props.description ? "" : "auto"};
+          margin-left: auto;
+          /* margin-left: ${props.description ? "" : "auto"}; */
         }
       `}</style>
     </>
