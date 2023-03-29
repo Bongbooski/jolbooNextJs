@@ -494,20 +494,11 @@ const Result = () => {
           </div>
         </div>
         <div className="verticalContainer">
-          <Typography variant="h5" gutterBottom>
-            주택가격{" "}
-          </Typography>
           <Typography variant="h4" gutterBottom>
-            {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
+            LTV
           </Typography>
           <Typography variant="h5" gutterBottom>
-            에 대출금{" "}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {totalLoanAmount}억
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            으로 LTV는{" "}
+            는{" "}
           </Typography>
           <Typography variant="h4" gutterBottom>
             {Number(
@@ -524,7 +515,43 @@ const Result = () => {
           </Typography>
         </div>
         <div className="verticalContainer">
+          <Typography variant="h6">
+            (주택가격 {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
+            억, 대출금 {totalLoanAmount}억)
+          </Typography>
+          {/* <Typography variant="h5" gutterBottom>
+            주택가격{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
+          </Typography>
           <Typography variant="h5" gutterBottom>
+            에 대출금{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {totalLoanAmount}억
+          </Typography> */}
+        </div>
+        <div className="verticalContainer">
+          <Typography variant="h4" gutterBottom>
+            DSR
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            은{" "}
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+            {Number(calculateDSRPercentage().averageDsr)}%
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            이구요
+          </Typography>
+        </div>
+        <div className="verticalContainer">
+          <Typography variant="h6">
+            (나의 1년 상환 총 원리금은 {calculateDSRPercentage().paymentForYear}
+            원){" "}
+          </Typography>
+          {/* <Typography variant="h5" gutterBottom>
             연봉{" "}
           </Typography>
           <Typography variant="h4" gutterBottom>
@@ -544,7 +571,7 @@ const Result = () => {
           </Typography>
           <Typography variant="h5" gutterBottom>
             이구요
-          </Typography>
+          </Typography> */}
         </div>
         <div className="chartContainer">
           <Doughnut data={data} />
