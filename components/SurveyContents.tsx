@@ -66,7 +66,6 @@ const SurveyContents = (props: SurveyContentsProps) => {
         }
         .contents {
           margin-left: auto;
-          /* margin-left: ${props.description ? "" : "auto"}; */
         }
       `}</style>
     </>
