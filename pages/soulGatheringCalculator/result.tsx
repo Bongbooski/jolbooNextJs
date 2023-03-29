@@ -493,33 +493,45 @@ const Result = () => {
             </Typography>
           </div>
         </div>
-        <div className="verticalContainer">
-          <Typography variant="h4" gutterBottom>
-            LTV
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            는{" "}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {Number(
-              (
-                (totalLoanAmount /
-                  Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))) *
-                100
-              ).toFixed(2)
-            )}
-            %
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            이네요
-          </Typography>
-        </div>
-        <div className="verticalContainer">
-          <Typography variant="h6">
-            (주택가격 {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
-            억, 대출금 {totalLoanAmount}억)
-          </Typography>
-          {/* <Typography variant="h5" gutterBottom>
+        {totalLoanAmount === 0 ? (
+          <>
+            <Typography variant="h4">
+              {" "}
+              대출 받을 필요가 없거나, 받을 수 있는 대출이 없네요&#128517;
+            </Typography>
+          </>
+        ) : (
+          <>
+            <div className="verticalContainer">
+              <Typography variant="h4" gutterBottom>
+                LTV
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                는{" "}
+              </Typography>
+              <Typography variant="h4" gutterBottom>
+                {Number(
+                  (
+                    (totalLoanAmount /
+                      Number(
+                        getFinalLoanResult.finalPropertyPrice.toFixed(2)
+                      )) *
+                    100
+                  ).toFixed(2)
+                )}
+                %
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                이네요
+              </Typography>
+            </div>
+            <div className="verticalContainer">
+              <Typography variant="h6">
+                (주택가격{" "}
+                {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
+                억, 대출금 {totalLoanAmount}억)
+              </Typography>
+              {/* <Typography variant="h5" gutterBottom>
             주택가격{" "}
           </Typography>
           <Typography variant="h4" gutterBottom>
@@ -531,27 +543,28 @@ const Result = () => {
           <Typography variant="h4" gutterBottom>
             {totalLoanAmount}억
           </Typography> */}
-        </div>
-        <div className="verticalContainer">
-          <Typography variant="h4" gutterBottom>
-            DSR
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            은{" "}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {Number(calculateDSRPercentage().averageDsr)}%
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            이구요
-          </Typography>
-        </div>
-        <div className="verticalContainer">
-          <Typography variant="h6">
-            (나의 1년 상환 총 원리금은 {calculateDSRPercentage().paymentForYear}
-            원){" "}
-          </Typography>
-          {/* <Typography variant="h5" gutterBottom>
+            </div>
+            <div className="verticalContainer">
+              <Typography variant="h4" gutterBottom>
+                DSR
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                은{" "}
+              </Typography>
+              <Typography variant="h4" gutterBottom>
+                {Number(calculateDSRPercentage().averageDsr)}%
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                이구요
+              </Typography>
+            </div>
+            <div className="verticalContainer">
+              <Typography variant="h6">
+                (나의 1년 상환 총 원리금은{" "}
+                {calculateDSRPercentage().paymentForYear}
+                원){" "}
+              </Typography>
+              {/* <Typography variant="h5" gutterBottom>
             연봉{" "}
           </Typography>
           <Typography variant="h4" gutterBottom>
@@ -572,187 +585,194 @@ const Result = () => {
           <Typography variant="h5" gutterBottom>
             이구요
           </Typography> */}
-        </div>
-        <div className="chartContainer">
-          <Doughnut data={data} />
-        </div>
-        <div className="tableContainer">
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>대출명</TableCell>
-                  <TableCell align="right">원금</TableCell>
-                  <TableCell align="right">이자율</TableCell>
-                  <TableCell align="right">
-                    {paymentType === PaymentType.FIXED
-                      ? "원리금균등(매월)"
-                      : "원금균등(첫달)"}
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {getFinalLoanResult.finalLoanResult.map((row) => (
-                  <TableRow
-                    key={row.name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                      <IconButton aria-describedby={id} onClick={handleClick}>
-                        <SearchIcon
-                          width="24"
-                          height="24"
-                          className="searchIcon"
-                        />
-                      </IconButton>
-                      <Popover
-                        id={id}
-                        open={open}
-                        anchorEl={anchorEl}
-                        onClose={handleClose}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "right",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
+            </div>
+            <div className="chartContainer">
+              <Doughnut data={data} />
+            </div>
+            <div className="tableContainer">
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>대출명</TableCell>
+                      <TableCell align="right">원금</TableCell>
+                      <TableCell align="right">이자율</TableCell>
+                      <TableCell align="right">
+                        {paymentType === PaymentType.FIXED
+                          ? "원리금균등(매월)"
+                          : "원금균등(첫달)"}
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {getFinalLoanResult.finalLoanResult.map((row) => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
                         }}
                       >
-                        asdfadsfadsfdsf
-                      </Popover>
-                    </TableCell>
-                    <TableCell align="right">
-                      {Number(row.loanAmount)}억
-                    </TableCell>
-                    <TableCell align="right">{row.interest}%</TableCell>
-                    <TableCell align="right">
-                      {paymentType === PaymentType.FIXED
-                        ? getCommaString(row.fixedPaymentLoanAmountByMonth)
-                        : getCommaString(
-                            row.fixedPrincipalPaymentLoanAmountFirstMonth
-                          )}
-                      원
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow
-                  key={"합계"}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {"합계"}
-                  </TableCell>
-                  <TableCell align="right">
-                    {getFinalLoanResult.finalLoanResult.reduce(function (
-                      prev,
-                      next
-                    ) {
-                      return prev + Number(next.loanAmount);
-                    },
-                    0)}
-                    억
-                  </TableCell>
-                  <TableCell align="right">{""}</TableCell>
-                  <TableCell align="right">
-                    {paymentType === PaymentType.FIXED
-                      ? getCommaString(
-                          getFinalLoanResult.finalLoanResult.reduce(function (
-                            prev,
-                            next
-                          ) {
-                            return (
-                              prev + Number(next.fixedPaymentLoanAmountByMonth)
-                            );
-                          },
-                          0)
-                        )
-                      : getCommaString(
-                          getFinalLoanResult.finalLoanResult.reduce(function (
-                            prev,
-                            next
-                          ) {
-                            return (
-                              prev +
-                              Number(
-                                next.fixedPrincipalPaymentLoanAmountFirstMonth
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                          <IconButton
+                            aria-describedby={id}
+                            onClick={handleClick}
+                          >
+                            <SearchIcon
+                              width="24"
+                              height="24"
+                              className="searchIcon"
+                            />
+                          </IconButton>
+                          <Popover
+                            id={id}
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                              vertical: "bottom",
+                              horizontal: "right",
+                            }}
+                            transformOrigin={{
+                              vertical: "top",
+                              horizontal: "right",
+                            }}
+                          >
+                            asdfadsfadsfdsf
+                          </Popover>
+                        </TableCell>
+                        <TableCell align="right">
+                          {Number(row.loanAmount)}억
+                        </TableCell>
+                        <TableCell align="right">{row.interest}%</TableCell>
+                        <TableCell align="right">
+                          {paymentType === PaymentType.FIXED
+                            ? getCommaString(row.fixedPaymentLoanAmountByMonth)
+                            : getCommaString(
+                                row.fixedPrincipalPaymentLoanAmountFirstMonth
+                              )}
+                          원
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow
+                      key={"합계"}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {"합계"}
+                      </TableCell>
+                      <TableCell align="right">
+                        {getFinalLoanResult.finalLoanResult.reduce(function (
+                          prev,
+                          next
+                        ) {
+                          return prev + Number(next.loanAmount);
+                        },
+                        0)}
+                        억
+                      </TableCell>
+                      <TableCell align="right">{""}</TableCell>
+                      <TableCell align="right">
+                        {paymentType === PaymentType.FIXED
+                          ? getCommaString(
+                              getFinalLoanResult.finalLoanResult.reduce(
+                                function (prev, next) {
+                                  return (
+                                    prev +
+                                    Number(next.fixedPaymentLoanAmountByMonth)
+                                  );
+                                },
+                                0
                               )
-                            );
-                          },
-                          0)
-                        )}
-                    원
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-        <div className="verticalContainer">
-          <Typography variant="h6">
-            <QuestionIcon fill="#6e6d6d" />
-            {"  "}위 계산된 데이터는 참고용입니다. 정확한 수치는 은행에 가서
-            확인하셔야 해요
-          </Typography>
-        </div>
-      </div>
-      <div className="contentsArea">
-        {Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
-          <>
-            <Typography variant="h5" gutterBottom>
-              현재 매월 {saveAmount}만원의 여유가 있어요. 매월{" "}
-              {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
-              부족하네요 &#128517;
-            </Typography>
+                            )
+                          : getCommaString(
+                              getFinalLoanResult.finalLoanResult.reduce(
+                                function (prev, next) {
+                                  return (
+                                    prev +
+                                    Number(
+                                      next.fixedPrincipalPaymentLoanAmountFirstMonth
+                                    )
+                                  );
+                                },
+                                0
+                              )
+                            )}
+                        원
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
             <div className="verticalContainer">
-              <div>
-                <QuestionIcon fill="#6e6d6d" />{" "}
-              </div>
-              <Typography variant="h6" gutterBottom>
-                {"여윳돈으로 감당 가능한 대출금을 계산해볼까요?!"}
+              <Typography variant="h6">
+                <QuestionIcon fill="#6e6d6d" />
+                {"  "}위 계산된 데이터는 참고용입니다. 정확한 수치는 은행에 가서
+                확인하셔야 해요
               </Typography>
-              <div className="toggleButtonWrapper">
-                <ToggleButtonGroup
-                  color="primary"
-                  value={useOnlyExtraMoney.toString()}
-                  size="small"
-                  exclusive
-                  onChange={(
-                    event: React.MouseEvent<HTMLElement>,
-                    newSelection: string
-                  ) => {
-                    if (newSelection !== null)
-                      setUseOnlyExtraMoney(JSON.parse(newSelection));
-                  }}
-                  aria-label="Platform"
-                >
-                  <ToggleButton value="true">적용</ToggleButton>
-                  <ToggleButton value="false">미적용</ToggleButton>
-                </ToggleButtonGroup>
-              </div>
             </div>
           </>
-        ) : (
-          <>
-            <Typography variant="h5" gutterBottom>
-              현재 매월 {saveAmount}만원의 여유가 있어요. 매월{" "}
-              {getCommaString(getTotalPayment())}원을 원리금으로 내고 나면{" "}
-              {getCommaString(
-                Number(saveAmount) * 10000 - Number(getTotalPayment())
-              )}
-              원이 남아요
-            </Typography>
-            <Typography variant="h5" gutterBottom>
-              월 여유자금 중{" "}
-              {(
-                (Number(getTotalPayment()) / (Number(saveAmount) * 10000)) *
-                100
-              ).toFixed(2)}
-              %를 원리금 상환에 사용하겠네요
-            </Typography>
-          </>
         )}
+      </div>
+      <div className="contentsArea">
+        {totalLoanAmount !== 0 &&
+          (Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
+            <>
+              <Typography variant="h5" gutterBottom>
+                현재 매월 {saveAmount}만원의 여유가 있어요. 매월{" "}
+                {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
+                부족하네요 &#128517;
+              </Typography>
+              <div className="verticalContainer">
+                <div>
+                  <QuestionIcon fill="#6e6d6d" />{" "}
+                </div>
+                <Typography variant="h6" gutterBottom>
+                  {"여윳돈으로 감당 가능한 대출금을 계산해볼까요?!"}
+                </Typography>
+                <div className="toggleButtonWrapper">
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={useOnlyExtraMoney.toString()}
+                    size="small"
+                    exclusive
+                    onChange={(
+                      event: React.MouseEvent<HTMLElement>,
+                      newSelection: string
+                    ) => {
+                      if (newSelection !== null)
+                        setUseOnlyExtraMoney(JSON.parse(newSelection));
+                    }}
+                    aria-label="Platform"
+                  >
+                    <ToggleButton value="true">적용</ToggleButton>
+                    <ToggleButton value="false">미적용</ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Typography variant="h5" gutterBottom>
+                현재 매월 {saveAmount}만원의 여유가 있어요. 매월{" "}
+                {getCommaString(getTotalPayment())}원을 원리금으로 내고 나면{" "}
+                {getCommaString(
+                  Number(saveAmount) * 10000 - Number(getTotalPayment())
+                )}
+                원이 남아요
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                월 여유자금 중{" "}
+                {(
+                  (Number(getTotalPayment()) / (Number(saveAmount) * 10000)) *
+                  100
+                ).toFixed(2)}
+                %를 원리금 상환에 사용하겠네요
+              </Typography>
+            </>
+          ))}
       </div>
 
       <div className="contentsArea">
