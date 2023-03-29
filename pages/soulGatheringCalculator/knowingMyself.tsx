@@ -26,6 +26,7 @@ import SurveyContents from "../../components/SurveyContents";
 import { convertPriceToKorean, getCommaString } from "../../utils/CommonUtils";
 import { FamilyType } from "../../constants/Loan";
 import { PaymentType } from "../../constants/Common";
+import Seo from "../../components/Seo";
 
 interface Movie {
   id: string;
@@ -187,6 +188,7 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <div className="container">
+      <Seo title="정보입력" />
       <SurveyContents title={"생년월일이 어떻게 되나요?"}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
@@ -521,10 +523,7 @@ const Home: NextPageWithLayout = () => {
         </div>
       </SurveyContents>
       <div className="nextButtonContainer">
-        <Link
-          href={`/soulGatheringCalculator/knowingSpending`}
-          onClick={handleResult}
-        >
+        <Link href={`/soulGatheringCalculator/result`} onClick={handleResult}>
           <Button
             id="nextButton"
             variant="contained"

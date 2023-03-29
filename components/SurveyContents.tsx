@@ -56,10 +56,12 @@ const SurveyContents = (props: SurveyContentsProps) => {
           display: flex;
           justify-content: space-between;
           min-height: 55px;
+          flex-wrap: wrap;
         }
 
         .description {
           display: flex;
+          max-width: 600px;
         }
         .contents {
           margin-left: ${props.description ? "" : "auto"};

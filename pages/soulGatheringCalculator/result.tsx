@@ -51,6 +51,7 @@ import { Dayjs } from "dayjs";
 import SearchIcon from "../../asset/svg/Search.svg";
 import AntSwitch from "../../components/AntSwitch";
 import { LoanResult, LoanType } from "../../constants/Loan";
+import Seo from "../../components/Seo";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -275,6 +276,7 @@ const Result = () => {
 
   return (
     <>
+      <Seo title="결과보기" />
       <SymbolSmall />
       <div className="firstArea contentsArea">
         <div className="verticalContainer">
