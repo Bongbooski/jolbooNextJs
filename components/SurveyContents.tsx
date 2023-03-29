@@ -52,7 +52,6 @@ const SurveyContents = (props: SurveyContentsProps) => {
           padding: 30px 50px;
           white-space: pre-wrap;
         }
-
         .descriptionContainer {
           display: flex;
           justify-content: space-between;

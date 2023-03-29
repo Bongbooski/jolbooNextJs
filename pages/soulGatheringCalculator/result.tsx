@@ -310,18 +310,6 @@ const Result = () => {
               {"디딤돌대출을 사용하실 건가요?"}
             </Typography>
 
-            {/* <Stack direction="row" spacing={1} alignItems="center">
-              <Typography>{"받지않기"}</Typography>
-              <AntSwitch
-                checked={useDidimdol}
-                value={useDidimdol}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setUseDidimdol(e.target.checked);
-                }}
-                inputProps={{ "aria-label": "ant design" }}
-              />
-              <Typography>{"받기"}</Typography>
-            </Stack> */}
             <div className="toggleButtonWrapper">
               <ToggleButtonGroup
                 color="primary"
@@ -351,18 +339,6 @@ const Result = () => {
             <Typography variant="h6" gutterBottom>
               {"특례보금자리론을 사용하실 건가요?"}
             </Typography>
-            {/* <Stack direction="row" spacing={1} alignItems="center">
-              <Typography>{"받지않기"}</Typography>
-              <AntSwitch
-                checked={useSpecialHome}
-                value={useSpecialHome}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setUseSpecialHome(e.target.checked);
-                }}
-                inputProps={{ "aria-label": "ant design" }}
-              />
-              <Typography>{"받기"}</Typography>
-            </Stack> */}
             <div className="toggleButtonWrapper">
               <ToggleButtonGroup
                 color="primary"
