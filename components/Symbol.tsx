@@ -16,8 +16,8 @@ const Symbol = () => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 30px;
-          padding: 50px 0px;
+          gap: 15px;
+          padding: 40px 0px 20px 0px;
         }
       `}</style>
     </div>

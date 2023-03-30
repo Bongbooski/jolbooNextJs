@@ -11,14 +11,19 @@ const Home = () => {
     <>
       <Seo title="메인" />
       <Symbol />
-      <div>
-        <Typography variant="h5" gutterBottom>
-          소득에 따른 대출 금액 계산부터 지역 선택까지
-        </Typography>
-        <Typography variant="h5" gutterBottom>
-          실거주를 위해 필요한 모든 것을 알려드려요!
-        </Typography>
-      </div>
+      <Typography variant="h6" gutterBottom>
+        집을 사기로 마음 먹으셨나요?
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        첫번째로 할 일은 내가 살 수 있는 아파트 금액을 정하는 일이예요.
+      </Typography>
+      <p></p>
+      <Typography variant="h6" gutterBottom>
+        내 소득과 현재 가진 금액, 상황 등을 고려하여
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        얼마짜리 집을 살 수 있는지 알려드릴게요!
+      </Typography>
       <div className="iconArea">
         <MainIcon />
       </div>
@@ -29,7 +34,7 @@ const Home = () => {
       </Link>
       <style jsx>{`
         .iconArea {
-          padding: 30px 0px;
+          padding: 20px 0px 0px 0px;
         }
       `}</style>
     </>
