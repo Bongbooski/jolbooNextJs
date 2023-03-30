@@ -318,7 +318,10 @@ const Home: NextPageWithLayout = () => {
         />
       </SurveyContents>
 
-      <SurveyContents title={"은인들의 지원금"}>
+      <SurveyContents
+        title={"은인들의 지원금이 있으신가요?"}
+        description="여기 입력된 금액은 내 자금에 더해질거예요"
+      >
         <TextField
           value={getCommaString(supportAmount)}
           onChange={handleChangeSupportAmount}
@@ -352,12 +355,6 @@ const Home: NextPageWithLayout = () => {
             ),
           }}
           variant="standard"
-          // error={!textfieldNumberValidation(depositAmount)}
-          // helperText={
-          //   !textfieldNumberValidation(depositAmount)
-          //     ? "숫자만 입력해주세요"
-          //     : convertPriceToKorean(depositAmount)
-          // }
           error={
             !textfieldNumberValidation(depositAmount) ||
             Number.parseInt(depositAmount) < 100
@@ -372,8 +369,8 @@ const Home: NextPageWithLayout = () => {
         />
       </SurveyContents>
       <SurveyContents
-        title={"한달 저축 금액은 얼마인가요?"}
-        description="월급에서 고정비, 용돈 등을 제외하고 남는(저축하시는) 금액을 입력해주세요"
+        title={"한 달 여윳돈은 얼마나 되나요?"}
+        description="월급에서 고정비, 생활비, 용돈 등을 제외하고 남는(저축하시는) 금액을 입력해주세요"
       >
         <TextField
           value={getCommaString(saveAmount)}
@@ -489,13 +486,11 @@ const Home: NextPageWithLayout = () => {
         </FormControl>
       </SurveyContents>
       <SurveyContents
-        title={
-          "대출 상환 방식은 3가지가 있어요? 어떤 방식으로 갚을 예정이신가요?"
-        }
+        title={"대출 상환은 어떤 방식으로 하실 예정인가요?"}
         description={[
-          "원리금균등은 매달 동일한 금액을 갚는 방식이예요",
-          "원금균등은 매달 갚는 원금이 같아요",
-          "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이예요",
+          "원리금균등은 원금, 이자를 더해 매달 동일한 금액을 갚는 방식이예요",
+          "원금균등은 매달 동일한 원금에 변경되는 이자가 더해지는 방식이예요",
+          // "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이예요",
         ]}
       >
         <div className="minWidthWrapper">
@@ -516,9 +511,9 @@ const Home: NextPageWithLayout = () => {
             <ToggleButton value={PaymentType.FIXED_PRINCIPAL}>
               원금균등
             </ToggleButton>
-            <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
+            {/* <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
               체증식
-            </ToggleButton>
+            </ToggleButton> */}
           </ToggleButtonGroup>
         </div>
       </SurveyContents>
