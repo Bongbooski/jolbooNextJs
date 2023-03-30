@@ -11,7 +11,7 @@ interface SurveyContentsProps extends React.PropsWithChildren<object> {
 const SurveyContents = (props: SurveyContentsProps) => {
   return (
     <>
-      <div className="container">
+      <div className="surveryContentContainer">
         <Typography variant="h5" gutterBottom>
           {props.title}
         </Typography>
@@ -44,13 +44,14 @@ const SurveyContents = (props: SurveyContentsProps) => {
         </div>
       </div>
       <style jsx>{`
-        .container {
+        .surveryContentContainer {
           display: flex;
           flex-direction: ${props.vertical ? "row" : "column"};
           justify-content: ${props.vertical ? "" : "center"};
           gap: 10px;
           padding: 30px 50px;
           white-space: pre-wrap;
+          text-align: left;
         }
         .descriptionContainer {
           display: flex;

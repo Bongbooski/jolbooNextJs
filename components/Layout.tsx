@@ -2,10 +2,13 @@ import Navbar from "./Navbar";
 
 const Layout = ({ children }: React.PropsWithChildren) => {
   return (
-    <>
+    <div className={"jolbooWrapper"}>
       <Navbar />
       <div className="container">{children}</div>
       <style jsx>{`
+        .jolbooWrapper {
+          display: flex;
+        }
         .container {
           display: flex;
           flex-direction: column;
@@ -16,7 +19,7 @@ const Layout = ({ children }: React.PropsWithChildren) => {
           white-space: pre-wrap;
         }
       `}</style>
-    </>
+    </div>
   );
 };
 

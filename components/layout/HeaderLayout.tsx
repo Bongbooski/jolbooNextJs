@@ -3,19 +3,26 @@ import Navbar from "../Navbar";
 
 const HeaderLayout = ({ children }: React.PropsWithChildren) => {
   return (
-    <>
-      <div>
+    <div className={"jolbooWrapper"}>
+      <div className={"pageWrapper"}>
         <Navbar />
         <div className="content">{children}</div>
-        <style jsx>{`
-          .content {
-            position: relative;
-            top: 180px;
-            background-color: #f3f5fd;
-          }
-        `}</style>
       </div>
-    </>
+      <style jsx>{`
+        .jolbooWrapper {
+          text-align: center;
+          background-color: #f3f5fd;
+        }
+        .pageWrapper {
+          display: inline-block;
+          justify-content: center;
+        }
+        .content {
+          position: relative;
+          top: 180px;
+        }
+      `}</style>
+    </div>
   );
 };
 

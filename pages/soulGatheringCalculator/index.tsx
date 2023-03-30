@@ -13,8 +13,10 @@ const Home = () => {
       <Symbol />
       <div>
         <Typography variant="h5" gutterBottom>
-          소득에 따른 대출 금액 계산부터 지역 선택까지 실거주를 위해 필요한 모든
-          것을 알려드려요!
+          소득에 따른 대출 금액 계산부터 지역 선택까지
+        </Typography>
+        <Typography variant="h5" gutterBottom>
+          실거주를 위해 필요한 모든 것을 알려드려요!
         </Typography>
       </div>
       <div className="iconArea">

@@ -1,20 +1,24 @@
 const AppLayout = ({ children }: React.PropsWithChildren) => {
   return (
-    <>
-      <div className="container">
-        {children}
-        <style jsx>{`
-          .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            white-space: pre-wrap;
-            background-color: #f3f5fd;
-          }
-        `}</style>
+    <div className={"jolbooWrapper"}>
+      <div className={"pageWrapper"}>
+        <div className="content">{children}</div>
       </div>
-    </>
+      <style jsx>{`
+        .jolbooWrapper {
+          text-align: center;
+          background-color: #f3f5fd;
+        }
+        .pageWrapper {
+          display: inline-block;
+          justify-content: center;
+        }
+        .content {
+          /* position: relative;
+          top: 180px; */
+        }
+      `}</style>
+    </div>
   );
 };
 

@@ -187,7 +187,7 @@ const Home: NextPageWithLayout = () => {
   if (isDisabled) singleParentMultiCultureDisabled.push("disabled");
 
   return (
-    <div className="container">
+    <div className="knowingMyselfContainer">
       <Seo title="정보입력" />
       <SurveyContents title={"생년월일이 어떻게 되나요?"}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -553,7 +553,7 @@ const Home: NextPageWithLayout = () => {
         .birthdayWrapper {
           display: flex;
         }
-        .container {
+        .knowingMyselfContainer {
           display: flex;
           flex-direction: column;
           padding-bottom: 60px;

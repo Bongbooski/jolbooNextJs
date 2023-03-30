@@ -275,7 +275,7 @@ const Result = () => {
   };
 
   return (
-    <>
+    <div className={"resultContainer"}>
       <Seo title="결과보기" />
       <SymbolSmall />
       <div className="firstArea contentsArea">
@@ -291,7 +291,7 @@ const Result = () => {
           </Typography>
         </div>
 
-        {getFinalLoanResult.additionalMessage && (
+        {/* {getFinalLoanResult.additionalMessage && (
           <div className="verticalContainer">
             <div>
               <QuestionIcon fill="#6e6d6d" />{" "}
@@ -300,14 +300,16 @@ const Result = () => {
               {getFinalLoanResult.additionalMessage}
             </Typography>
           </div>
-        )}
+        )} */}
         {isAbleDidimdol && (
           <div className="verticalContainer">
             <div>
               <QuestionIcon fill="#6e6d6d" />{" "}
             </div>
             <Typography variant="h6" gutterBottom>
-              {"디딤돌대출을 사용하실 건가요?"}
+              {
+                "디딤돌대출을 사용하실 건가요?(사용하면 주택가격이 5억까지로 제한돼요)"
+              }
             </Typography>
 
             <div className="toggleButtonWrapper">
@@ -337,7 +339,9 @@ const Result = () => {
               <QuestionIcon fill="#6e6d6d" />{" "}
             </div>
             <Typography variant="h6" gutterBottom>
-              {"특례보금자리론을 사용하실 건가요?"}
+              {
+                "특례보금자리론을 사용하실 건가요?(사용하면 주택가격이 5억까지로 제한돼요)"
+              }
             </Typography>
             <div className="toggleButtonWrapper">
               <ToggleButtonGroup
@@ -1152,7 +1156,7 @@ const Result = () => {
           margin: 5px 0px 5px 10px;
         }
       `}</style>
-    </>
+    </div>
   );
 };
 
