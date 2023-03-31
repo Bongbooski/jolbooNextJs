@@ -340,7 +340,7 @@ const Result = () => {
             </div>
             <Typography variant="h6" gutterBottom>
               {
-                "특례보금자리론을 사용하실 건가요?(사용하면 주택가격이 5억까지로 제한돼요)"
+                "특례보금자리론을 사용하실 건가요?(사용하면 주택가격이 9억까지로 제한돼요)"
               }
             </Typography>
             <div className="toggleButtonWrapper">
@@ -695,6 +695,13 @@ const Result = () => {
                 확인하셔야 해요
               </Typography>
             </div>
+            <div className="verticalContainer">
+              <Typography variant="h6">
+                <QuestionIcon fill="#6e6d6d" />
+                {"  "}이자율이 어떻게 계산된건지 궁금하시다면 돋보기를
+                클릭해보세요
+              </Typography>
+            </div>
           </>
         )}
       </div>
@@ -703,7 +710,7 @@ const Result = () => {
           (Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
             <>
               <Typography variant="h5" gutterBottom>
-                현재 매월 {saveAmount}만원의 여유가 있어요.
+                현재 매월 {saveAmount}만원의 여유가 있다고 하셨어요.
               </Typography>
               <Typography variant="h5" gutterBottom>
                 매월 {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
@@ -740,7 +747,7 @@ const Result = () => {
           ) : (
             <>
               <Typography variant="h5" gutterBottom>
-                현재 매월 {saveAmount}만원의 여유가 있어요.
+                현재 매월 {saveAmount}만원의 여유가 있다고 하셨어요.
               </Typography>
               <Typography variant="h5" gutterBottom>
                 매월 {getCommaString(getTotalPayment())}원을 원리금으로 내고
@@ -751,7 +758,7 @@ const Result = () => {
                 원이 남아요
               </Typography>
               <Typography variant="h5" gutterBottom>
-                월 여유자금 중{" "}
+                월 여유 자금 중{" "}
                 {(
                   (Number(getTotalPayment()) / (Number(saveAmount) * 10000)) *
                   100
