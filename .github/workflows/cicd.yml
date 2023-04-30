@@ -1,4 +1,4 @@
-name: Our CI
+name: jolboo CICD
 on: push
 jobs:
   build:
@@ -29,4 +29,4 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            out s3://soul-gathering-calculator
+            out s3://letsbejolboos.com
