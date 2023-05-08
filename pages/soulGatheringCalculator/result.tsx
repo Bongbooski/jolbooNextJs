@@ -596,7 +596,7 @@ const Result = () => {
                       >
                         <TableCell component="th" scope="row">
                           {row.name}
-                          <IconButton
+                          {/* <IconButton
                             aria-describedby={id}
                             onClick={handleClick}
                           >
@@ -621,7 +621,7 @@ const Result = () => {
                             }}
                           >
                             asdfadsfadsfdsf
-                          </Popover>
+                          </Popover> */}
                         </TableCell>
                         <TableCell align="right">
                           {Number(row.loanAmount)}억
@@ -695,13 +695,13 @@ const Result = () => {
                 확인하셔야 해요
               </Typography>
             </div>
-            <div className="verticalContainer">
+            {/* <div className="verticalContainer">
               <Typography variant="h6">
                 <QuestionIcon fill="#6e6d6d" />
                 {"  "}이자율이 어떻게 계산된건지 궁금하시다면 돋보기를
                 클릭해보세요
               </Typography>
-            </div>
+            </div> */}
           </>
         )}
       </div>
