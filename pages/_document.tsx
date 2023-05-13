@@ -24,6 +24,10 @@ export default class MyDocument extends Document {
           `,
             }}
           />
+          <meta
+            name="google-site-verification"
+            content="k1jckqiuhGuqJNogAFbFY_Eldrk1R9Ws9gEOuNqidSc"
+          />
         </Head>
         <body>
           <Main />
