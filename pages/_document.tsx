@@ -26,6 +26,11 @@ export default class MyDocument extends Document {
             name="google-site-verification"
             content="k1jckqiuhGuqJNogAFbFY_Eldrk1R9Ws9gEOuNqidSc"
           />
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4293087420983151"
+            crossorigin="anonymous"
+          ></script>
         </Head>
         <body>
           <Main />
