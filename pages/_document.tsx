@@ -9,7 +9,7 @@ export default class MyDocument extends Document {
         <Head>
           <script
             async
-            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=G-E6NWYCQ921`}
           />
           <script
             dangerouslySetInnerHTML={{
@@ -18,7 +18,7 @@ export default class MyDocument extends Document {
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', '${process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID}');
+            gtag('config', 'G-E6NWYCQ921');
           `,
             }}
           />
