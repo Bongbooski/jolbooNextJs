@@ -40,7 +40,7 @@ export default class MyDocument extends Document {
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://letsbejolboos.com" />
           <meta property="og:title" content="영끌계산기" />
-          <meta property="og:image" content="/main.jpg" />
+          <meta property="og:image" content="/main.png" />
           <meta
             property="og:description"
             content="내 연봉으로 어떤 집에 살 수 있을까?"
