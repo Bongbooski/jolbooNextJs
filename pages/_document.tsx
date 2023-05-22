@@ -45,8 +45,6 @@ export default class MyDocument extends Document {
             property="og:description"
             content="내 연봉으로 어떤 집에 살 수 있을까?"
           />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
         </Head>
         <body>
           <Main />
