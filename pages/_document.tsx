@@ -31,6 +31,11 @@ export default class MyDocument extends Document {
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4293087420983151"
             crossOrigin="anonymous"
           ></script>
+          <meta
+            name="description"
+            content="내 연봉으로 어떤 집에 살 수 있을까?"
+          />
+          <meta name="keywords" content="영끌계산기, 영끌, 부동산, 내집마련" />
         </Head>
         <body>
           <Main />
