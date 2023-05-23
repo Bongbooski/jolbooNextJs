@@ -1,5 +1,5 @@
 module.exports = {
-  siteUrl: "https://letsbejolboos.com/",
+  siteUrl: "https://letsbejolboos.com/soulGatheringCalculator/",
   generateRobotsTxt: true,
   exclude: ["/admin", "/login"],
   sitemapSize: 7000,
