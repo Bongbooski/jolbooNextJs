@@ -26,6 +26,10 @@ export default class MyDocument extends Document {
             name="google-site-verification"
             content="k1jckqiuhGuqJNogAFbFY_Eldrk1R9Ws9gEOuNqidSc"
           />
+          <meta
+            name="naver-site-verification"
+            content="63a6d2dbef2eebca9fa4ea51eaeb86b76db5e7cb"
+          />
           <script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4293087420983151"
