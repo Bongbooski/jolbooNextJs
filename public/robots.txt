@@ -2,8 +2,5 @@
 User-agent: *
 Allow: /
 
-# Host
-Host: https://letsbejolboos.com/soulGatheringCalculator/
-
 # Sitemaps
-Sitemap: https://letsbejolboos.com/soulGatheringCalculator/sitemap.xml
+Sitemap: https://letsbejolboos.com/sitemap-0.xml
