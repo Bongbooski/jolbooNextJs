@@ -25,10 +25,13 @@ import {
   getPrincipalAndInterestInSoulGathering,
 } from "../utils/CommonUtils";
 
+const now = dayjs();
+now.format("YYYY-MM-DD");
+
 export const KnowingState: KnowingStateType = {
   birthday: atom<Dayjs | null>({
     key: RecoilKey.knowing["KNOWING/birthday"],
-    default: null,
+    default: now,
   }),
   isMarriedValue: atom<string | null>({
     key: RecoilKey.knowing["KNOWING/isMarriedValue"],
