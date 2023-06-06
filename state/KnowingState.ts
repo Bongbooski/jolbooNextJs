@@ -28,7 +28,7 @@ import {
 export const KnowingState: KnowingStateType = {
   birthday: atom<Dayjs | null>({
     key: RecoilKey.knowing["KNOWING/birthday"],
-    default: "",
+    default: null,
   }),
   isMarriedValue: atom<string | null>({
     key: RecoilKey.knowing["KNOWING/isMarriedValue"],
