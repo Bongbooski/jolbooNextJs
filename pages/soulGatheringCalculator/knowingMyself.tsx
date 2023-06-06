@@ -188,6 +188,8 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <div className="knowingMyselfContainer">
+      {/* <iframe src="https://ads-partners.coupang.com/widgets.html?id=667633&template=carousel&trackingCode=AF6703910&subId=&width=140&height=680&tsource=" width="140" height="680" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe> */}
+      <div className="contentArea">
       <Seo title="정보입력" />
       <SurveyContents title={"생년월일이 어떻게 되나요?"}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -537,9 +539,11 @@ const Home: NextPageWithLayout = () => {
           </Typography>
         </div>
       )}
-
+<iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe>
       {/* </> */}
       {/* )} */}
+      </div>
+      {/* <iframe src="https://ads-partners.coupang.com/widgets.html?id=667633&template=carousel&trackingCode=AF6703910&subId=&width=140&height=680&tsource=" width="140" height="680" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe> */}
       <style jsx>{`
         .nextButtonContainer {
           display: flex;
@@ -550,7 +554,7 @@ const Home: NextPageWithLayout = () => {
         }
         .knowingMyselfContainer {
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           padding-bottom: 60px;
         }
         .descriptionContainer {

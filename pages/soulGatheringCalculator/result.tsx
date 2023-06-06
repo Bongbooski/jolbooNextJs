@@ -454,7 +454,7 @@ const Result = () => {
         <div className="flexableArea">
           <div className="verticalContainer">
             <Typography variant="h5" gutterBottom>
-              현재 내가 가진돈은{" "}
+              현재 내가 가진돈은 {"   "}
             </Typography>
             <Typography variant="h2" gutterBottom>
               {getMyAsset}억
@@ -877,6 +877,8 @@ const Result = () => {
           </Link>
         </div>
       </div>
+      <iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe>
+
       <style jsx>{`
         .contentsArea {
           padding: 30px 0px;
