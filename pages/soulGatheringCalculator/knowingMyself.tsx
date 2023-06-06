@@ -539,7 +539,7 @@ const Home: NextPageWithLayout = () => {
           </Typography>
         </div>
       )}
-<iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe>
+<iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url"></iframe>
       {/* </> */}
       {/* )} */}
       </div>
