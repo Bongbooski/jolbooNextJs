@@ -5,7 +5,7 @@ import MainIcon from "../../asset/svg/Main.svg";
 import { ReactElement } from "react";
 import AppLayout from "../../components/layout/AppLayout";
 import Symbol from "../../components/Symbol";
-import KakaoAdFit from "../../components/KakaoAdfit";
+import KakaoAdFit from "../../components/KakaoAdFit";
 
 const Home = () => {
   return (

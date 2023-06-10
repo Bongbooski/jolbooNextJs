@@ -52,7 +52,7 @@ import SearchIcon from "../../asset/svg/Search.svg";
 import AntSwitch from "../../components/AntSwitch";
 import { LoanResult, LoanType } from "../../constants/Loan";
 import Seo from "../../components/Seo";
-import KakaoAdFit from "../../components/KakaoAdfit";
+import KakaoAdFit from "../../components/KakaoAdFit";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

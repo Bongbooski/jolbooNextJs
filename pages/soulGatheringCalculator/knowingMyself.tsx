@@ -27,7 +27,7 @@ import { convertPriceToKorean, getCommaString } from "../../utils/CommonUtils";
 import { FamilyType } from "../../constants/Loan";
 import { PaymentType } from "../../constants/Common";
 import Seo from "../../components/Seo";
-import KakaoAdFit from "../../components/KakaoAdfit";
+import KakaoAdFit from "../../components/KakaoAdFit";
 
 interface Movie {
   id: string;
