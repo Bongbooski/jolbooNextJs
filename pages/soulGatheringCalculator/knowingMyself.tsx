@@ -27,6 +27,7 @@ import { convertPriceToKorean, getCommaString } from "../../utils/CommonUtils";
 import { FamilyType } from "../../constants/Loan";
 import { PaymentType } from "../../constants/Common";
 import Seo from "../../components/Seo";
+import KakaoAdFit from "../../components/KakaoAdfit";
 
 interface Movie {
   id: string;
@@ -190,358 +191,370 @@ const Home: NextPageWithLayout = () => {
     <div className="knowingMyselfContainer">
       {/* <iframe src="https://ads-partners.coupang.com/widgets.html?id=667633&template=carousel&trackingCode=AF6703910&subId=&width=140&height=680&tsource=" width="140" height="680" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe> */}
       <div className="contentArea">
-      <Seo title="정보입력" />
-      <SurveyContents title={"생년월일이 어떻게 되나요?"}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label="생년월일"
-            value={birthday}
-            onChange={(newValue) => {
-              setBirthday(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                error={birthday === null ? true : false}
-                helperText={birthday === null ? "생년월일을 입력해주세요" : ""}
-              />
-            )}
-            inputFormat="YYYY/MM/DD"
-          />
-        </LocalizationProvider>
-      </SurveyContents>
+        <Seo title="정보입력" />
+        <SurveyContents title={"생년월일이 어떻게 되나요?"}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="생년월일"
+              value={birthday}
+              onChange={(newValue) => {
+                setBirthday(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={birthday === null ? true : false}
+                  helperText={
+                    birthday === null ? "생년월일을 입력해주세요" : ""
+                  }
+                />
+              )}
+              inputFormat="YYYY/MM/DD"
+            />
+          </LocalizationProvider>
+        </SurveyContents>
 
-      <SurveyContents
-        title={"결혼 하셨나요?"}
-        description="집을 구매 할 때는 혼인신고를 한 경우에만 결혼으로 판단해요"
-      >
-        <ToggleButtonGroup
-          color="primary"
-          value={isMarriedValue}
-          exclusive
-          onChange={(
-            event: React.MouseEvent<HTMLElement>,
-            newSelection: string
-          ) => {
-            if (newSelection !== null) setisMarriedValue(newSelection);
-          }}
-          aria-label="Platform"
-        >
-          <ToggleButton value="married">결혼했어요</ToggleButton>
-          <ToggleButton value="notMarried">결혼안했어요</ToggleButton>
-        </ToggleButtonGroup>
-      </SurveyContents>
-      {isMarried && (
         <SurveyContents
-          title={"신혼인가요?"}
-          description={"부동산에서는 혼인신고한지 7년 이내일 경우 신혼이예요"}
+          title={"결혼 하셨나요?"}
+          description="집을 구매 할 때는 혼인신고를 한 경우에만 결혼으로 판단해요"
         >
           <ToggleButtonGroup
             color="primary"
-            value={isNewCouple!.toString()}
+            value={isMarriedValue}
+            exclusive
+            onChange={(
+              event: React.MouseEvent<HTMLElement>,
+              newSelection: string
+            ) => {
+              if (newSelection !== null) setisMarriedValue(newSelection);
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="married">결혼했어요</ToggleButton>
+            <ToggleButton value="notMarried">결혼안했어요</ToggleButton>
+          </ToggleButtonGroup>
+        </SurveyContents>
+        {isMarried && (
+          <SurveyContents
+            title={"신혼인가요?"}
+            description={"부동산에서는 혼인신고한지 7년 이내일 경우 신혼이예요"}
+          >
+            <ToggleButtonGroup
+              color="primary"
+              value={isNewCouple!.toString()}
+              exclusive
+              onChange={(
+                event: React.MouseEvent<HTMLElement>,
+                newSelection: string
+              ) => {
+                if (newSelection !== null)
+                  setIsNewCouple(JSON.parse(newSelection));
+              }}
+              aria-label="Platform"
+            >
+              <ToggleButton value="true">신혼이예요</ToggleButton>
+              <ToggleButton value="false">신혼은 아니예요</ToggleButton>
+            </ToggleButtonGroup>
+          </SurveyContents>
+        )}
+
+        <SurveyContents title={"생애 최초로 주택을 구매하시나요?"}>
+          <ToggleButtonGroup
+            color="primary"
+            value={isFirstTime.toString()}
             exclusive
             onChange={(
               event: React.MouseEvent<HTMLElement>,
               newSelection: string
             ) => {
               if (newSelection !== null)
-                setIsNewCouple(JSON.parse(newSelection));
+                setIsFirstTime(JSON.parse(newSelection));
             }}
             aria-label="Platform"
           >
-            <ToggleButton value="true">신혼이예요</ToggleButton>
-            <ToggleButton value="false">신혼은 아니예요</ToggleButton>
+            <ToggleButton value="true">집 처음사요</ToggleButton>
+            <ToggleButton value="false">집 사본적 있어요</ToggleButton>
           </ToggleButtonGroup>
         </SurveyContents>
-      )}
 
-      <SurveyContents title={"생애 최초로 주택을 구매하시나요?"}>
-        <ToggleButtonGroup
-          color="primary"
-          value={isFirstTime.toString()}
-          exclusive
-          onChange={(
-            event: React.MouseEvent<HTMLElement>,
-            newSelection: string
-          ) => {
-            if (newSelection !== null) setIsFirstTime(JSON.parse(newSelection));
-          }}
-          aria-label="Platform"
+        <SurveyContents
+          title={"현재 무주택인가요?"}
+          description={"다주택자(2주택 이상)시면 결과가 부정확할 수 있어요"}
         >
-          <ToggleButton value="true">집 처음사요</ToggleButton>
-          <ToggleButton value="false">집 사본적 있어요</ToggleButton>
-        </ToggleButtonGroup>
-      </SurveyContents>
+          <ToggleButtonGroup
+            color="primary"
+            value={havingNoHouse.toString()}
+            exclusive
+            onChange={(
+              event: React.MouseEvent<HTMLElement>,
+              newSelection: string
+            ) => {
+              if (newSelection !== null)
+                setHavingNoHouse(JSON.parse(newSelection));
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="true">무주택이예요</ToggleButton>
+            <ToggleButton value="false">무주택 아니예요</ToggleButton>
+          </ToggleButtonGroup>
+        </SurveyContents>
 
-      <SurveyContents
-        title={"현재 무주택인가요?"}
-        description={"다주택자(2주택 이상)시면 결과가 부정확할 수 있어요"}
-      >
-        <ToggleButtonGroup
-          color="primary"
-          value={havingNoHouse.toString()}
-          exclusive
-          onChange={(
-            event: React.MouseEvent<HTMLElement>,
-            newSelection: string
-          ) => {
-            if (newSelection !== null)
-              setHavingNoHouse(JSON.parse(newSelection));
-          }}
-          aria-label="Platform"
+        <SurveyContents
+          title={"연소득은 얼마인가요?"}
+          description="세전 소득을 입력해주세요. 맞벌이일경우 합친 소득을 입력해주세요"
         >
-          <ToggleButton value="true">무주택이예요</ToggleButton>
-          <ToggleButton value="false">무주택 아니예요</ToggleButton>
-        </ToggleButtonGroup>
-      </SurveyContents>
+          <TextField
+            value={getCommaString(yearIncome)}
+            onChange={handleChangeYearIncome}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">₩</InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="start">만원</InputAdornment>
+              ),
+            }}
+            variant="standard"
+            error={!textfieldNumberValidation(yearIncome) || yearIncome === "0"}
+            helperText={
+              !textfieldNumberValidation(yearIncome)
+                ? "숫자만 입력해주세요"
+                : yearIncome === "0"
+                ? "0보다 커야합니다"
+                : convertPriceToKorean(yearIncome)
+            }
+          />
+        </SurveyContents>
 
-      <SurveyContents
-        title={"연소득은 얼마인가요?"}
-        description="세전 소득을 입력해주세요. 맞벌이일경우 합친 소득을 입력해주세요"
-      >
-        <TextField
-          value={getCommaString(yearIncome)}
-          onChange={handleChangeYearIncome}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">₩</InputAdornment>,
-            endAdornment: (
-              <InputAdornment position="start">만원</InputAdornment>
-            ),
-          }}
-          variant="standard"
-          error={!textfieldNumberValidation(yearIncome) || yearIncome === "0"}
-          helperText={
-            !textfieldNumberValidation(yearIncome)
-              ? "숫자만 입력해주세요"
-              : yearIncome === "0"
-              ? "0보다 커야합니다"
-              : convertPriceToKorean(yearIncome)
-          }
-        />
-      </SurveyContents>
-
-      <SurveyContents
-        title={"은인들의 지원금이 있으신가요?"}
-        description="여기 입력된 금액은 내 자금에 더해질거예요"
-      >
-        <TextField
-          value={getCommaString(supportAmount)}
-          onChange={handleChangeSupportAmount}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">₩</InputAdornment>,
-            endAdornment: (
-              <InputAdornment position="start">만원</InputAdornment>
-            ),
-          }}
-          variant="standard"
-          error={!textfieldNumberValidation(supportAmount)}
-          helperText={
-            !textfieldNumberValidation(supportAmount)
-              ? "숫자만 입력해주세요"
-              : convertPriceToKorean(supportAmount)
-          }
-        />
-      </SurveyContents>
-
-      <SurveyContents
-        title={"지금까지 모은 돈은 얼마인가요?"}
-        description="가용 할 수 있는 금액을 입력해주세요. 전세에 묶여있는 내 돈 모두 포함해서요"
-      >
-        <TextField
-          value={getCommaString(depositAmount)}
-          onChange={handleChangeDepositAmount}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">₩</InputAdornment>,
-            endAdornment: (
-              <InputAdornment position="start">만원</InputAdornment>
-            ),
-          }}
-          variant="standard"
-          error={
-            !textfieldNumberValidation(depositAmount) ||
-            Number.parseInt(depositAmount) < 100
-          }
-          helperText={
-            !textfieldNumberValidation(depositAmount)
-              ? "숫자만 입력해주세요"
-              : Number.parseInt(depositAmount) < 100
-              ? "최소 금액은 100만원입니다"
-              : convertPriceToKorean(depositAmount)
-          }
-        />
-      </SurveyContents>
-      <SurveyContents
-        title={"한 달 여윳돈은 얼마나 되나요?"}
-        description="월급에서 고정비, 생활비, 용돈 등을 제외하고 남는(저축하시는) 금액을 입력해주세요"
-      >
-        <TextField
-          value={getCommaString(saveAmount)}
-          onChange={handleChangeSaveAmount}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">₩</InputAdornment>,
-            endAdornment: (
-              <InputAdornment position="start">만원</InputAdornment>
-            ),
-          }}
-          variant="standard"
-          error={!textfieldNumberValidation(saveAmount)}
-          helperText={
-            !textfieldNumberValidation(saveAmount)
-              ? "숫자만 입력해주세요"
-              : convertPriceToKorean(saveAmount)
-          }
-        />
-      </SurveyContents>
-      <SurveyContents
-        title={"다자녀 가구인가요?"}
-        description="성년이 되지 않은 자녀가 3명 이상이면 다자녀가구예요. 뱃속에 태아도 포함됩니다"
-      >
-        <ToggleButtonGroup
-          color="primary"
-          value={isHavingKids.toString()}
-          exclusive
-          onChange={(
-            event: React.MouseEvent<HTMLElement>,
-            newSelection: string
-          ) => {
-            if (newSelection !== null)
-              setisHavingKids(JSON.parse(newSelection));
-          }}
-          aria-label="Platform"
+        <SurveyContents
+          title={"은인들의 지원금이 있으신가요?"}
+          description="여기 입력된 금액은 내 자금에 더해질거예요"
         >
-          <ToggleButton value="true">다자녀가구예요</ToggleButton>
-          <ToggleButton value="false">다자녀가구는 아니예요</ToggleButton>
-        </ToggleButtonGroup>
-      </SurveyContents>
-      {isHavingKids && (
-        <SurveyContents title={"자녀수는 몇 명인가요?"}>
-          <FormControl variant="standard">
-            <Input
-              id="kids"
-              endAdornment={
-                <InputAdornment position="start">명</InputAdornment>
-              }
-              value={kidsCount}
-              onChange={handleChangeKidsCount}
-            />
+          <TextField
+            value={getCommaString(supportAmount)}
+            onChange={handleChangeSupportAmount}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">₩</InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="start">만원</InputAdornment>
+              ),
+            }}
+            variant="standard"
+            error={!textfieldNumberValidation(supportAmount)}
+            helperText={
+              !textfieldNumberValidation(supportAmount)
+                ? "숫자만 입력해주세요"
+                : convertPriceToKorean(supportAmount)
+            }
+          />
+        </SurveyContents>
+
+        <SurveyContents
+          title={"지금까지 모은 돈은 얼마인가요?"}
+          description="가용 할 수 있는 금액을 입력해주세요. 전세에 묶여있는 내 돈 모두 포함해서요"
+        >
+          <TextField
+            value={getCommaString(depositAmount)}
+            onChange={handleChangeDepositAmount}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">₩</InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="start">만원</InputAdornment>
+              ),
+            }}
+            variant="standard"
+            error={
+              !textfieldNumberValidation(depositAmount) ||
+              Number.parseInt(depositAmount) < 100
+            }
+            helperText={
+              !textfieldNumberValidation(depositAmount)
+                ? "숫자만 입력해주세요"
+                : Number.parseInt(depositAmount) < 100
+                ? "최소 금액은 100만원입니다"
+                : convertPriceToKorean(depositAmount)
+            }
+          />
+        </SurveyContents>
+        <SurveyContents
+          title={"한 달 여윳돈은 얼마나 되나요?"}
+          description="월급에서 고정비, 생활비, 용돈 등을 제외하고 남는(저축하시는) 금액을 입력해주세요"
+        >
+          <TextField
+            value={getCommaString(saveAmount)}
+            onChange={handleChangeSaveAmount}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">₩</InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="start">만원</InputAdornment>
+              ),
+            }}
+            variant="standard"
+            error={!textfieldNumberValidation(saveAmount)}
+            helperText={
+              !textfieldNumberValidation(saveAmount)
+                ? "숫자만 입력해주세요"
+                : convertPriceToKorean(saveAmount)
+            }
+          />
+        </SurveyContents>
+        <SurveyContents
+          title={"다자녀 가구인가요?"}
+          description="성년이 되지 않은 자녀가 3명 이상이면 다자녀가구예요. 뱃속에 태아도 포함됩니다"
+        >
+          <ToggleButtonGroup
+            color="primary"
+            value={isHavingKids.toString()}
+            exclusive
+            onChange={(
+              event: React.MouseEvent<HTMLElement>,
+              newSelection: string
+            ) => {
+              if (newSelection !== null)
+                setisHavingKids(JSON.parse(newSelection));
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="true">다자녀가구예요</ToggleButton>
+            <ToggleButton value="false">다자녀가구는 아니예요</ToggleButton>
+          </ToggleButtonGroup>
+        </SurveyContents>
+        {isHavingKids && (
+          <SurveyContents title={"자녀수는 몇 명인가요?"}>
+            <FormControl variant="standard">
+              <Input
+                id="kids"
+                endAdornment={
+                  <InputAdornment position="start">명</InputAdornment>
+                }
+                value={kidsCount}
+                onChange={handleChangeKidsCount}
+              />
+            </FormControl>
+          </SurveyContents>
+        )}
+        <SurveyContents
+          title={"해당되는 항목을 선택해주세요. 여러개 선택 가능해요."}
+          description={[
+            FamilyType.SINGLE_PARENT,
+            FamilyType.MULTI_CULTURAL,
+            FamilyType.DISABLED,
+          ]}
+        >
+          <div className="minWidthWrapper">
+            <ToggleButtonGroup
+              color="primary"
+              value={singleParentMultiCultureDisabled}
+              onChange={(
+                event: React.MouseEvent<HTMLElement>,
+                newSelections: string
+              ) => {
+                setIsSingleParent(false);
+                setIsDisabled(false);
+                setIsMultiCultural(false);
+
+                if (newSelections.includes("singleParent")) {
+                  setIsSingleParent(true);
+                  setShowSingleParentInfo(true);
+                }
+
+                if (newSelections.includes("multiCultural")) {
+                  setIsMultiCultural(true);
+                  setShowMultiCulturalInfo(true);
+                }
+
+                if (newSelections.includes("disabled")) {
+                  setIsDisabled(true);
+                  setShowDisabledInfo(true);
+                }
+              }}
+              aria-label="Platform"
+            >
+              <ToggleButton value="singleParent">한부모 가정</ToggleButton>
+              <ToggleButton value="multiCultural">다문화 가구</ToggleButton>
+              <ToggleButton value="disabled">장애인 가구</ToggleButton>
+            </ToggleButtonGroup>
+          </div>
+        </SurveyContents>
+
+        <SurveyContents title={"대출은 몇 년에 걸쳐 갚을 예정이신가요?"}>
+          <FormControl>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={borrowingYear}
+              onChange={handleChangeBorrowingYear}
+            >
+              <MenuItem value={"10"}>10년간</MenuItem>
+              <MenuItem value={"15"}>15년간</MenuItem>
+              <MenuItem value={"20"}>20년간</MenuItem>
+              <MenuItem value={"30"}>30년간</MenuItem>
+              <MenuItem value={"40"}>40년간</MenuItem>
+            </Select>
           </FormControl>
         </SurveyContents>
-      )}
-      <SurveyContents
-        title={"해당되는 항목을 선택해주세요. 여러개 선택 가능해요."}
-        description={[
-          FamilyType.SINGLE_PARENT,
-          FamilyType.MULTI_CULTURAL,
-          FamilyType.DISABLED,
-        ]}
-      >
-        <div className="minWidthWrapper">
-          <ToggleButtonGroup
-            color="primary"
-            value={singleParentMultiCultureDisabled}
-            onChange={(
-              event: React.MouseEvent<HTMLElement>,
-              newSelections: string
-            ) => {
-              setIsSingleParent(false);
-              setIsDisabled(false);
-              setIsMultiCultural(false);
-
-              if (newSelections.includes("singleParent")) {
-                setIsSingleParent(true);
-                setShowSingleParentInfo(true);
-              }
-
-              if (newSelections.includes("multiCultural")) {
-                setIsMultiCultural(true);
-                setShowMultiCulturalInfo(true);
-              }
-
-              if (newSelections.includes("disabled")) {
-                setIsDisabled(true);
-                setShowDisabledInfo(true);
-              }
-            }}
-            aria-label="Platform"
-          >
-            <ToggleButton value="singleParent">한부모 가정</ToggleButton>
-            <ToggleButton value="multiCultural">다문화 가구</ToggleButton>
-            <ToggleButton value="disabled">장애인 가구</ToggleButton>
-          </ToggleButtonGroup>
-        </div>
-      </SurveyContents>
-
-      <SurveyContents title={"대출은 몇 년에 걸쳐 갚을 예정이신가요?"}>
-        <FormControl>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={borrowingYear}
-            onChange={handleChangeBorrowingYear}
-          >
-            <MenuItem value={"10"}>10년간</MenuItem>
-            <MenuItem value={"15"}>15년간</MenuItem>
-            <MenuItem value={"20"}>20년간</MenuItem>
-            <MenuItem value={"30"}>30년간</MenuItem>
-            <MenuItem value={"40"}>40년간</MenuItem>
-          </Select>
-        </FormControl>
-      </SurveyContents>
-      <SurveyContents
-        title={"대출 상환은 어떤 방식으로 하실 예정인가요?"}
-        description={[
-          "원리금균등은 원금, 이자를 더해 매달 동일한 금액을 갚는 방식이예요",
-          "원금균등은 매달 동일한 원금에 변경되는 이자가 더해지는 방식이예요",
-          // "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이예요",
-        ]}
-      >
-        <div className="minWidthWrapper">
-          <ToggleButtonGroup
-            color="primary"
-            value={paymentType}
-            exclusive
-            onChange={(
-              event: React.MouseEvent<HTMLElement>,
-              newSelection: string
-            ) => {
-              if (newSelection !== null)
-                setPaymentType(newSelection as PaymentType);
-            }}
-            aria-label="Platform"
-          >
-            <ToggleButton value={PaymentType.FIXED}>원리금균등</ToggleButton>
-            <ToggleButton value={PaymentType.FIXED_PRINCIPAL}>
-              원금균등
-            </ToggleButton>
-            {/* <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
+        <SurveyContents
+          title={"대출 상환은 어떤 방식으로 하실 예정인가요?"}
+          description={[
+            "원리금균등은 원금, 이자를 더해 매달 동일한 금액을 갚는 방식이예요",
+            "원금균등은 매달 동일한 원금에 변경되는 이자가 더해지는 방식이예요",
+            // "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이예요",
+          ]}
+        >
+          <div className="minWidthWrapper">
+            <ToggleButtonGroup
+              color="primary"
+              value={paymentType}
+              exclusive
+              onChange={(
+                event: React.MouseEvent<HTMLElement>,
+                newSelection: string
+              ) => {
+                if (newSelection !== null)
+                  setPaymentType(newSelection as PaymentType);
+              }}
+              aria-label="Platform"
+            >
+              <ToggleButton value={PaymentType.FIXED}>원리금균등</ToggleButton>
+              <ToggleButton value={PaymentType.FIXED_PRINCIPAL}>
+                원금균등
+              </ToggleButton>
+              {/* <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
               체증식
             </ToggleButton> */}
-          </ToggleButtonGroup>
+            </ToggleButtonGroup>
+          </div>
+        </SurveyContents>
+        <div className="nextButtonContainer">
+          <Link href={`/soulGatheringCalculator/result`} onClick={handleResult}>
+            <Button
+              id="nextButton"
+              variant="contained"
+              size="large"
+              disableElevation
+              disabled={checkValidation() ? false : true}
+            >
+              <h4>결과보기</h4>
+            </Button>
+          </Link>
         </div>
-      </SurveyContents>
-      <div className="nextButtonContainer">
-        <Link href={`/soulGatheringCalculator/result`} onClick={handleResult}>
-          <Button
-            id="nextButton"
-            variant="contained"
-            size="large"
-            disableElevation
-            disabled={checkValidation() ? false : true}
-          >
-            <h4>결과보기</h4>
-          </Button>
-        </Link>
-      </div>
-      {!checkValidation() && (
-        <div className="errorArea">
-          <Typography color={"error"}>
-            입력되지 않거나 올바르지 않은 형식으로 입력된 항목이 있어요!
-          </Typography>
-        </div>
-      )}
-<iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url"></iframe>
-      {/* </> */}
-      {/* )} */}
+        {!checkValidation() && (
+          <div className="errorArea">
+            <Typography color={"error"}>
+              입력되지 않거나 올바르지 않은 형식으로 입력된 항목이 있어요!
+            </Typography>
+          </div>
+        )}
+        {/* <iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url"></iframe> */}
+        {/* </> */}
+        {/* )} */}
+        <KakaoAdFit />
       </div>
       {/* <iframe src="https://ads-partners.coupang.com/widgets.html?id=667633&template=carousel&trackingCode=AF6703910&subId=&width=140&height=680&tsource=" width="140" height="680" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe> */}
       <style jsx>{`

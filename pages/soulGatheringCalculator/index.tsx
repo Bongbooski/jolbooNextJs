@@ -2,10 +2,11 @@ import Seo from "../../components/Seo";
 import Link from "next/link";
 import { Typography, Button } from "@mui/material";
 import MainIcon from "../../asset/svg/Main.svg";
-import SymbolIcon from "../../asset/svg/Symbol.svg";
 import { ReactElement } from "react";
 import AppLayout from "../../components/layout/AppLayout";
 import Symbol from "../../components/Symbol";
+import KakaoAdFit from "../../components/KakaoAdfit";
+
 const Home = () => {
   return (
     <>
@@ -32,6 +33,7 @@ const Home = () => {
           <Typography variant="body1">시작하기</Typography>
         </Button>
       </Link>
+      <KakaoAdFit />
       <style jsx>{`
         .iconArea {
           padding: 20px 0px 0px 0px;

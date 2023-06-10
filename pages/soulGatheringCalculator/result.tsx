@@ -52,6 +52,7 @@ import SearchIcon from "../../asset/svg/Search.svg";
 import AntSwitch from "../../components/AntSwitch";
 import { LoanResult, LoanType } from "../../constants/Loan";
 import Seo from "../../components/Seo";
+import KakaoAdFit from "../../components/KakaoAdfit";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -877,8 +878,8 @@ const Result = () => {
           </Link>
         </div>
       </div>
-      <iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url"></iframe>
-
+      {/* <iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url"></iframe> */}
+      <KakaoAdFit />
       <style jsx>{`
         .contentsArea {
           padding: 30px 0px;
