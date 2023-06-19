@@ -21,7 +21,7 @@ const KakaoAdFit = () => {
     if (winodwSize < 1024) {
       ins.setAttribute("data-ad-width", "320");
       ins.setAttribute("data-ad-height", "100");
-      ins.setAttribute("data-ad-unit", "DAN-R0cpsRF0e74fzo0P");
+      ins.setAttribute("data-ad-unit", "DAN-up4PVa1ZVZDbWmjx");
     } else {
       ins.setAttribute("data-ad-width", "728");
       ins.setAttribute("data-ad-height", "90");
