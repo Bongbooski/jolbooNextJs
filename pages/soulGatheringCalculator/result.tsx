@@ -286,7 +286,7 @@ const Result = () => {
             {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
           </Typography>
           <Typography variant="h5" gutterBottom>
-            이예요
+            이에요
           </Typography>
         </div>
 
@@ -470,7 +470,7 @@ const Result = () => {
               {totalLoanAmount}억
             </Typography>
             <Typography variant="h5" gutterBottom>
-              원이예요
+              원이에요
             </Typography>
           </div>
         </div>
@@ -771,7 +771,7 @@ const Result = () => {
       <div className="contentsArea">
         <Typography gutterBottom>
           내가 살 수 있는 아파트 가격을 확인했으면 이제 후보 지역을 선정해야
-          합니다. 아래 내용은 아직 준비중이예요
+          합니다. 아래 내용은 아직 준비중이에요
         </Typography>
         <div className="stepperContainer">
           <Stepper activeStep={0} alternativeLabel>
@@ -876,8 +876,6 @@ const Result = () => {
           </Link>
         </div>
       </div>
-      {/* <iframe src="https://ads-partners.coupang.com/widgets.html?id=667632&template=carousel&trackingCode=AF6703910&subId=&width=680&height=140&tsource=" width="680" height="140" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url"></iframe> */}
-      <KakaoAdFit />
       <style jsx>{`
         .contentsArea {
           padding: 30px 0px;
