@@ -16,7 +16,7 @@ const Home = () => {
         집을 사기로 마음 먹으셨나요?
       </Typography>
       <Typography variant="h6" gutterBottom>
-        첫번째로 할 일은 내가 살 수 있는 아파트 금액을 정하는 일이예요.
+        첫번째로 할 일은 내가 살 수 있는 아파트 금액을 정하는 일이에요.
       </Typography>
       <p></p>
       <Typography variant="h6" gutterBottom>
