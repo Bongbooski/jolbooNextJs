@@ -650,7 +650,6 @@ export const KnowingState: KnowingStateType = {
             (didimdolPrincipalAmount + didimdolInterestAmount) >=
           0
         ) {
-          console.log("dsr didimol 그대로");
           result.push({
             name: LoanType.DIDIMDOL,
             interest: didimdolInterest,
@@ -682,8 +681,6 @@ export const KnowingState: KnowingStateType = {
               borrowingYear
             );
           if (principalAmount >= 0.01) {
-            console.log("dsr didimol 줄여서::", principalAmount.toFixed(2));
-
             result.push({
               name: LoanType.DIDIMDOL,
               interest: didimdolInterest,
@@ -735,11 +732,6 @@ export const KnowingState: KnowingStateType = {
             (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
           0
         ) {
-          console.log(
-            "dsr SPECIAL_HOME 그대로::",
-            specialHomeLoanPrincipalAmount.toFixed(2)
-          );
-
           result.push({
             name: LoanType.SPECIAL_HOME,
             interest: specialHomeLoanInterest,
@@ -772,10 +764,6 @@ export const KnowingState: KnowingStateType = {
             );
 
           if (principalAmount >= 0.01) {
-            console.log(
-              "dsr SPECIAL_HOME 줄여서::",
-              principalAmount.toFixed(2)
-            );
             result.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
@@ -905,11 +893,6 @@ export const KnowingState: KnowingStateType = {
             (normalLoanPrincipalAmount + normalLoanInterestAmount) >=
           0
         ) {
-          console.log(
-            "dsr 일반대출 그대로::",
-            normalLoanPrincipalAmount.toFixed(2)
-          );
-
           result.push({
             name: LoanType.NORMAL,
             interest: NormalLoanInterest,
@@ -942,8 +925,6 @@ export const KnowingState: KnowingStateType = {
             );
 
           if (principalAmount > 0.01) {
-            console.log("dsr 일반대출 줄여서::", principalAmount.toFixed(2));
-
             result.push({
               name: LoanType.NORMAL,
               interest: NormalLoanInterest,
@@ -1001,12 +982,6 @@ export const KnowingState: KnowingStateType = {
       const useDidimdol = get(KnowingState.useDidimdol);
       const useSpecialHome = get(KnowingState.useSpecialHome);
       // // LTV기준 대출가능 금엑이 DSR기준보다 적다면 LTV기준으로 재계산
-      console.log(
-        "재계산11111::::",
-        totalLoanAmountByDsr,
-        ",  ",
-        loanAmountByLtv
-      );
       if (totalLoanAmountByDsr > loanAmountByLtv) {
         const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
 
@@ -1015,7 +990,6 @@ export const KnowingState: KnowingStateType = {
         // const isAbleConfirmingLoan = get(KnowingState.isAbleConfirmingLoan);
 
         if (useDidimdol && isAbleDidimdol && loanAmountByLtv > 0) {
-          console.log("recalculate by LTV");
           const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
           const didimdolInterest: number = Number.parseFloat(
             didimdolInterestResult ? didimdolInterestResult : "0"
@@ -1031,10 +1005,6 @@ export const KnowingState: KnowingStateType = {
                 paymentType,
                 borrowingYear
               );
-            console.log(
-              "ltv DIDIMDOL 그대로::",
-              didimdolPrincipalAmount.toFixed(2)
-            );
 
             result.finalLoanResult.push({
               name: LoanType.DIDIMDOL,
@@ -1064,8 +1034,6 @@ export const KnowingState: KnowingStateType = {
             );
 
             if (principalAmount > 0.01) {
-              console.log("ltv DIDIMDOL 줄여서::", principalAmount.toFixed(2));
-
               result.finalLoanResult.push({
                 name: LoanType.DIDIMDOL,
                 interest: didimdolInterest,
@@ -1111,10 +1079,6 @@ export const KnowingState: KnowingStateType = {
               paymentType,
               borrowingYear
             );
-            console.log(
-              "ltv SPECIAL_HOME 그대로::",
-              specialHomeLoanPrincipalAmount.toFixed(2)
-            );
 
             result.finalLoanResult.push({
               name: LoanType.SPECIAL_HOME,
@@ -1144,11 +1108,6 @@ export const KnowingState: KnowingStateType = {
             );
 
             if (principalAmount > 0.01) {
-              console.log(
-                "ltv SPECIAL_HOME 줄여서::",
-                principalAmount.toFixed(2)
-              );
-
               result.finalLoanResult.push({
                 name: LoanType.SPECIAL_HOME,
                 interest: specialHomeLoanInterest,
@@ -1179,7 +1138,6 @@ export const KnowingState: KnowingStateType = {
             paymentType,
             borrowingYear
           );
-          console.log("ltv 일반대출::", principalAmount.toFixed(2));
 
           result.finalLoanResult.push({
             name: LoanType.NORMAL,
@@ -1262,11 +1220,6 @@ export const KnowingState: KnowingStateType = {
 
         result.finalLoanResult = [];
 
-        console.log(
-          "recalculate by limited property price::",
-          result.finalPropertyPrice
-        );
-        console.log("getMyAsset::", getMyAsset);
         const isAbleDidimdol = get(KnowingState.isAbleDidimdol);
         const isAbleSpecialHomeLoan = get(KnowingState.isAbleSpecialHomeLoan);
         // const isAbleHomeLoan = get(KnowingState.isAbleHomeLoan);
@@ -1288,10 +1241,6 @@ export const KnowingState: KnowingStateType = {
                 paymentType,
                 borrowingYear
               );
-            console.log(
-              "limited didimdol 그대로::",
-              didimdolPrincipalAmount.toFixed(2)
-            );
             result.finalLoanResult.push({
               name: LoanType.DIDIMDOL,
               interest: didimdolInterest,
@@ -1320,10 +1269,6 @@ export const KnowingState: KnowingStateType = {
             );
 
             if (principalAmount > 0.01) {
-              console.log(
-                "limited didimdol 줄여서::",
-                principalAmount.toFixed(2)
-              );
               result.finalLoanResult.push({
                 name: LoanType.DIDIMDOL,
                 interest: didimdolInterest,
@@ -1375,10 +1320,6 @@ export const KnowingState: KnowingStateType = {
               borrowingYear
             );
 
-            console.log(
-              "limited SPECIAL_HOME 그대로::",
-              specialHomeLoanPrincipalAmount.toFixed(2)
-            );
             result.finalLoanResult.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
@@ -1408,11 +1349,6 @@ export const KnowingState: KnowingStateType = {
             );
 
             if (principalAmount > 0.01) {
-              console.log(
-                "limited SPECIAL_HOME 줄여서::",
-                principalAmount.toFixed(2)
-              );
-
               result.finalLoanResult.push({
                 name: LoanType.SPECIAL_HOME,
                 interest: specialHomeLoanInterest,
@@ -1444,7 +1380,6 @@ export const KnowingState: KnowingStateType = {
             paymentType,
             borrowingYear
           );
-          console.log("limited 일반대출::", principalAmount.toFixed(2));
           result.finalLoanResult.push({
             name: LoanType.NORMAL,
             interest: NormalLoanInterest,

@@ -187,14 +187,12 @@ const Result = () => {
       )
       .then(
         (result) => {
-          console.log(result.text);
           if (result.text === "OK") {
             setIsEmailSent(true);
             setShowEmailSentInfo(true);
           }
         },
         (error) => {
-          console.log(error.text);
           setIsEmailSent(false);
           setShowEmailSentInfo(true);
         }
