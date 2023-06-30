@@ -27,6 +27,7 @@ import {
   Stack,
   ToggleButtonGroup,
   ToggleButton,
+  Box,
 } from "@mui/material";
 import Image from "next/image";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -48,10 +49,9 @@ import SymbolSmall from "../../components/SymbolSmall";
 import Router from "next/router";
 import emailjs from "emailjs-com";
 import { Dayjs } from "dayjs";
-import SearchIcon from "../../asset/svg/Search.svg";
-import AntSwitch from "../../components/AntSwitch";
 import { LoanResult, LoanType } from "../../constants/Loan";
 import Seo from "../../components/Seo";
+import InfoIcon from "../../components/InfoIcon";
 import KakaoAdFit from "../../components/KakaoAdFit";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -282,8 +282,9 @@ const Result = () => {
       <div className="firstArea contentsArea">
         <div className="verticalContainer">
           <Typography variant="h5" gutterBottom>
-            내가 살 수 있는 주택 가격 최대 금액은{` `}
+            내가 살 수 있는 주택 가격 최대 금액은
           </Typography>
+          <Box m={0.5} />
           <Typography variant="h1" gutterBottom>
             {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
           </Typography>
@@ -291,22 +292,13 @@ const Result = () => {
             이에요
           </Typography>
         </div>
-
-        {/* {getFinalLoanResult.additionalMessage && (
-          <div className="verticalContainer">
-            <div>
-              <QuestionIcon fill="#6e6d6d" />{" "}
-            </div>
-            <Typography variant="h6" gutterBottom>
-              {getFinalLoanResult.additionalMessage}
-            </Typography>
-          </div>
-        )} */}
         {isAbleDidimdol && (
           <div className="verticalContainer">
-            <div>
-              <QuestionIcon fill="#6e6d6d" />{" "}
+            {/* <div>
+              <QuestionIcon fill="#6e6d6d" />
             </div>
+            <Box m={0.2} /> */}
+            <InfoIcon fill="#6e6d6d" />
             <Typography variant="h6" gutterBottom>
               {
                 "디딤돌대출을 사용하실 건가요?(사용하면 주택가격이 5억까지로 제한돼요)"
@@ -336,9 +328,7 @@ const Result = () => {
         )}
         {isAbleSpecialHomeLoan && (
           <div className="verticalContainer">
-            <div>
-              <QuestionIcon fill="#6e6d6d" />{" "}
-            </div>
+            <InfoIcon fill="#6e6d6d" />
             <Typography variant="h6" gutterBottom>
               {
                 "특례보금자리론을 사용하실 건가요?(사용하면 주택가격이 9억까지로 제한돼요)"
@@ -434,7 +424,7 @@ const Result = () => {
             </div>
           </div>
           <div className="topMargin10 verticalContainer">
-            <QuestionIcon />
+            <InfoIcon />
             <Typography>
               {"  "}위 데이터는 KB부동산에서 제공한 아파트 ㎡당 매매평균가격
               기준입니다. 자세한 수치는{" "}
@@ -455,14 +445,16 @@ const Result = () => {
         <div className="flexableArea">
           <div className="verticalContainer">
             <Typography variant="h5" gutterBottom>
-              현재 내가 가진돈은 {"   "}
+              현재 내가 가진돈은
             </Typography>
+            <Box m={0.5} />
             <Typography variant="h2" gutterBottom>
               {getMyAsset}억
             </Typography>
             <Typography variant="h5" gutterBottom>
-              원이고,{" "}
+              원이고,
             </Typography>
+            <Box m={0.5} />
           </div>
           <div className="verticalContainer">
             <Typography variant="h5" gutterBottom>
@@ -490,8 +482,9 @@ const Result = () => {
                 LTV
               </Typography>
               <Typography variant="h5" gutterBottom>
-                는{" "}
+                는
               </Typography>
+              <Box m={0.5} />
               <Typography variant="h4" gutterBottom>
                 {Number(
                   (
@@ -514,26 +507,15 @@ const Result = () => {
                 {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
                 억, 대출금 {totalLoanAmount}억)
               </Typography>
-              {/* <Typography variant="h5" gutterBottom>
-            주택가격{" "}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            에 대출금{" "}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {totalLoanAmount}억
-          </Typography> */}
             </div>
             <div className="verticalContainer">
               <Typography variant="h4" gutterBottom>
                 DSR
               </Typography>
               <Typography variant="h5" gutterBottom>
-                은{" "}
+                은
               </Typography>
+              <Box m={0.5} />
               <Typography variant="h4" gutterBottom>
                 {Number(calculateDSRPercentage().averageDsr)}%
               </Typography>
@@ -547,27 +529,6 @@ const Result = () => {
                 {calculateDSRPercentage().paymentForYear}
                 원){" "}
               </Typography>
-              {/* <Typography variant="h5" gutterBottom>
-            연봉{" "}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {getCommaString(yearIncome)}만원
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            에 1년 상환 총 원리금은{" "}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {calculateDSRPercentage().paymentForYear}원
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            이므로 DSR은{" "}
-          </Typography>
-          <Typography variant="h4" gutterBottom>
-            {Number(calculateDSRPercentage().averageDsr)}%
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            이구요
-          </Typography> */}
             </div>
             <div className="chartContainer">
               <Doughnut data={data} />
@@ -597,32 +558,6 @@ const Result = () => {
                       >
                         <TableCell component="th" scope="row">
                           {row.name}
-                          {/* <IconButton
-                            aria-describedby={id}
-                            onClick={handleClick}
-                          >
-                            <SearchIcon
-                              width="24"
-                              height="24"
-                              className="searchIcon"
-                            />
-                          </IconButton>
-                          <Popover
-                            id={id}
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                              vertical: "bottom",
-                              horizontal: "right",
-                            }}
-                            transformOrigin={{
-                              vertical: "top",
-                              horizontal: "right",
-                            }}
-                          >
-                            asdfadsfadsfdsf
-                          </Popover> */}
                         </TableCell>
                         <TableCell align="right">
                           {Number(row.loanAmount)}억
@@ -690,19 +625,12 @@ const Result = () => {
               </TableContainer>
             </div>
             <div className="verticalContainer">
+              <InfoIcon fill="#6e6d6d" />
               <Typography variant="h6">
-                <QuestionIcon fill="#6e6d6d" />
-                {"  "}위 계산된 데이터는 참고용입니다. 정확한 수치는 은행에 가서
+                위 계산된 데이터는 참고용입니다. 정확한 수치는 은행에 가서
                 확인하셔야 해요
               </Typography>
             </div>
-            {/* <div className="verticalContainer">
-              <Typography variant="h6">
-                <QuestionIcon fill="#6e6d6d" />
-                {"  "}이자율이 어떻게 계산된건지 궁금하시다면 돋보기를
-                클릭해보세요
-              </Typography>
-            </div> */}
           </>
         )}
       </div>
@@ -718,9 +646,7 @@ const Result = () => {
                 부족하네요 &#128517;
               </Typography>
               <div className="verticalContainer">
-                <div>
-                  <QuestionIcon fill="#6e6d6d" />{" "}
-                </div>
+                <InfoIcon fill="#6e6d6d" />
                 <Typography variant="h6" gutterBottom>
                   {"여윳돈으로 감당 가능한 대출금을 계산해볼까요?!"}
                 </Typography>
@@ -796,8 +722,8 @@ const Result = () => {
             <Typography gutterBottom>
               관심있으시면 이메일을 남겨주세요. 준비가 되면 제일 먼저
               알려드릴게요.
-              {"   "}
             </Typography>
+            <Box component="span" m={0.5} />
             <TextField
               id="outlined-basic"
               label="email"
@@ -879,6 +805,7 @@ const Result = () => {
             </Button>
           </Link>
         </div>
+        <KakaoAdFit />
       </div>
       <style jsx>{`
         .contentsArea {
