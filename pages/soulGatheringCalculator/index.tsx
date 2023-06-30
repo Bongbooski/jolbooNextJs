@@ -10,7 +10,7 @@ import KakaoAdFit from "../../components/KakaoAdFit";
 const Home = () => {
   return (
     <>
-      <Seo title="메인" />
+      <Seo title="" />
       <Symbol />
       <Typography variant="h6" gutterBottom>
         집을 사기로 마음 먹으셨나요?
