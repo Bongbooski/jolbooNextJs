@@ -812,6 +812,7 @@ const Result = () => {
               type="submit"
               variant="contained"
               size="small"
+              disabled={isEmailSent}
               sx={{ height: 40, ml: 1 }}
             >
               <input type={"hidden"} name="yearIncome" value={yearIncome} />
