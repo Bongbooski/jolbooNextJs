@@ -178,25 +178,27 @@ const Result = () => {
   const sendEmail = (e: any) => {
     e.preventDefault();
 
-    emailjs
-      .sendForm(
-        "service_7tlrb3l",
-        "template_ug88foh",
-        e.target,
-        "K0NWGAFo_98PZcIO9"
-      )
-      .then(
-        (result) => {
-          if (result.text === "OK") {
-            setIsEmailSent(true);
+    if(!isEmailSent){
+      emailjs
+        .sendForm(
+          "service_7tlrb3l",
+          "template_ug88foh",
+          e.target,
+          "K0NWGAFo_98PZcIO9"
+        )
+        .then(
+          (result) => {
+            if (result.text === "OK") {
+              setIsEmailSent(true);
+              setShowEmailSentInfo(true);
+            }
+          },
+          (error) => {
+            setIsEmailSent(false);
             setShowEmailSentInfo(true);
           }
-        },
-        (error) => {
-          setIsEmailSent(false);
-          setShowEmailSentInfo(true);
-        }
-      );
+        );
+    }
   };
 
   useEffect(() => {
@@ -803,6 +805,7 @@ const Result = () => {
               size="small"
               name="userEmail"
               value={userEmail}
+              disabled={isEmailSent}
               onChange={(e: any) => setUserEmail(e.target.value)}
             />
             <Button
