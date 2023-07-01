@@ -81,9 +81,6 @@ const Result = () => {
   const getFinalLoanResult = useRecoilValue<FinalLoanResult>(
     KnowingState.getFinalLoanResult
   );
-  const getDsrLoanResult = useRecoilValue<Array<LoanResult>>(
-    KnowingState.getDsrLoanResult
-  );
   const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
   const getLtv = useRecoilValue<number>(KnowingState.getLtv);
   const yearIncome = useRecoilValue<string>(KnowingState.yearIncome);
@@ -178,7 +175,7 @@ const Result = () => {
   const sendEmail = (e: any) => {
     e.preventDefault();
 
-    if(!isEmailSent){
+    if (!isEmailSent) {
       emailjs
         .sendForm(
           "service_7tlrb3l",
@@ -273,6 +270,43 @@ const Result = () => {
       : getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
           return prev + Number(next.fixedPrincipalPaymentLoanAmountFirstMonth);
         }, 0);
+  };
+
+  // - 6억이하 : 취득세율 1%, 지방교육세 0.1%
+  // - 9억이하 : 취득세율 (거래금액 * 2/3 -3)%, 지방교육세 취득세의 1/10
+  // - 9억초과 : 취득세율 3%, 지방교육세 0.3%
+  const calculateAcquisitionTax = () => {
+    const finalPrice = parseFloat(
+      getFinalLoanResult.finalPropertyPrice.toFixed(2)
+    );
+    if (finalPrice <= 6) {
+      const acqTax = finalPrice * 0.01;
+      const eduTax = finalPrice * 0.001;
+      return acqTax + eduTax;
+    } else if (finalPrice <= 9) {
+      const acqTax = finalPrice * (((finalPrice * 2) / 3 - 3) / 100);
+      const eduTax = acqTax / 10;
+      return acqTax + eduTax;
+    } else {
+      const acqTax = finalPrice * 0.03;
+      const eduTax = finalPrice * 0.003;
+      return acqTax + eduTax;
+    }
+  };
+
+  const calculate복비 = () => {
+    const finalPrice = parseFloat(
+      getFinalLoanResult.finalPropertyPrice.toFixed(2)
+    );
+    if (finalPrice < 9) {
+      return finalPrice * 0.004;
+    } else if (finalPrice < 12) {
+      return finalPrice * 0.005;
+    } else if (finalPrice < 15) {
+      return finalPrice * 0.006;
+    } else {
+      return finalPrice * 0.007;
+    }
   };
 
   return (
@@ -460,6 +494,7 @@ const Result = () => {
             <Typography variant="h5" gutterBottom>
               필요한 대출금은 총
             </Typography>
+            <Box m={0.5} />
             <Typography variant="h2" gutterBottom>
               {totalLoanAmount}억
             </Typography>
@@ -634,6 +669,7 @@ const Result = () => {
           </>
         )}
       </div>
+
       <div className="contentsArea">
         {totalLoanAmount !== 0 &&
           (Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
@@ -696,10 +732,29 @@ const Result = () => {
           ))}
       </div>
 
+      {/* 취득세 등 부가세 area */}
+      <div className="contentsArea">
+        <Typography variant="h5">
+          마지막으로, {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
+          억의 집을 구매할 때
+        </Typography>
+        <div className="verticalContainer">
+          <Typography variant="h5">
+            대략 {(calculateAcquisitionTax() + calculate복비()).toFixed(2)}
+            억원이 추가로 필요하니
+          </Typography>
+          <Typography>
+            (취득세 : 약 {Number(calculateAcquisitionTax().toFixed(2))}
+            억원, 중개수수료: 약 {Number(calculate복비().toFixed(2))}억원)
+          </Typography>
+        </div>
+        <Typography variant="h5">잊지말고 예산에 넣어주세요!</Typography>
+      </div>
+
       <div className="contentsArea">
         <Typography gutterBottom>
-          내가 살 수 있는 아파트 가격을 확인했으면 이제 후보 지역을 선정해야
-          합니다. 아래 내용은 아직 준비중이에요
+          지금까지 내가 살 수 있는 아파트 가격을 확인했으면, 이제 후보 지역을
+          선정해야 합니다. 아래 내용은 아직 준비중이에요
         </Typography>
         <div className="stepperContainer">
           <Stepper activeStep={0} alternativeLabel>

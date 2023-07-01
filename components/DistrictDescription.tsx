@@ -1,4 +1,4 @@
-import { IconButton, Popover, Typography } from "@mui/material";
+import { Box, IconButton, Popover, Typography } from "@mui/material";
 
 import {
   PricePerSquareMeterType,
@@ -26,21 +26,15 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  // console.log(props.districts);
-  // console.log(props.districts.filter((e, i) => i < props.districts.length - 1));
-  // console.log(
-  //   props.districts
-  //     .filter((e, i) => i < props.districts.length - 1)
-  //     .map((e) => e.districtName)
-  // );
   return (
     <div className="container">
       {props.districts.length > 0 ? (
         <>
           <div className="verticalContainer">
             <Typography variant="h5" gutterBottom>
-              {props.squareMeter}평은{" "}
+              {props.squareMeter}평은
             </Typography>
+            <Box m={0.2} />
             <Typography variant="h2" gutterBottom>
               {props.districts[props.districts.length - 1].districtName}
             </Typography>
