@@ -3,6 +3,7 @@ export interface LoanResult {
   interest: number;
   loanAmount: string;
   interestAmount: string;
+  primeRate: number;
   fixedPaymentLoanAmountByMonth: number;
   fixedPrincipalPaymentLoanAmountFirstMonth: number;
 }

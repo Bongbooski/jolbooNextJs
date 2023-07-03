@@ -34,6 +34,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import {
   FinalLoanResult,
+  HousePriceLitmitation,
   PaymentType,
   PricePerSquareMeter,
 } from "../../constants/Common";
@@ -43,6 +44,7 @@ import DistrictDescription from "../../components/DistrictDescription";
 import {
   calculateFixedPaymentLoanAmountByMonth,
   getCommaString,
+  getDidimdolHousePriceLimit,
   getFixedPrincipalInterest,
 } from "../../utils/CommonUtils";
 import SymbolSmall from "../../components/SymbolSmall";
@@ -83,11 +85,16 @@ const Result = () => {
   );
   const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
   const getLtv = useRecoilValue<number>(KnowingState.getLtv);
+  const internationalAge = useRecoilValue<number>(KnowingState.internationalAge);
+  const kidsCount = Number.parseInt(useRecoilValue<string>(KnowingState.kidsCount));
   const yearIncome = useRecoilValue<string>(KnowingState.yearIncome);
   const depositAmount = useRecoilValue<string>(KnowingState.depositAmount);
   const supportAmount = useRecoilValue<string>(KnowingState.supportAmount);
   const saveAmount = useRecoilValue<string>(KnowingState.saveAmount);
 
+  const isHavingKids = useRecoilValue<boolean | null>(KnowingState.isHavingKids);
+  const isNewCouple = useRecoilValue<boolean | null>(KnowingState.isNewCouple);
+  const isMarried = useRecoilValue<boolean>(KnowingState.isMarried);
   const isAbleDidimdol = useRecoilValue<boolean>(KnowingState.isAbleDidimdol);
   const [useDidimdol, setUseDidimdol] = useRecoilState<boolean>(
     KnowingState.useDidimdol
@@ -205,9 +212,12 @@ const Result = () => {
   }, [yearIncome]);
 
   useEffect(() => {
-    if (getMyAsset > 5) {
+    const didimdolHousePriceLimit = getDidimdolHousePriceLimit(isNewCouple || false, isMarried, isHavingKids || false, kidsCount, internationalAge);
+
+    if (getMyAsset >= didimdolHousePriceLimit || getMyAsset + Number.parseInt(supportAmount) >= didimdolHousePriceLimit) {
       setUseDidimdol(false);
-    } else if (getMyAsset > 9) {
+    }
+    if (getMyAsset >= 9 || getMyAsset + Number.parseInt(supportAmount) >= 9) {
       setUseSpecialHome(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -265,11 +275,11 @@ const Result = () => {
   const getTotalPayment = () => {
     return paymentType === PaymentType.FIXED
       ? getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
-          return prev + Number(next.fixedPaymentLoanAmountByMonth);
-        }, 0)
+        return prev + Number(next.fixedPaymentLoanAmountByMonth);
+      }, 0)
       : getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
-          return prev + Number(next.fixedPrincipalPaymentLoanAmountFirstMonth);
-        }, 0);
+        return prev + Number(next.fixedPrincipalPaymentLoanAmountFirstMonth);
+      }, 0);
   };
 
   // - 6억이하 : 취득세율 1%, 지방교육세 0.1%
@@ -312,324 +322,324 @@ const Result = () => {
   return (
     <div className={"resultContainer"}>
       <div className={'contentsArea'}>
-      <Seo title="결과보기" />
-      <SymbolSmall />
-      <div className="firstArea contentsArea">
-        <div className="verticalContainer">
-          <Typography variant="h5" gutterBottom>
-            내가 살 수 있는 주택 가격 최대 금액은
-          </Typography>
-          <Box m={0.5} />
-          <Typography variant="h1" gutterBottom>
-            {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-            이에요
-          </Typography>
-        </div>
-        {isAbleDidimdol && (
+        <Seo title="결과보기" />
+        <SymbolSmall />
+        <div className="firstArea contentsArea">
           <div className="verticalContainer">
-            {/* <div>
+            <Typography variant="h5" gutterBottom>
+              내가 살 수 있는 주택 가격 최대 금액은
+            </Typography>
+            <Box m={0.5} />
+            <Typography variant="h1" gutterBottom>
+              {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}억
+            </Typography>
+            <Typography variant="h5" gutterBottom>
+              이에요
+            </Typography>
+          </div>
+          {isAbleDidimdol && (
+            <div className="verticalContainer">
+              {/* <div>
               <QuestionIcon fill="#6e6d6d" />
             </div>
             <Box m={0.2} /> */}
-            <InfoIcon fill="#6e6d6d" />
-            <Typography variant="h6" gutterBottom>
-              {
-                "디딤돌대출을 사용하실 건가요?(사용하면 주택가격이 5억까지로 제한돼요)"
-              }
-            </Typography>
+              <InfoIcon fill="#6e6d6d" />
+              <Typography variant="h6" gutterBottom>
+                {
+                  `디딤돌대출을 사용하실 건가요?(사용하면 주택가격이 ${getDidimdolHousePriceLimit(isNewCouple || false, isMarried, isHavingKids || false, kidsCount, internationalAge)}억까지로 제한돼요)`
+                }
+              </Typography>
 
-            <div className="toggleButtonWrapper">
-              <ToggleButtonGroup
-                color="primary"
-                value={useDidimdol.toString()}
-                size="small"
-                exclusive
-                onChange={(
-                  event: React.MouseEvent<HTMLElement>,
-                  newSelection: string
-                ) => {
-                  if (newSelection !== null)
-                    setUseDidimdol(JSON.parse(newSelection));
-                }}
-                aria-label="Platform"
-              >
-                <ToggleButton value="true">사용</ToggleButton>
-                <ToggleButton value="false">제외</ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-          </div>
-        )}
-        {isAbleSpecialHomeLoan && (
-          <div className="verticalContainer">
-            <InfoIcon fill="#6e6d6d" />
-            <Typography variant="h6" gutterBottom>
-              {
-                "특례보금자리론을 사용하실 건가요?(사용하면 주택가격이 9억까지로 제한돼요)"
-              }
-            </Typography>
-            <div className="toggleButtonWrapper">
-              <ToggleButtonGroup
-                color="primary"
-                value={useSpecialHome.toString()}
-                size="small"
-                exclusive
-                onChange={(
-                  event: React.MouseEvent<HTMLElement>,
-                  newSelection: string
-                ) => {
-                  if (newSelection !== null)
-                    setUseSpecialHome(JSON.parse(newSelection));
-                }}
-                aria-label="Platform"
-              >
-                <ToggleButton value="true">사용</ToggleButton>
-                <ToggleButton value="false">제외</ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="seoulArea contentsArea">
-        <div className="districtContainer">
-          <div className="districtContents">
-            <div className="mapArea">
-              <img
-                width={480}
-                height={394}
-                alt={"seoulMap"}
-                src={"/seoul_map.png"}
-              />
-              {selectedSquareMeter === "25" && districtName25.length > 0 ? (
-                districtName25.map((e, i) => {
-                  return (
-                    <div
-                      key={`pinIcon25_${i}`}
-                      className={`pinArea${e.districtEngName}`}
-                    >
-                      <PlaceBlack className="pinIcon" />
-                    </div>
-                  );
-                })
-              ) : selectedSquareMeter === "34" && districtName34.length > 0 ? (
-                districtName34.map((e, i) => {
-                  return (
-                    <div
-                      key={`pinIcon34_${i}`}
-                      className={`pinArea${e.districtEngName}`}
-                    >
-                      <PlaceBlack className="pinIcon" />
-                    </div>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </div>
-            <div className="descriptionArea">
-              <FormControl style={{ width: "fit-content" }}>
-                <InputLabel id="demo-simple-select-label">면적</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={selectedSquareMeter}
-                  label="면적"
-                  onChange={handleChange}
+              <div className="toggleButtonWrapper">
+                <ToggleButtonGroup
+                  color="primary"
+                  value={useDidimdol.toString()}
+                  size="small"
+                  exclusive
+                  onChange={(
+                    event: React.MouseEvent<HTMLElement>,
+                    newSelection: string
+                  ) => {
+                    if (newSelection !== null)
+                      setUseDidimdol(JSON.parse(newSelection));
+                  }}
+                  aria-label="Platform"
                 >
-                  <MenuItem value={"25"}>
-                    59m<sup>2</sup>(25평)
-                  </MenuItem>
-                  <MenuItem value={"34"}>
-                    84m<sup>2</sup>(34평)
-                  </MenuItem>
-                </Select>
-              </FormControl>
-              {selectedSquareMeter === "25" ? (
-                <DistrictDescription
-                  squareMeter="25"
-                  districts={districtName25}
-                />
-              ) : (
-                <DistrictDescription
-                  squareMeter="34"
-                  districts={districtName34}
-                />
-              )}
+                  <ToggleButton value="true">사용</ToggleButton>
+                  <ToggleButton value="false">제외</ToggleButton>
+                </ToggleButtonGroup>
+              </div>
             </div>
-          </div>
-          <div className="topMargin10 verticalContainer">
-            <InfoIcon />
-            <Typography>
-              {"  "}위 데이터는 KB부동산에서 제공한 아파트 ㎡당 매매평균가격
-              기준입니다. 자세한 수치는{" "}
-              <a
-                target="_blank"
-                href="https://data.kbland.kr/kbstats/wmh?tIdx=HT07&tsIdx=aptM2SaleAvgPrice"
-                className="link"
-                rel="noreferrer"
-              >
-                여기
-              </a>
-              를 확인해보세요
-            </Typography>
-          </div>
+          )}
+          {isAbleSpecialHomeLoan && (
+            <div className="verticalContainer">
+              <InfoIcon fill="#6e6d6d" />
+              <Typography variant="h6" gutterBottom>
+                {
+                  "특례보금자리론을 사용하실 건가요?(사용하면 주택가격이 9억까지로 제한돼요)"
+                }
+              </Typography>
+              <div className="toggleButtonWrapper">
+                <ToggleButtonGroup
+                  color="primary"
+                  value={useSpecialHome.toString()}
+                  size="small"
+                  exclusive
+                  onChange={(
+                    event: React.MouseEvent<HTMLElement>,
+                    newSelection: string
+                  ) => {
+                    if (newSelection !== null)
+                      setUseSpecialHome(JSON.parse(newSelection));
+                  }}
+                  aria-label="Platform"
+                >
+                  <ToggleButton value="true">사용</ToggleButton>
+                  <ToggleButton value="false">제외</ToggleButton>
+                </ToggleButtonGroup>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-      <div className="contentsArea">
-        <div className="flexableArea">
-          <div className="verticalContainer">
-            <Typography variant="h5" gutterBottom>
-              현재 내가 가진돈은
-            </Typography>
-            <Box m={0.5} />
-            <Typography variant="h2" gutterBottom>
-              {getMyAsset}억
-            </Typography>
-            <Typography variant="h5" gutterBottom>
-              원이고,
-            </Typography>
-            <Box m={0.5} />
-          </div>
-          <div className="verticalContainer">
-            <Typography variant="h5" gutterBottom>
-              필요한 대출금은 총
-            </Typography>
-            <Box m={0.5} />
-            <Typography variant="h2" gutterBottom>
-              {totalLoanAmount}억
-            </Typography>
-            <Typography variant="h5" gutterBottom>
-              원이에요
-            </Typography>
-          </div>
-        </div>
-        {totalLoanAmount === 0 ? (
-          <>
-            <Typography variant="h4">
-              {" "}
-              대출 받을 필요가 없거나, 받을 수 있는 대출이 없네요&#128517;
-            </Typography>
-          </>
-        ) : (
-          <>
-            <div className="verticalContainer">
-              <Typography variant="h4" gutterBottom>
-                LTV
-              </Typography>
-              <Typography variant="h5" gutterBottom>
-                는
-              </Typography>
-              <Box m={0.5} />
-              <Typography variant="h4" gutterBottom>
-                {Number(
-                  (
-                    (totalLoanAmount /
-                      Number(
-                        getFinalLoanResult.finalPropertyPrice.toFixed(2)
-                      )) *
-                    100
-                  ).toFixed(2)
-                )}
-                %
-              </Typography>
-              <Typography variant="h5" gutterBottom>
-                이네요
-              </Typography>
-            </div>
-            <div className="verticalContainer">
-              <Typography variant="h6">
-                (주택가격{" "}
-                {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
-                억, 대출금 {totalLoanAmount}억)
-              </Typography>
-            </div>
-            <div className="verticalContainer">
-              <Typography variant="h4" gutterBottom>
-                DSR
-              </Typography>
-              <Typography variant="h5" gutterBottom>
-                은
-              </Typography>
-              <Box m={0.5} />
-              <Typography variant="h4" gutterBottom>
-                {Number(calculateDSRPercentage().averageDsr)}%
-              </Typography>
-              <Typography variant="h5" gutterBottom>
-                이구요
-              </Typography>
-            </div>
-            <div className="verticalContainer">
-              <Typography variant="h6">
-                (나의 1년 상환 총 원리금은{" "}
-                {calculateDSRPercentage().paymentForYear}
-                원){" "}
-              </Typography>
-            </div>
-            <div className="chartContainer">
-              <Doughnut data={data} />
-            </div>
-            <div className="tableContainer">
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>대출명</TableCell>
-                      <TableCell align="right">원금</TableCell>
-                      <TableCell align="right">이자율</TableCell>
-                      <TableCell align="right">
-                        {paymentType === PaymentType.FIXED
-                          ? "원리금균등(매월)"
-                          : "원금균등(첫달)"}
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {getFinalLoanResult.finalLoanResult.map((row) => (
-                      <TableRow
-                        key={row.name}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
+        <div className="seoulArea contentsArea">
+          <div className="districtContainer">
+            <div className="districtContents">
+              <div className="mapArea">
+                <img
+                  width={480}
+                  height={394}
+                  alt={"seoulMap"}
+                  src={"/seoul_map.png"}
+                />
+                {selectedSquareMeter === "25" && districtName25.length > 0 ? (
+                  districtName25.map((e, i) => {
+                    return (
+                      <div
+                        key={`pinIcon25_${i}`}
+                        className={`pinArea${e.districtEngName}`}
                       >
-                        <TableCell component="th" scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">
-                          {Number(row.loanAmount)}억
-                        </TableCell>
-                        <TableCell align="right">{row.interest}%</TableCell>
+                        <PlaceBlack className="pinIcon" />
+                      </div>
+                    );
+                  })
+                ) : selectedSquareMeter === "34" && districtName34.length > 0 ? (
+                  districtName34.map((e, i) => {
+                    return (
+                      <div
+                        key={`pinIcon34_${i}`}
+                        className={`pinArea${e.districtEngName}`}
+                      >
+                        <PlaceBlack className="pinIcon" />
+                      </div>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
+              </div>
+              <div className="descriptionArea">
+                <FormControl style={{ width: "fit-content" }}>
+                  <InputLabel id="demo-simple-select-label">면적</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={selectedSquareMeter}
+                    label="면적"
+                    onChange={handleChange}
+                  >
+                    <MenuItem value={"25"}>
+                      59m<sup>2</sup>(25평)
+                    </MenuItem>
+                    <MenuItem value={"34"}>
+                      84m<sup>2</sup>(34평)
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                {selectedSquareMeter === "25" ? (
+                  <DistrictDescription
+                    squareMeter="25"
+                    districts={districtName25}
+                  />
+                ) : (
+                  <DistrictDescription
+                    squareMeter="34"
+                    districts={districtName34}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="topMargin10 verticalContainer">
+              <InfoIcon />
+              <Typography>
+                {"  "}위 데이터는 KB부동산에서 제공한 아파트 ㎡당 매매평균가격
+                기준입니다. 자세한 수치는{" "}
+                <a
+                  target="_blank"
+                  href="https://data.kbland.kr/kbstats/wmh?tIdx=HT07&tsIdx=aptM2SaleAvgPrice"
+                  className="link"
+                  rel="noreferrer"
+                >
+                  여기
+                </a>
+                를 확인해보세요
+              </Typography>
+            </div>
+          </div>
+        </div>
+        <div className="contentsArea">
+          <div className="flexableArea">
+            <div className="verticalContainer">
+              <Typography variant="h5" gutterBottom>
+                현재 내가 가진돈은
+              </Typography>
+              <Box m={0.5} />
+              <Typography variant="h2" gutterBottom>
+                {getMyAsset.toFixed(2)}억
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                원이고,
+              </Typography>
+              <Box m={0.5} />
+            </div>
+            <div className="verticalContainer">
+              <Typography variant="h5" gutterBottom>
+                필요한 대출금은 총
+              </Typography>
+              <Box m={0.5} />
+              <Typography variant="h2" gutterBottom>
+                {totalLoanAmount}억
+              </Typography>
+              <Typography variant="h5" gutterBottom>
+                원이에요
+              </Typography>
+            </div>
+          </div>
+          {totalLoanAmount === 0 ? (
+            <>
+              <Typography variant="h4">
+                {" "}
+                대출 받을 필요가 없거나, 받을 수 있는 대출이 없네요&#128517;
+              </Typography>
+            </>
+          ) : (
+            <>
+              <div className="verticalContainer">
+                <Typography variant="h4" gutterBottom>
+                  LTV
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                  는
+                </Typography>
+                <Box m={0.5} />
+                <Typography variant="h4" gutterBottom>
+                  {Number(
+                    (
+                      (totalLoanAmount /
+                        Number(
+                          getFinalLoanResult.finalPropertyPrice.toFixed(2)
+                        )) *
+                      100
+                    ).toFixed(2)
+                  )}
+                  %
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                  이네요
+                </Typography>
+              </div>
+              <div className="verticalContainer">
+                <Typography variant="h6">
+                  (주택가격{" "}
+                  {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
+                  억, 대출금 {totalLoanAmount}억)
+                </Typography>
+              </div>
+              <div className="verticalContainer">
+                <Typography variant="h4" gutterBottom>
+                  DSR
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                  은
+                </Typography>
+                <Box m={0.5} />
+                <Typography variant="h4" gutterBottom>
+                  {Number(calculateDSRPercentage().averageDsr)}%
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                  이구요
+                </Typography>
+              </div>
+              <div className="verticalContainer">
+                <Typography variant="h6">
+                  (나의 1년 상환 총 원리금은{" "}
+                  {calculateDSRPercentage().paymentForYear}
+                  원){" "}
+                </Typography>
+              </div>
+              <div className="chartContainer">
+                <Doughnut data={data} />
+              </div>
+              <div className="tableContainer">
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>대출명</TableCell>
+                        <TableCell align="right">원금</TableCell>
+                        <TableCell align="right">이자율(기본금리-우대금리)</TableCell>
                         <TableCell align="right">
                           {paymentType === PaymentType.FIXED
-                            ? getCommaString(row.fixedPaymentLoanAmountByMonth)
-                            : getCommaString(
-                                row.fixedPrincipalPaymentLoanAmountFirstMonth
-                              )}
-                          원
+                            ? "원리금균등(매월)"
+                            : "원금균등(첫달)"}
                         </TableCell>
                       </TableRow>
-                    ))}
-                    <TableRow
-                      key={"합계"}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {"합계"}
-                      </TableCell>
-                      <TableCell align="right">
-                        {getFinalLoanResult.finalLoanResult.reduce(function (
-                          prev,
-                          next
-                        ) {
-                          return prev + Number(next.loanAmount);
-                        },
-                        0)}
-                        억
-                      </TableCell>
-                      <TableCell align="right">{""}</TableCell>
-                      <TableCell align="right">
-                        {paymentType === PaymentType.FIXED
-                          ? getCommaString(
+                    </TableHead>
+                    <TableBody>
+                      {getFinalLoanResult.finalLoanResult.map((row) => (
+                        <TableRow
+                          key={row.name}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {row.name}
+                          </TableCell>
+                          <TableCell align="right">
+                            {Number(row.loanAmount)}억
+                          </TableCell>
+                          <TableCell align="right">{row.interest}% ({row.interest + Number(row.primeRate)}%-{Number(row.primeRate)}%)</TableCell>
+                          <TableCell align="right">
+                            {paymentType === PaymentType.FIXED
+                              ? getCommaString(row.fixedPaymentLoanAmountByMonth)
+                              : getCommaString(
+                                row.fixedPrincipalPaymentLoanAmountFirstMonth
+                              )}
+                            원
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      <TableRow
+                        key={"합계"}
+                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {"합계"}
+                        </TableCell>
+                        <TableCell align="right">
+                          {getFinalLoanResult.finalLoanResult.reduce(function (
+                            prev,
+                            next
+                          ) {
+                            return prev + Number(next.loanAmount);
+                          },
+                            0)}
+                          억
+                        </TableCell>
+                        <TableCell align="right">{""}</TableCell>
+                        <TableCell align="right">
+                          {paymentType === PaymentType.FIXED
+                            ? getCommaString(
                               getFinalLoanResult.finalLoanResult.reduce(
                                 function (prev, next) {
                                   return (
@@ -640,7 +650,7 @@ const Result = () => {
                                 0
                               )
                             )
-                          : getCommaString(
+                            : getCommaString(
                               getFinalLoanResult.finalLoanResult.reduce(
                                 function (prev, next) {
                                   return (
@@ -653,217 +663,216 @@ const Result = () => {
                                 0
                               )
                             )}
-                        원
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-            <div className="verticalContainer">
-              <InfoIcon fill="#6e6d6d" />
-              <Typography variant="h6">
-                위 계산된 데이터는 참고용입니다. 정확한 수치는 은행에 가서
-                확인하셔야 해요
-              </Typography>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="contentsArea">
-        {totalLoanAmount !== 0 &&
-          (Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
-            <>
-              <Typography variant="h5" gutterBottom>
-                현재 매월 {saveAmount}만원의 여유가 있다고 하셨어요.
-              </Typography>
-              <Typography variant="h5" gutterBottom>
-                매월 {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
-                부족하네요 &#128517;
-              </Typography>
+                          원
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
               <div className="verticalContainer">
                 <InfoIcon fill="#6e6d6d" />
-                <Typography variant="h6" gutterBottom>
-                  {"여윳돈으로 감당 가능한 대출금을 계산해볼까요?!"}
+                <Typography variant="h6">
+                  위 계산된 데이터는 참고용입니다. 정확한 수치는 은행에 가서
+                  확인하셔야 해요
                 </Typography>
-                <div className="toggleButtonWrapper">
-                  <ToggleButtonGroup
-                    color="primary"
-                    value={useOnlyExtraMoney.toString()}
-                    size="small"
-                    exclusive
-                    onChange={(
-                      event: React.MouseEvent<HTMLElement>,
-                      newSelection: string
-                    ) => {
-                      if (newSelection !== null)
-                        setUseOnlyExtraMoney(JSON.parse(newSelection));
-                    }}
-                    aria-label="Platform"
-                  >
-                    <ToggleButton value="true">적용</ToggleButton>
-                    <ToggleButton value="false">미적용</ToggleButton>
-                  </ToggleButtonGroup>
-                </div>
               </div>
             </>
-          ) : (
-            <>
-              <Typography variant="h5" gutterBottom>
-                현재 매월 {saveAmount}만원의 여유가 있다고 하셨어요.
-              </Typography>
-              <Typography variant="h5" gutterBottom>
-                매월 {getCommaString(getTotalPayment())}원을 원리금으로 내고
-                나면{" "}
-                {getCommaString(
-                  Number(saveAmount) * 10000 - Number(getTotalPayment())
-                )}
-                원이 남아요
-              </Typography>
-              <Typography variant="h5" gutterBottom>
-                월 여유 자금 중{" "}
-                {(
-                  (Number(getTotalPayment()) / (Number(saveAmount) * 10000)) *
-                  100
-                ).toFixed(2)}
-                %를 원리금 상환에 사용하겠네요
-              </Typography>
-            </>
-          ))}
-      </div>
+          )}
+        </div>
 
-      {/* 취득세 등 부가세 area */}
-      <div className="contentsArea">
-        <Typography variant="h5">
-          마지막으로, {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
-          억의 집을 구매할 때
-        </Typography>
-        <div className="verticalContainer">
+        {/* 취득세 등 부가세 area */}
+        <div className="contentsArea">
           <Typography variant="h5">
-            대략 {(calculateAcquisitionTax() + calculate복비()).toFixed(2)}
-            억원이 추가로 필요하니
+            {Number(getFinalLoanResult.finalPropertyPrice.toFixed(2))}
+            억의 집을 구매할 때
           </Typography>
-          <Typography>
-            (취득세 : 약 {Number(calculateAcquisitionTax().toFixed(2))}
-            억원, 중개수수료: 약 {Number(calculate복비().toFixed(2))}억원)
-          </Typography>
-        </div>
-        <Typography variant="h5">잊지말고 예산에 넣어주세요!</Typography>
-      </div>
-
-      <div className="contentsArea">
-        <Typography gutterBottom>
-          지금까지 내가 살 수 있는 아파트 가격을 확인했으면, 이제 후보 지역을
-          선정해야 합니다. 아래 내용은 아직 준비중이에요
-        </Typography>
-        <div className="stepperContainer">
-          <Stepper activeStep={0} alternativeLabel>
-            <Step key={"영끌계산기"}>
-              <StepLabel>{"영끌계산기"}</StepLabel>
-            </Step>
-            <Step key={"후보지역 추첨기(준비중)"}>
-              <StepLabel>{"후보지역 추첨기(준비중)"}</StepLabel>
-            </Step>
-            <Step key={"매물확인 레이더(준비중)"}>
-              <StepLabel>{"매물확인 레이더(준비중)"}</StepLabel>
-            </Step>
-            <Step key={"임장수첩(준비중)"}>
-              <StepLabel>{"임장수첩(준비중)"}</StepLabel>
-            </Step>
-          </Stepper>
-        </div>
-        <form className="contact-form" onSubmit={sendEmail}>
           <div className="verticalContainer">
-            <Typography gutterBottom>
-              관심있으시면 이메일을 남겨주세요. 준비가 되면 제일 먼저
-              알려드릴게요.
+            <Typography variant="h5">
+              대략 {(calculateAcquisitionTax() + calculate복비()).toFixed(2)}
+              억원이 추가로 필요하니
             </Typography>
-            <Box component="span" m={0.5} />
-            <TextField
-              id="outlined-basic"
-              label="email"
-              variant="outlined"
-              size="small"
-              name="userEmail"
-              value={userEmail}
-              disabled={isEmailSent}
-              onChange={(e: any) => setUserEmail(e.target.value)}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              size="small"
-              disabled={isEmailSent}
-              sx={{ height: 40, ml: 1 }}
-            >
-              <input type={"hidden"} name="yearIncome" value={yearIncome} />
-              <input
-                type={"hidden"}
-                name="birthday"
-                value={birthday!.toString()}
-              />
-              <input
-                type={"hidden"}
-                name="supportAmount"
-                value={supportAmount}
-              />
-              <input
-                type={"hidden"}
-                name="depositAmount"
-                value={depositAmount}
-              />
-
-              <input
-                type={"hidden"}
-                name="getSoulGatheringAmount"
-                value={getSoulGatheringAmount}
-              />
-              <input
-                type={"hidden"}
-                name="maxLoanAmountByLTV"
-                value={(getMyAsset * getLtv) / (100 - getLtv)}
-              />
-              <input
-                type={"hidden"}
-                name="getMaxPropertyPriceByLTV"
-                value={getMaxPropertyPriceByLTV}
-              />
-
-              <Typography variant="body1">등록</Typography>
-            </Button>
+            <Typography>
+              (취득세 : 약 {Number(calculateAcquisitionTax().toFixed(2))}
+              억원, 중개수수료: 약 {Number(calculate복비().toFixed(2))}억원)
+            </Typography>
           </div>
-        </form>
-        {showEmailSentInfo &&
-          (isEmailSent ? (
+          <Typography variant="h5">잊지말고 예산에 넣어주세요!</Typography>
+        </div>
+
+        <div className="contentsArea">
+          {totalLoanAmount !== 0 &&
+            (Number(saveAmount) * 10000 - Number(getTotalPayment()) <= 0 ? (
+              <>
+                <Typography variant="h5" gutterBottom>
+                  현재 매월 {saveAmount}만원의 여유가 있다고 하셨어요.
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                  매월 {getCommaString(getTotalPayment())}원을 원리금으로 내기엔
+                  부족하네요 &#128517;
+                </Typography>
+                <div className="verticalContainer">
+                  <InfoIcon fill="#6e6d6d" />
+                  <Typography variant="h6" gutterBottom>
+                    {"여윳돈으로 감당 가능한 대출금을 계산해볼까요?!"}
+                  </Typography>
+                  <div className="toggleButtonWrapper">
+                    <ToggleButtonGroup
+                      color="primary"
+                      value={useOnlyExtraMoney.toString()}
+                      size="small"
+                      exclusive
+                      onChange={(
+                        event: React.MouseEvent<HTMLElement>,
+                        newSelection: string
+                      ) => {
+                        if (newSelection !== null)
+                          setUseOnlyExtraMoney(JSON.parse(newSelection));
+                      }}
+                      aria-label="Platform"
+                    >
+                      <ToggleButton value="true">적용</ToggleButton>
+                      <ToggleButton value="false">미적용</ToggleButton>
+                    </ToggleButtonGroup>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <Typography variant="h5" gutterBottom>
+                  현재 매월 {saveAmount}만원의 여유가 있다고 하셨어요.
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                  매월 {getCommaString(getTotalPayment())}원을 원리금으로 내고
+                  나면{" "}
+                  {getCommaString(
+                    Number(saveAmount) * 10000 - Number(getTotalPayment())
+                  )}
+                  원이 남아요
+                </Typography>
+                <Typography variant="h5" gutterBottom>
+                  월 여유 자금 중{" "}
+                  {(
+                    (Number(getTotalPayment()) / (Number(saveAmount) * 10000)) *
+                    100
+                  ).toFixed(2)}
+                  %를 원리금 상환에 사용하겠네요
+                </Typography>
+              </>
+            ))}
+        </div>
+
+        <div className="contentsArea">
+          <Typography gutterBottom>
+            지금까지 내가 살 수 있는 아파트 가격을 확인했으면, 이제 후보 지역을
+            선정해야 합니다. 아래 내용은 아직 준비중이에요
+          </Typography>
+          <div className="stepperContainer">
+            <Stepper activeStep={0} alternativeLabel>
+              <Step key={"영끌계산기"}>
+                <StepLabel>{"영끌계산기"}</StepLabel>
+              </Step>
+              <Step key={"후보지역 추첨기(준비중)"}>
+                <StepLabel>{"후보지역 추첨기(준비중)"}</StepLabel>
+              </Step>
+              <Step key={"매물확인 레이더(준비중)"}>
+                <StepLabel>{"매물확인 레이더(준비중)"}</StepLabel>
+              </Step>
+              <Step key={"임장수첩(준비중)"}>
+                <StepLabel>{"임장수첩(준비중)"}</StepLabel>
+              </Step>
+            </Stepper>
+          </div>
+          <form className="contact-form" onSubmit={sendEmail}>
             <div className="verticalContainer">
               <Typography gutterBottom>
-                등록에 성공했습니다, 완성되는대로 메일드릴게요!
+                관심있으시면 이메일을 남겨주세요. 준비가 되면 제일 먼저
+                알려드릴게요.
               </Typography>
-            </div>
-          ) : (
-            <Typography gutterBottom>
-              등록에 실패했습니다, 아래 메일로 문의 남겨주세요
-            </Typography>
-          ))}
+              <Box component="span" m={0.5} />
+              <TextField
+                id="outlined-basic"
+                label="email"
+                variant="outlined"
+                size="small"
+                name="userEmail"
+                value={userEmail}
+                disabled={isEmailSent}
+                onChange={(e: any) => setUserEmail(e.target.value)}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                size="small"
+                disabled={isEmailSent}
+                sx={{ height: 40, ml: 1 }}
+              >
+                <input type={"hidden"} name="yearIncome" value={yearIncome} />
+                <input
+                  type={"hidden"}
+                  name="birthday"
+                  value={birthday!.toString()}
+                />
+                <input
+                  type={"hidden"}
+                  name="supportAmount"
+                  value={supportAmount}
+                />
+                <input
+                  type={"hidden"}
+                  name="depositAmount"
+                  value={depositAmount}
+                />
 
-        <div className="verticalContainer">
-          <Typography gutterBottom>
-            제안 또는 문의 사항이 있으시면 p9346420@gmail.com으로 메일 주세요!
-          </Typography>
+                <input
+                  type={"hidden"}
+                  name="getSoulGatheringAmount"
+                  value={getSoulGatheringAmount}
+                />
+                <input
+                  type={"hidden"}
+                  name="maxLoanAmountByLTV"
+                  value={(getMyAsset * getLtv) / (100 - getLtv)}
+                />
+                <input
+                  type={"hidden"}
+                  name="getMaxPropertyPriceByLTV"
+                  value={getMaxPropertyPriceByLTV}
+                />
+
+                <Typography variant="body1">등록</Typography>
+              </Button>
+            </div>
+          </form>
+          {showEmailSentInfo &&
+            (isEmailSent ? (
+              <div className="verticalContainer">
+                <Typography gutterBottom>
+                  등록에 성공했습니다, 완성되는대로 메일드릴게요!
+                </Typography>
+              </div>
+            ) : (
+              <Typography gutterBottom>
+                등록에 실패했습니다, 아래 메일로 문의 남겨주세요
+              </Typography>
+            ))}
+
+          <div className="verticalContainer">
+            <Typography gutterBottom>
+              제안 또는 문의 사항이 있으시면 jolboo2023@gmail.com으로 메일 주세요!
+            </Typography>
+          </div>
         </div>
-      </div>
-      <div className="contentsArea">
-        <div className="linkContainer">
-          <Link href={`/soulGatheringCalculator/knowingMyself`}>
-            <Button variant="contained" size="large" disableElevation>
-              <Typography variant="body1">다시하기</Typography>
-            </Button>
-          </Link>
+        <div className="contentsArea">
+          <div className="linkContainer">
+            <Link href={`/soulGatheringCalculator/knowingMyself`}>
+              <Button variant="contained" size="large" disableElevation>
+                <Typography variant="body1">다시하기</Typography>
+              </Button>
+            </Link>
+          </div>
+          <KakaoAdFit />
         </div>
-        <KakaoAdFit />
-        {/* </div> */}
-      </div>
       </div>
       <style jsx>{`
       .resultContainer {

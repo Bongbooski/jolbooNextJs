@@ -1,4 +1,14 @@
-import { PaymentType } from "../constants/Common";
+import { HousePriceLitmitation, PaymentType } from "../constants/Common";
+
+export const getDidimdolHousePriceLimit = (isNewCouple: boolean, isMarried: boolean, isHavingKids: boolean, kidsCount: number, internationalAge: number) => {
+  if (isNewCouple || (isMarried && isHavingKids && kidsCount >= 2)) {
+    return HousePriceLitmitation.DIDIMDOL_PRIME;
+  }
+  if (!isMarried && internationalAge >= 30) {
+    return HousePriceLitmitation.DIDIMDOL_ADVANTAGE
+  }
+  return HousePriceLitmitation.DIDIMDOL;
+}
 
 export const getPrincipalAndInterest = (
   amount: number,
@@ -25,7 +35,7 @@ export const getPrincipalAndInterest = (
         borrowingYear! *
         12 -
         amount * 100000000) /
-        100000000,
+      100000000,
     ];
   } else if (paymentType === PaymentType.FIXED_PRINCIPAL) {
     // 매달 갚아야 할 원금 (원금 / 개월수)

@@ -13,6 +13,8 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Modal,
+  Box,
 } from "@mui/material";
 import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -406,7 +408,7 @@ const Home: NextPageWithLayout = () => {
         </SurveyContents>
         <SurveyContents
           title={"다자녀 가구인가요?"}
-          description="성년이 되지 않은 자녀가 3명 이상이면 다자녀가구예요. 뱃속에 태아도 포함됩니다"
+          description="성년이 되지 않은 자녀가 2명 이상이면 다자녀가구예요. 뱃속에 태아도 포함됩니다"
         >
           <ToggleButtonGroup
             color="primary"

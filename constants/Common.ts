@@ -25,6 +25,8 @@ export interface PricePerSquareMeterType {
 }
 
 export enum HousePriceLitmitation {
+  DIDIMDOL_ADVANTAGE = 3,
+  DIDIMDOL_PRIME = 6,
   DIDIMDOL = 5,
   SPECIAL_HOME = 9,
 }

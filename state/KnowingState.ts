@@ -21,6 +21,7 @@ import { LoanResult, LoanType } from "../constants/Loan";
 import {
   calculateFixedPaymentLoanAmountByMonth,
   calculateFixedPrincipalPaymentLoanAmountFirstMonth,
+  getDidimdolHousePriceLimit,
   getPrincipalAndInterest,
   getPrincipalAndInterestInSoulGathering,
 } from "../utils/CommonUtils";
@@ -119,7 +120,7 @@ export const KnowingState: KnowingStateType = {
   }),
   useSpecialHome: atom<boolean>({
     key: RecoilKey.knowing["KNOWING/useSpecialHome"],
-    default: true,
+   default: true,
   }),
 
   isMarried: selector<boolean>({
@@ -462,7 +463,7 @@ export const KnowingState: KnowingStateType = {
             getSpecialHomeLoanPrimeRate;
         }
       }
-
+      // return { rate: 0.2, primeArray: [{name: "111", rate: 0.1}, {name: "222", rate: 0.1}]}
       return result?.toFixed(2);
     },
   }),
@@ -637,6 +638,7 @@ export const KnowingState: KnowingStateType = {
         const didimdolInterest: number = Number.parseFloat(
           didimdolInterestResult ? didimdolInterestResult : "0"
         );
+        const didimdolPrimeRate: number = Number.parseFloat(get(KnowingState.getDidimdolPrimeRate));
         const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
         const [didimdolPrincipalAmount, didimdolInterestAmount] =
           getPrincipalAndInterest(
@@ -647,12 +649,13 @@ export const KnowingState: KnowingStateType = {
           );
         if (
           soulGatheringAmount -
-            (didimdolPrincipalAmount + didimdolInterestAmount) >=
+          (didimdolPrincipalAmount + didimdolInterestAmount) >=
           0
         ) {
           result.push({
             name: LoanType.DIDIMDOL,
             interest: didimdolInterest,
+            primeRate: didimdolPrimeRate,
             loanAmount: didimdolPrincipalAmount.toFixed(2),
             interestAmount: didimdolInterestAmount.toFixed(2),
             fixedPaymentLoanAmountByMonth:
@@ -684,6 +687,7 @@ export const KnowingState: KnowingStateType = {
             result.push({
               name: LoanType.DIDIMDOL,
               interest: didimdolInterest,
+              primeRate: didimdolPrimeRate,
               loanAmount: principalAmount.toFixed(2),
               interestAmount: interestAmount.toFixed(2),
               fixedPaymentLoanAmountByMonth:
@@ -716,6 +720,7 @@ export const KnowingState: KnowingStateType = {
         const specialHomeLoanInterest: number = specialHomeLoanInterestResult
           ? Number.parseFloat(specialHomeLoanInterestResult)
           : 0;
+        const specialHomeLoanPrimeRate: number = Number.parseFloat(get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2));
         const specialHomeLoanLimit: number = get(
           KnowingState.getSpecialHomeLoanLimit
         );
@@ -729,12 +734,13 @@ export const KnowingState: KnowingStateType = {
 
         if (
           soulGatheringAmount -
-            (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
+          (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
           0
         ) {
           result.push({
             name: LoanType.SPECIAL_HOME,
             interest: specialHomeLoanInterest,
+            primeRate: specialHomeLoanPrimeRate,
             loanAmount: specialHomeLoanPrincipalAmount.toFixed(2),
             interestAmount: specialHomeLoanInterestAmount.toFixed(2),
             fixedPaymentLoanAmountByMonth:
@@ -767,6 +773,7 @@ export const KnowingState: KnowingStateType = {
             result.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
+              primeRate: specialHomeLoanPrimeRate,
               loanAmount: principalAmount.toFixed(2),
               interestAmount: interestAmount.toFixed(2),
               fixedPaymentLoanAmountByMonth:
@@ -890,12 +897,13 @@ export const KnowingState: KnowingStateType = {
           );
         if (
           soulGatheringAmount -
-            (normalLoanPrincipalAmount + normalLoanInterestAmount) >=
+          (normalLoanPrincipalAmount + normalLoanInterestAmount) >=
           0
         ) {
           result.push({
             name: LoanType.NORMAL,
             interest: NormalLoanInterest,
+            primeRate: 0,
             loanAmount: normalLoanPrincipalAmount.toFixed(2),
             interestAmount: normalLoanInterestAmount.toFixed(2),
             fixedPaymentLoanAmountByMonth:
@@ -928,6 +936,7 @@ export const KnowingState: KnowingStateType = {
             result.push({
               name: LoanType.NORMAL,
               interest: NormalLoanInterest,
+              primeRate: 0,
               loanAmount: principalAmount.toFixed(2),
               interestAmount: interestAmount.toFixed(2),
               fixedPaymentLoanAmountByMonth:
@@ -991,6 +1000,7 @@ export const KnowingState: KnowingStateType = {
 
         if (useDidimdol && isAbleDidimdol && loanAmountByLtv > 0) {
           const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
+          const didimdolPrimeRate: number = Number.parseFloat(get(KnowingState.getDidimdolPrimeRate));
           const didimdolInterest: number = Number.parseFloat(
             didimdolInterestResult ? didimdolInterestResult : "0"
           );
@@ -1011,6 +1021,7 @@ export const KnowingState: KnowingStateType = {
               interest: didimdolInterest,
               loanAmount: didimdolPrincipalAmount.toFixed(2),
               interestAmount: didimdolInterestAmount.toFixed(2),
+              primeRate: didimdolPrimeRate,
               fixedPaymentLoanAmountByMonth:
                 calculateFixedPaymentLoanAmountByMonth(
                   borrowingYear,
@@ -1039,6 +1050,7 @@ export const KnowingState: KnowingStateType = {
                 interest: didimdolInterest,
                 loanAmount: principalAmount.toFixed(2),
                 interestAmount: interestAmount.toFixed(2),
+                primeRate: didimdolPrimeRate,
                 fixedPaymentLoanAmountByMonth:
                   calculateFixedPaymentLoanAmountByMonth(
                     borrowingYear,
@@ -1060,7 +1072,9 @@ export const KnowingState: KnowingStateType = {
         if (useSpecialHome && isAbleSpecialHomeLoan && loanAmountByLtv > 0) {
           const specialHomeLoanInterestResult = get(
             KnowingState.getSpecialHomeLoanInterest
-          );
+          ); (2)
+          const specialHomePrimeRate: number = Number.parseFloat(get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2));
+
           const specialHomeLoanInterest: number = specialHomeLoanInterestResult
             ? Number.parseFloat(specialHomeLoanInterestResult)
             : 0;
@@ -1083,6 +1097,7 @@ export const KnowingState: KnowingStateType = {
             result.finalLoanResult.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
+              primeRate: specialHomePrimeRate,
               loanAmount: specialHomeLoanPrincipalAmount.toFixed(2),
               interestAmount: specialHomeLoanInterestAmount.toFixed(2),
               fixedPaymentLoanAmountByMonth:
@@ -1113,6 +1128,7 @@ export const KnowingState: KnowingStateType = {
                 interest: specialHomeLoanInterest,
                 loanAmount: principalAmount.toFixed(2),
                 interestAmount: interestAmount.toFixed(2),
+                primeRate: specialHomePrimeRate,
                 fixedPaymentLoanAmountByMonth:
                   calculateFixedPaymentLoanAmountByMonth(
                     borrowingYear,
@@ -1144,6 +1160,7 @@ export const KnowingState: KnowingStateType = {
             interest: NormalLoanInterest,
             loanAmount: principalAmount.toFixed(2),
             interestAmount: interestAmount.toFixed(2),
+            primeRate: 0,
             fixedPaymentLoanAmountByMonth:
               calculateFixedPaymentLoanAmountByMonth(
                 borrowingYear,
@@ -1178,7 +1195,12 @@ export const KnowingState: KnowingStateType = {
         }
       }
 
+      const isMarried = get(KnowingState.isMarried);
       const isFirstTime = get(KnowingState.isFirstTime);
+      const isNewCouple = get(KnowingState.isNewCouple);
+      const kidsCount = Number.parseInt(get(KnowingState.kidsCount));
+      const internationalAge = get(KnowingState.internationalAge);
+      const isHavingKids = get(KnowingState.isHavingKids);
       const havingNoHouse = get(KnowingState.havingNoHouse);
       const yearIncome = Number.parseInt(get(KnowingState.yearIncome));
 
@@ -1196,10 +1218,11 @@ export const KnowingState: KnowingStateType = {
       // }
 
       if (useDidimdol && includeDidimdol) {
+        const didimdolHousePriceLimit = getDidimdolHousePriceLimit(isNewCouple || false, isMarried, isHavingKids, kidsCount, internationalAge);
         // 디딤돌 사용시 최대 5억 제한
-        if (totalLoanAmount + getMyAsset > HousePriceLitmitation.DIDIMDOL) {
-          result.finalPropertyPrice = HousePriceLitmitation.DIDIMDOL;
-          result.additionalMessage = `디딤돌 대출 사용시 주택가격이 ${HousePriceLitmitation.DIDIMDOL}억까지로 제한돼요`;
+        if (totalLoanAmount + getMyAsset > didimdolHousePriceLimit) {
+          result.finalPropertyPrice = didimdolHousePriceLimit;
+          result.additionalMessage = `디딤돌 대출 사용시 주택가격이 ${didimdolHousePriceLimit}억까지로 제한돼요`;
           isLimited = true;
         }
       } else if (useSpecialHome && includeSpecialHome) {
@@ -1227,6 +1250,7 @@ export const KnowingState: KnowingStateType = {
 
         if (useDidimdol && isAbleDidimdol && loanAmountByLimitedPrice > 0) {
           const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
+          const didimdolPrimeRate: number = Number.parseFloat(get(KnowingState.getDidimdolPrimeRate));
           const didimdolInterest: number = Number.parseFloat(
             didimdolInterestResult ? didimdolInterestResult : "0"
           );
@@ -1246,6 +1270,7 @@ export const KnowingState: KnowingStateType = {
               interest: didimdolInterest,
               loanAmount: didimdolPrincipalAmount.toFixed(2),
               interestAmount: didimdolInterestAmount.toFixed(2),
+              primeRate: didimdolPrimeRate,
               fixedPaymentLoanAmountByMonth:
                 calculateFixedPaymentLoanAmountByMonth(
                   borrowingYear,
@@ -1272,6 +1297,7 @@ export const KnowingState: KnowingStateType = {
               result.finalLoanResult.push({
                 name: LoanType.DIDIMDOL,
                 interest: didimdolInterest,
+                primeRate: didimdolPrimeRate,
                 loanAmount: principalAmount.toFixed(2),
                 interestAmount: interestAmount.toFixed(2),
                 fixedPaymentLoanAmountByMonth:
@@ -1305,6 +1331,8 @@ export const KnowingState: KnowingStateType = {
             ? Number.parseFloat(specialHomeLoanInterestResult)
             : 0;
 
+          const specialHomeLoanPrimeRate: number = Number.parseFloat(get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2));
+
           const specialHomeLoanLimit: number = get(
             KnowingState.getSpecialHomeLoanLimit
           );
@@ -1323,6 +1351,7 @@ export const KnowingState: KnowingStateType = {
             result.finalLoanResult.push({
               name: LoanType.SPECIAL_HOME,
               interest: specialHomeLoanInterest,
+              primeRate: specialHomeLoanPrimeRate,
               loanAmount: specialHomeLoanPrincipalAmount.toFixed(2),
               interestAmount: specialHomeLoanInterestAmount.toFixed(2),
               fixedPaymentLoanAmountByMonth:
@@ -1354,6 +1383,7 @@ export const KnowingState: KnowingStateType = {
                 interest: specialHomeLoanInterest,
                 loanAmount: principalAmount.toFixed(2),
                 interestAmount: interestAmount.toFixed(2),
+                primeRate: specialHomeLoanPrimeRate,
                 fixedPaymentLoanAmountByMonth:
                   calculateFixedPaymentLoanAmountByMonth(
                     borrowingYear,
@@ -1385,6 +1415,7 @@ export const KnowingState: KnowingStateType = {
             interest: NormalLoanInterest,
             loanAmount: principalAmount.toFixed(2),
             interestAmount: interestAmount.toFixed(2),
+            primeRate: 0,
             fixedPaymentLoanAmountByMonth:
               calculateFixedPaymentLoanAmountByMonth(
                 borrowingYear,
