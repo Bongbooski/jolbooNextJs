@@ -311,6 +311,7 @@ const Result = () => {
 
   return (
     <div className={"resultContainer"}>
+      <div className={'contentsArea'}>
       <Seo title="결과보기" />
       <SymbolSmall />
       <div className="firstArea contentsArea">
@@ -861,13 +862,21 @@ const Result = () => {
           </Link>
         </div>
         <KakaoAdFit />
+        {/* </div> */}
+      </div>
       </div>
       <style jsx>{`
+      .resultContainer {
+        display: flex;
+        flex-direction: row;
+        padding-bottom: 60px;
+      }
         .contentsArea {
           padding: 30px 0px;
           display: flex;
           flex-direction: column;
           align-items: center;
+          justify-content: center;
         }
         .descriptionArea {
           display: flex;
@@ -880,6 +889,7 @@ const Result = () => {
           flex-direction: row;
           max-width: 960px;
           display: flex;
+          justify-content: center;
         }
         .firstArea {
           padding: 0px;
