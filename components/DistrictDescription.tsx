@@ -2,7 +2,7 @@ import { Box, IconButton, Popover, Typography } from "@mui/material";
 
 import {
   PricePerSquareMeterType,
-  PricePerSquareMeter,
+  PricePerSquareMeter
 } from "../constants/Common";
 
 import SearchIcon from "../asset/svg/Search.svg";
@@ -87,9 +87,10 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
           <div className="wrapper">
             <Typography>
               서울 {props.squareMeter}평 평균가격 최저는{" "}
-              {props.squareMeter === "25"
-                ? (PricePerSquareMeter[0].price25 / 10000).toFixed(2)
-                : (PricePerSquareMeter[0].price34 / 10000).toFixed(2)}
+              {props.squareMeter === "18"
+                ? (PricePerSquareMeter[0].price18 / 10000).toFixed(2) : props.squareMeter === "25" ? (PricePerSquareMeter[0].price25 / 10000).toFixed(2)
+                  : (PricePerSquareMeter[0].price34 / 10000).toFixed(2)
+              }
               억 이네요
             </Typography>
           </div>

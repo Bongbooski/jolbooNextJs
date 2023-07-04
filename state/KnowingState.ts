@@ -120,7 +120,7 @@ export const KnowingState: KnowingStateType = {
   }),
   useSpecialHome: atom<boolean>({
     key: RecoilKey.knowing["KNOWING/useSpecialHome"],
-   default: true,
+    default: true,
   }),
 
   isMarried: selector<boolean>({

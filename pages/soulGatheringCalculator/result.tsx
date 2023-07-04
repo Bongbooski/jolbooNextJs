@@ -242,6 +242,10 @@ const Result = () => {
     ],
   };
 
+  const districtName18 = PricePerSquareMeter.filter(
+    (e) => e.price18 < getFinalLoanResult.finalPropertyPrice * 10000
+  );
+
   const districtName25 = PricePerSquareMeter.filter(
     (e) => e.price25 < getFinalLoanResult.finalPropertyPrice * 10000
   );
@@ -411,31 +415,45 @@ const Result = () => {
                   alt={"seoulMap"}
                   src={"/seoul_map.png"}
                 />
-                {selectedSquareMeter === "25" && districtName25.length > 0 ? (
-                  districtName25.map((e, i) => {
-                    return (
-                      <div
-                        key={`pinIcon25_${i}`}
-                        className={`pinArea${e.districtEngName}`}
-                      >
-                        <PlaceBlack className="pinIcon" />
-                      </div>
-                    );
-                  })
-                ) : selectedSquareMeter === "34" && districtName34.length > 0 ? (
-                  districtName34.map((e, i) => {
-                    return (
-                      <div
-                        key={`pinIcon34_${i}`}
-                        className={`pinArea${e.districtEngName}`}
-                      >
-                        <PlaceBlack className="pinIcon" />
-                      </div>
-                    );
-                  })
-                ) : (
-                  <></>
-                )}
+                {
+
+                  selectedSquareMeter === "18" && districtName18.length > 0 ? (
+                    districtName18.map((e, i) => {
+                      return (
+                        <div
+                          key={`pinIcon18_${i}`}
+                          className={`pinArea${e.districtEngName}`}
+                        >
+                          <PlaceBlack className="pinIcon" />
+                        </div>
+                      );
+                    })
+                  ) :
+                    selectedSquareMeter === "25" && districtName25.length > 0 ? (
+                      districtName25.map((e, i) => {
+                        return (
+                          <div
+                            key={`pinIcon25_${i}`}
+                            className={`pinArea${e.districtEngName}`}
+                          >
+                            <PlaceBlack className="pinIcon" />
+                          </div>
+                        );
+                      })
+                    ) : selectedSquareMeter === "34" && districtName34.length > 0 ? (
+                      districtName34.map((e, i) => {
+                        return (
+                          <div
+                            key={`pinIcon34_${i}`}
+                            className={`pinArea${e.districtEngName}`}
+                          >
+                            <PlaceBlack className="pinIcon" />
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <></>
+                    )}
               </div>
               <div className="descriptionArea">
                 <FormControl style={{ width: "fit-content" }}>
@@ -447,6 +465,9 @@ const Result = () => {
                     label="면적"
                     onChange={handleChange}
                   >
+                    <MenuItem value={"18"}>
+                      39m<sup>2</sup>(18평)
+                    </MenuItem>
                     <MenuItem value={"25"}>
                       59m<sup>2</sup>(25평)
                     </MenuItem>
@@ -455,12 +476,15 @@ const Result = () => {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                {selectedSquareMeter === "25" ? (
+                {selectedSquareMeter === "18" ? (
                   <DistrictDescription
-                    squareMeter="25"
-                    districts={districtName25}
+                    squareMeter="18"
+                    districts={districtName18}
                   />
-                ) : (
+                ) : selectedSquareMeter === "25" ? (<DistrictDescription
+                  squareMeter="25"
+                  districts={districtName25}
+                />) : (
                   <DistrictDescription
                     squareMeter="34"
                     districts={districtName34}
