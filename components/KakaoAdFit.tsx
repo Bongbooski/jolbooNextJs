@@ -23,9 +23,9 @@ const KakaoAdFit = () => {
       ins.setAttribute("data-ad-height", "100");
       ins.setAttribute("data-ad-unit", "DAN-up4PVa1ZVZDbWmjx");
     } else {
-      ins.setAttribute("data-ad-width", "728");
-      ins.setAttribute("data-ad-height", "90");
-      ins.setAttribute("data-ad-unit", "DAN-nNLOCc9zcXznkIbY");
+      ins.setAttribute("data-ad-width", "320");
+      ins.setAttribute("data-ad-height", "50");
+      ins.setAttribute("data-ad-unit", "DAN-So8JylHz1a5Xd1DS");
     }
 
     script.async = true;
