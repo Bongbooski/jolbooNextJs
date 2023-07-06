@@ -85,14 +85,20 @@ const Result = () => {
   );
   const getMyAsset = useRecoilValue<number>(KnowingState.getMyAsset);
   const getLtv = useRecoilValue<number>(KnowingState.getLtv);
-  const internationalAge = useRecoilValue<number>(KnowingState.internationalAge);
-  const kidsCount = Number.parseInt(useRecoilValue<string>(KnowingState.kidsCount));
+  const internationalAge = useRecoilValue<number>(
+    KnowingState.internationalAge
+  );
+  const kidsCount = Number.parseInt(
+    useRecoilValue<string>(KnowingState.kidsCount)
+  );
   const yearIncome = useRecoilValue<string>(KnowingState.yearIncome);
   const depositAmount = useRecoilValue<string>(KnowingState.depositAmount);
   const supportAmount = useRecoilValue<string>(KnowingState.supportAmount);
   const saveAmount = useRecoilValue<string>(KnowingState.saveAmount);
 
-  const isHavingKids = useRecoilValue<boolean | null>(KnowingState.isHavingKids);
+  const isHavingKids = useRecoilValue<boolean | null>(
+    KnowingState.isHavingKids
+  );
   const isNewCouple = useRecoilValue<boolean | null>(KnowingState.isNewCouple);
   const isMarried = useRecoilValue<boolean>(KnowingState.isMarried);
   const isAbleDidimdol = useRecoilValue<boolean>(KnowingState.isAbleDidimdol);
@@ -212,9 +218,18 @@ const Result = () => {
   }, [yearIncome]);
 
   useEffect(() => {
-    const didimdolHousePriceLimit = getDidimdolHousePriceLimit(isNewCouple || false, isMarried, isHavingKids || false, kidsCount, internationalAge);
+    const didimdolHousePriceLimit = getDidimdolHousePriceLimit(
+      isNewCouple || false,
+      isMarried,
+      isHavingKids || false,
+      kidsCount,
+      internationalAge
+    );
 
-    if (getMyAsset >= didimdolHousePriceLimit || getMyAsset + Number.parseInt(supportAmount) >= didimdolHousePriceLimit) {
+    if (
+      getMyAsset >= didimdolHousePriceLimit ||
+      getMyAsset + Number.parseInt(supportAmount) >= didimdolHousePriceLimit
+    ) {
       setUseDidimdol(false);
     }
     if (getMyAsset >= 9 || getMyAsset + Number.parseInt(supportAmount) >= 9) {
@@ -279,11 +294,11 @@ const Result = () => {
   const getTotalPayment = () => {
     return paymentType === PaymentType.FIXED
       ? getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
-        return prev + Number(next.fixedPaymentLoanAmountByMonth);
-      }, 0)
+          return prev + Number(next.fixedPaymentLoanAmountByMonth);
+        }, 0)
       : getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
-        return prev + Number(next.fixedPrincipalPaymentLoanAmountFirstMonth);
-      }, 0);
+          return prev + Number(next.fixedPrincipalPaymentLoanAmountFirstMonth);
+        }, 0);
   };
 
   // - 6억이하 : 취득세율 1%, 지방교육세 0.1%
@@ -325,7 +340,7 @@ const Result = () => {
 
   return (
     <div className={"resultContainer"}>
-      <div className={'contentsArea'}>
+      <div className={"contentsArea"}>
         <Seo title="결과보기" />
         <SymbolSmall />
         <div className="firstArea contentsArea">
@@ -349,9 +364,13 @@ const Result = () => {
             <Box m={0.2} /> */}
               <InfoIcon fill="#6e6d6d" />
               <Typography variant="h6" gutterBottom>
-                {
-                  `디딤돌대출을 사용하실 건가요?(사용하면 주택가격이 ${getDidimdolHousePriceLimit(isNewCouple || false, isMarried, isHavingKids || false, kidsCount, internationalAge)}억까지로 제한돼요)`
-                }
+                {`디딤돌대출을 사용하실 건가요?(사용하면 주택가격이 ${getDidimdolHousePriceLimit(
+                  isNewCouple || false,
+                  isMarried,
+                  isHavingKids || false,
+                  kidsCount,
+                  internationalAge
+                )}억까지로 제한돼요)`}
               </Typography>
 
               <div className="toggleButtonWrapper">
@@ -415,45 +434,44 @@ const Result = () => {
                   alt={"seoulMap"}
                   src={"/seoul_map.png"}
                 />
-                {
-
-                  selectedSquareMeter === "18" && districtName18.length > 0 ? (
-                    districtName18.map((e, i) => {
-                      return (
-                        <div
-                          key={`pinIcon18_${i}`}
-                          className={`pinArea${e.districtEngName}`}
-                        >
-                          <PlaceBlack className="pinIcon" />
-                        </div>
-                      );
-                    })
-                  ) :
-                    selectedSquareMeter === "25" && districtName25.length > 0 ? (
-                      districtName25.map((e, i) => {
-                        return (
-                          <div
-                            key={`pinIcon25_${i}`}
-                            className={`pinArea${e.districtEngName}`}
-                          >
-                            <PlaceBlack className="pinIcon" />
-                          </div>
-                        );
-                      })
-                    ) : selectedSquareMeter === "34" && districtName34.length > 0 ? (
-                      districtName34.map((e, i) => {
-                        return (
-                          <div
-                            key={`pinIcon34_${i}`}
-                            className={`pinArea${e.districtEngName}`}
-                          >
-                            <PlaceBlack className="pinIcon" />
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <></>
-                    )}
+                {selectedSquareMeter === "18" && districtName18.length > 0 ? (
+                  districtName18.map((e, i) => {
+                    return (
+                      <div
+                        key={`pinIcon18_${i}`}
+                        className={`pinArea${e.districtEngName}`}
+                      >
+                        <PlaceBlack className="pinIcon" />
+                      </div>
+                    );
+                  })
+                ) : selectedSquareMeter === "25" &&
+                  districtName25.length > 0 ? (
+                  districtName25.map((e, i) => {
+                    return (
+                      <div
+                        key={`pinIcon25_${i}`}
+                        className={`pinArea${e.districtEngName}`}
+                      >
+                        <PlaceBlack className="pinIcon" />
+                      </div>
+                    );
+                  })
+                ) : selectedSquareMeter === "34" &&
+                  districtName34.length > 0 ? (
+                  districtName34.map((e, i) => {
+                    return (
+                      <div
+                        key={`pinIcon34_${i}`}
+                        className={`pinArea${e.districtEngName}`}
+                      >
+                        <PlaceBlack className="pinIcon" />
+                      </div>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="descriptionArea">
                 <FormControl style={{ width: "fit-content" }}>
@@ -481,10 +499,12 @@ const Result = () => {
                     squareMeter="18"
                     districts={districtName18}
                   />
-                ) : selectedSquareMeter === "25" ? (<DistrictDescription
-                  squareMeter="25"
-                  districts={districtName25}
-                />) : (
+                ) : selectedSquareMeter === "25" ? (
+                  <DistrictDescription
+                    squareMeter="25"
+                    districts={districtName25}
+                  />
+                ) : (
                   <DistrictDescription
                     squareMeter="34"
                     districts={districtName34}
@@ -610,7 +630,9 @@ const Result = () => {
                       <TableRow>
                         <TableCell>대출명</TableCell>
                         <TableCell align="right">원금</TableCell>
-                        <TableCell align="right">이자율(기본금리-우대금리)</TableCell>
+                        <TableCell align="right">
+                          이자율(기본금리-우대금리)
+                        </TableCell>
                         <TableCell align="right">
                           {paymentType === PaymentType.FIXED
                             ? "원리금균등(매월)"
@@ -632,20 +654,28 @@ const Result = () => {
                           <TableCell align="right">
                             {Number(row.loanAmount)}억
                           </TableCell>
-                          <TableCell align="right">{row.interest}% ({row.interest + Number(row.primeRate)}%-{Number(row.primeRate)}%)</TableCell>
+                          <TableCell align="right">
+                            {row.interest}% (
+                            {(row.interest + Number(row.primeRate)).toFixed(2)}
+                            %-{Number(row.primeRate.toFixed(2))}%)
+                          </TableCell>
                           <TableCell align="right">
                             {paymentType === PaymentType.FIXED
-                              ? getCommaString(row.fixedPaymentLoanAmountByMonth)
+                              ? getCommaString(
+                                  row.fixedPaymentLoanAmountByMonth
+                                )
                               : getCommaString(
-                                row.fixedPrincipalPaymentLoanAmountFirstMonth
-                              )}
+                                  row.fixedPrincipalPaymentLoanAmountFirstMonth
+                                )}
                             원
                           </TableCell>
                         </TableRow>
                       ))}
                       <TableRow
                         key={"합계"}
-                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
                       >
                         <TableCell component="th" scope="row">
                           {"합계"}
@@ -657,36 +687,36 @@ const Result = () => {
                           ) {
                             return prev + Number(next.loanAmount);
                           },
-                            0)}
+                          0)}
                           억
                         </TableCell>
                         <TableCell align="right">{""}</TableCell>
                         <TableCell align="right">
                           {paymentType === PaymentType.FIXED
                             ? getCommaString(
-                              getFinalLoanResult.finalLoanResult.reduce(
-                                function (prev, next) {
-                                  return (
-                                    prev +
-                                    Number(next.fixedPaymentLoanAmountByMonth)
-                                  );
-                                },
-                                0
+                                getFinalLoanResult.finalLoanResult.reduce(
+                                  function (prev, next) {
+                                    return (
+                                      prev +
+                                      Number(next.fixedPaymentLoanAmountByMonth)
+                                    );
+                                  },
+                                  0
+                                )
                               )
-                            )
                             : getCommaString(
-                              getFinalLoanResult.finalLoanResult.reduce(
-                                function (prev, next) {
-                                  return (
-                                    prev +
-                                    Number(
-                                      next.fixedPrincipalPaymentLoanAmountFirstMonth
-                                    )
-                                  );
-                                },
-                                0
-                              )
-                            )}
+                                getFinalLoanResult.finalLoanResult.reduce(
+                                  function (prev, next) {
+                                    return (
+                                      prev +
+                                      Number(
+                                        next.fixedPrincipalPaymentLoanAmountFirstMonth
+                                      )
+                                    );
+                                  },
+                                  0
+                                )
+                              )}
                           원
                         </TableCell>
                       </TableRow>
@@ -883,7 +913,8 @@ const Result = () => {
 
           <div className="verticalContainer">
             <Typography gutterBottom>
-              제안 또는 문의 사항이 있으시면 jolboo2023@gmail.com으로 메일 주세요!
+              제안 또는 문의 사항이 있으시면 jolboo2023@gmail.com으로 메일
+              주세요!
             </Typography>
           </div>
         </div>
@@ -899,11 +930,11 @@ const Result = () => {
         </div>
       </div>
       <style jsx>{`
-      .resultContainer {
-        display: flex;
-        flex-direction: row;
-        padding-bottom: 60px;
-      }
+        .resultContainer {
+          display: flex;
+          flex-direction: row;
+          padding-bottom: 60px;
+        }
         .contentsArea {
           padding: 30px 0px;
           display: flex;
