@@ -20,12 +20,12 @@ const KakaoAdFit = () => {
     const winodwSize = window.innerWidth;
     if (winodwSize < 1024) {
       ins.setAttribute("data-ad-width", "320");
-      ins.setAttribute("data-ad-height", "100");
-      ins.setAttribute("data-ad-unit", "DAN-up4PVa1ZVZDbWmjx");
-    } else {
-      ins.setAttribute("data-ad-width", "320");
       ins.setAttribute("data-ad-height", "50");
       ins.setAttribute("data-ad-unit", "DAN-So8JylHz1a5Xd1DS");
+    } else {
+      ins.setAttribute("data-ad-width", "728");
+      ins.setAttribute("data-ad-height", "90");
+      ins.setAttribute("data-ad-unit", "DAN-nNLOCc9zcXznkIbY");
     }
 
     script.async = true;
