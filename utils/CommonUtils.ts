@@ -1,5 +1,14 @@
 import { HousePriceLitmitation, PaymentType } from "../constants/Common";
 
+export const getNumericString = (value: string) => {
+  let check =  /(^\d+$)|(^\d{1,}.\d{0,2}$)/;
+  const withoutCommaString = value.replaceAll(',', "");
+  if (check.test(withoutCommaString)) {
+    return withoutCommaString;
+  }
+  return "";
+}
+
 export const getDidimdolHousePriceLimit = (isNewCouple: boolean, isMarried: boolean, isHavingKids: boolean, kidsCount: number, internationalAge: number) => {
   if (isNewCouple || (isMarried && isHavingKids && kidsCount >= 2)) {
     return HousePriceLitmitation.DIDIMDOL_PRIME;

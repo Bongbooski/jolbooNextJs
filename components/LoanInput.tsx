@@ -1,32 +1,21 @@
-import { useState } from "react";
-import Seo from "./Seo";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import React, { useState } from "react";
 import {
-  FormControlLabel,
   FormControl,
-  Typography,
   TextField,
   Box,
-  RadioGroup,
-  Radio,
-  Switch,
   InputLabel,
-  Input,
   InputAdornment,
   Button,
   OutlinedInput,
 } from "@mui/material";
-import { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { getNumericString, getCommaString } from '../utils/CommonUtils';
+import { NumericFormat } from 'react-number-format';
 
 export interface Loan {
   name: string;
   amount: string;
   interest: string;
+  // TODO: 상환방식, 전체 기간, 남은 개월수
 }
 
 export interface LoanInputProps {
@@ -40,35 +29,39 @@ const LoanInput = (props: LoanInputProps) => {
     name: "",
     interest: "",
   });
-  const [newLoanName, setNewLoanName] = useState<string>();
-  const [newLoanAmount, setNewLoanAmount] = useState<string>();
-  const [newLoanInterest, setNewLoanInterest] = useState<string>();
 
   const handleChangeNewLoanName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setNewLoan({ ...newLoan, name: event.target.value });
-    // setNewLoanName(event.target.value);
   };
 
   const handleChangeNewLoanAmount = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    // setNewLoanAmount(event.target.value);
-    setNewLoan({ ...newLoan, amount: event.target.value });
+    const numericString = getNumericString(event.target.value)
+    if (numericString !== "") {
+      setNewLoan({ ...newLoan, amount: numericString });
+    }
   };
 
   const handleChangeNewLoanInterest = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    // setNewLoanInterest(event.target.value);
-    setNewLoan({ ...newLoan, interest: event.target.value });
+    const numericString = getNumericString(event.target.value)
+    if (numericString !== "") {
+      setNewLoan({ ...newLoan, interest: numericString });
+    }
   };
 
   const wrapperBoxCss = {
     display: "flex",
     justifyContent: "space-between",
     paddingTop: "10px",
+  };
+
+  const onDeleteLoan = (index: number) => {
+    props.setLoanList(props.loanList.filter((loan, i) => i !== index));
   };
 
   const onLoanUpdate = (index: number, key: string, value: string) => {
@@ -78,18 +71,23 @@ const LoanInput = (props: LoanInputProps) => {
           i === index ? { ...loan, name: value } : loan
         )
       );
-    } else if (key === "amount") {
-      props.setLoanList(
-        props.loanList.map((loan, i) =>
-          i === index ? { ...loan, amount: value } : loan
-        )
-      );
-    } else if (key === "interest") {
-      props.setLoanList(
-        props.loanList.map((loan, i) =>
-          i === index ? { ...loan, interest: value } : loan
-        )
-      );
+    }
+
+    const numericString = getNumericString(value)
+    if (numericString !== "") {
+      if (key === "amount") {
+        props.setLoanList(
+          props.loanList.map((loan, i) =>
+            i === index ? { ...loan, amount: numericString } : loan
+          )
+        );
+      } else if (key === "interest") {
+        props.setLoanList(
+          props.loanList.map((loan, i) =>
+            i === index ? { ...loan, interest: numericString } : loan
+          )
+        );
+      }
     }
   };
 
@@ -112,6 +110,7 @@ const LoanInput = (props: LoanInputProps) => {
                     id="monthly-spending"
                     value={loan.name}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      console.log("triggered")
                       onLoanUpdate(index, "name", event.target.value);
                     }}
                     label="대출이름"
@@ -130,7 +129,7 @@ const LoanInput = (props: LoanInputProps) => {
                       <InputAdornment position="start">만원</InputAdornment>
                     }
                     label="Amount"
-                    value={loan.amount}
+                    value={getCommaString(loan.amount)}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                       onLoanUpdate(index, "amount", event.target.value);
                     }}
@@ -146,13 +145,13 @@ const LoanInput = (props: LoanInputProps) => {
                       <InputAdornment position="start">%</InputAdornment>
                     }
                     label="Amount"
-                    value={loan.interest}
+                    value={getCommaString(loan.interest)}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                       onLoanUpdate(index, "interest", event.target.value);
                     }}
                   />
                 </FormControl>
-                <Button variant="text">삭제</Button>
+                <Button variant="text" onClick={() => { onDeleteLoan(index) }}>삭제</Button>
               </Box>
             );
           })}
@@ -179,7 +178,7 @@ const LoanInput = (props: LoanInputProps) => {
                 <InputAdornment position="start">만원</InputAdornment>
               }
               label="Amount"
-              value={newLoan.amount}
+              value={getCommaString(newLoan.amount)}
               onChange={handleChangeNewLoanAmount}
             />
           </FormControl>
@@ -191,10 +190,47 @@ const LoanInput = (props: LoanInputProps) => {
               id="outlined-adornment-amount"
               endAdornment={<InputAdornment position="start">%</InputAdornment>}
               label="Amount"
-              value={newLoan.interest}
+              value={getCommaString(newLoan.interest)}
               onChange={handleChangeNewLoanInterest}
             />
           </FormControl>
+          <FormControl variant="standard">
+            {/* <InputLabel htmlFor="outlined-adornment-amount">
+              reactNumberFormat
+            </InputLabel> */}
+            <NumericFormat
+              label="보유 평단"
+              customInput={TextField}
+              style={{ margin: "5px" }}
+              thousandSeparator={true}
+              type="text"
+              decimalSeparator="."
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <div className="text-primary fw-700">원</div>
+                  </InputAdornment>
+                )
+              }}
+              onValueChange={
+                (values: any) => {
+                  const { formattedValue, value } = values;
+                  console.log(value);
+                  // setAvg(value);
+                }
+              }
+            />
+            <OutlinedInput
+              id="outlined-adornment-amount"
+              endAdornment={<InputAdornment position="start">%</InputAdornment>}
+              label="Amount"
+              value={getCommaString(newLoan.interest)}
+              onChange={handleChangeNewLoanInterest}
+            />
+          </FormControl>
+
+
+
           <Button
             disabled={
               newLoan.amount && newLoan.name && newLoan.interest ? false : true
