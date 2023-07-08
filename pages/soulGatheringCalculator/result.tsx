@@ -913,8 +913,7 @@ const Result = () => {
 
           <div className="verticalContainer">
             <Typography gutterBottom>
-              제안 또는 문의 사항이 있으시면 jolboo2023@gmail.com으로 메일
-              주세요!
+              제안 또는 문의 사항이 있으시면 jolboo2023@gmail.com으로 메일주세요!
             </Typography>
           </div>
         </div>

@@ -46,7 +46,10 @@ export const KnowingState: KnowingStateType = {
     key: RecoilKey.knowing["KNOWING/isFirstTime"],
     default: true,
   }),
-
+  isSpeculationMode: atom<boolean>({
+    key: RecoilKey.knowing["KNOWING/isSpeculationMode"],
+    default: false,
+  }),
   yearIncome: atom<string>({
     key: RecoilKey.knowing["KNOWING/yearIncome"],
     default: "0",

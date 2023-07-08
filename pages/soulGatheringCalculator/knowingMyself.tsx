@@ -239,7 +239,7 @@ const Home: NextPageWithLayout = () => {
         {isMarried && (
           <SurveyContents
             title={"신혼인가요?"}
-            description={"부동산에서는 혼인신고한지 7년 이내일 경우 신혼이예요"}
+            description={"부동산에서는 혼인신고한지 7년 이내일 경우 신혼이에요"}
           >
             <ToggleButtonGroup
               color="primary"
@@ -254,8 +254,8 @@ const Home: NextPageWithLayout = () => {
               }}
               aria-label="Platform"
             >
-              <ToggleButton value="true">신혼이예요</ToggleButton>
-              <ToggleButton value="false">신혼은 아니예요</ToggleButton>
+              <ToggleButton value="true">신혼이에요</ToggleButton>
+              <ToggleButton value="false">신혼은 아니에요</ToggleButton>
             </ToggleButtonGroup>
           </SurveyContents>
         )}
@@ -296,8 +296,8 @@ const Home: NextPageWithLayout = () => {
             }}
             aria-label="Platform"
           >
-            <ToggleButton value="true">무주택이예요</ToggleButton>
-            <ToggleButton value="false">무주택 아니예요</ToggleButton>
+            <ToggleButton value="true">무주택이에요</ToggleButton>
+            <ToggleButton value="false">무주택 아니에요</ToggleButton>
           </ToggleButtonGroup>
         </SurveyContents>
 
@@ -330,7 +330,7 @@ const Home: NextPageWithLayout = () => {
 
         <SurveyContents
           title={"은인들의 지원금이 있으신가요?"}
-          description="여기 입력된 금액은 내 자금에 더해질거예요"
+          description="여기 입력된 금액은 내 자금에 더해질거에요"
         >
           <TextField
             value={getCommaString(supportAmount)}
@@ -408,7 +408,7 @@ const Home: NextPageWithLayout = () => {
         </SurveyContents>
         <SurveyContents
           title={"다자녀 가구인가요?"}
-          description="성년이 되지 않은 자녀가 2명 이상이면 다자녀가구예요. 뱃속에 태아도 포함됩니다"
+          description="성년이 되지 않은 자녀가 2명 이상이면 다자녀가구에요. 뱃속에 태아도 포함됩니다"
         >
           <ToggleButtonGroup
             color="primary"
@@ -423,8 +423,8 @@ const Home: NextPageWithLayout = () => {
             }}
             aria-label="Platform"
           >
-            <ToggleButton value="true">다자녀가구예요</ToggleButton>
-            <ToggleButton value="false">다자녀가구는 아니예요</ToggleButton>
+            <ToggleButton value="true">다자녀가구에요</ToggleButton>
+            <ToggleButton value="false">다자녀가구는 아니에요</ToggleButton>
           </ToggleButtonGroup>
         </SurveyContents>
         {isHavingKids && (
@@ -504,9 +504,9 @@ const Home: NextPageWithLayout = () => {
         <SurveyContents
           title={"대출 상환은 어떤 방식으로 하실 예정인가요?"}
           description={[
-            "원리금균등은 원금, 이자를 더해 매달 동일한 금액을 갚는 방식이예요",
-            "원금균등은 매달 동일한 원금에 변경되는 이자가 더해지는 방식이예요",
-            // "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이예요",
+            "원리금균등은 원금, 이자를 더해 매달 동일한 금액을 갚는 방식이에요",
+            "원금균등은 매달 동일한 원금에 변경되는 이자가 더해지는 방식이에요",
+            // "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이에요",
           ]}
         >
           <div className="minWidthWrapper">

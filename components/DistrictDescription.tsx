@@ -70,7 +70,7 @@ const DistrictDescription = (props: DistrictDescriptionProps) => {
                       .join(", ")}
                   </Typography>
                   <Typography variant="h6" sx={{ pl: 2, pr: 2, pb: 2 }}>
-                    <QuestionIcon fill="#6e6d6d" /> 평균가격 순서예요
+                    <QuestionIcon fill="#6e6d6d" /> 평균가격 순서에요
                   </Typography>
                 </Popover>
               </Typography>

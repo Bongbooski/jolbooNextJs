@@ -3,6 +3,7 @@ const keyArr = [
   "KNOWING/isMarriedValue",
   "KNOWING/isNewCouple",
   "KNOWING/isFirstTime",
+  "KNOWING/isSpeculationMode",
   "KNOWING/yearIncome",
   "KNOWING/supportAmount",
   "KNOWING/depositAmount",

@@ -79,6 +79,7 @@ export interface KnowingStateType {
   isMarriedValue: RecoilState<string | null>;
   isNewCouple: RecoilState<boolean | null>;
   isFirstTime: RecoilState<boolean>;
+  isSpeculationMode: RecoilState<boolean>;
   yearIncome: RecoilState<string>;
   supportAmount: RecoilState<string>;
   depositAmount: RecoilState<string>;
