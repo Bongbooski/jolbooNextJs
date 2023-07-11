@@ -527,9 +527,9 @@ const Home: NextPageWithLayout = () => {
               <ToggleButton value={PaymentType.FIXED_PRINCIPAL}>
                 원금균등
               </ToggleButton>
-              <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
+              {/* <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
                 체증식
-              </ToggleButton>
+              </ToggleButton> */}
             </ToggleButtonGroup>
           </div>
         </SurveyContents>
