@@ -296,6 +296,12 @@ const Result = () => {
       ? getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
           return prev + Number(next.fixedPaymentLoanAmountByMonth);
         }, 0)
+      : paymentType === PaymentType.GRADUAL_INCREASE
+      ? getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
+          return (
+            prev + Number(next.fixedGradualIncreasePaymentLoanAmountFirstMonth)
+          );
+        }, 0)
       : getFinalLoanResult.finalLoanResult.reduce(function (prev, next) {
           return prev + Number(next.fixedPrincipalPaymentLoanAmountFirstMonth);
         }, 0);
@@ -636,6 +642,8 @@ const Result = () => {
                         <TableCell align="right">
                           {paymentType === PaymentType.FIXED
                             ? "원리금균등(매월)"
+                            : paymentType === PaymentType.GRADUAL_INCREASE
+                            ? "체증식(첫달)"
                             : "원금균등(첫달)"}
                         </TableCell>
                       </TableRow>
@@ -663,6 +671,10 @@ const Result = () => {
                             {paymentType === PaymentType.FIXED
                               ? getCommaString(
                                   row.fixedPaymentLoanAmountByMonth
+                                )
+                              : paymentType === PaymentType.GRADUAL_INCREASE
+                              ? getCommaString(
+                                  row.fixedGradualIncreasePaymentLoanAmountFirstMonth
                                 )
                               : getCommaString(
                                   row.fixedPrincipalPaymentLoanAmountFirstMonth
@@ -699,6 +711,20 @@ const Result = () => {
                                     return (
                                       prev +
                                       Number(next.fixedPaymentLoanAmountByMonth)
+                                    );
+                                  },
+                                  0
+                                )
+                              )
+                            : paymentType === PaymentType.GRADUAL_INCREASE
+                            ? getCommaString(
+                                getFinalLoanResult.finalLoanResult.reduce(
+                                  function (prev, next) {
+                                    return (
+                                      prev +
+                                      Number(
+                                        next.fixedGradualIncreasePaymentLoanAmountFirstMonth
+                                      )
                                     );
                                   },
                                   0

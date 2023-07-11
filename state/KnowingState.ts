@@ -21,6 +21,7 @@ import { LoanResult, LoanType } from "../constants/Loan";
 import {
   calculateFixedPaymentLoanAmountByMonth,
   calculateFixedPrincipalPaymentLoanAmountFirstMonth,
+  calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh,
   getDidimdolHousePriceLimit,
   getPrincipalAndInterest,
   getPrincipalAndInterestInSoulGathering,
@@ -641,7 +642,9 @@ export const KnowingState: KnowingStateType = {
         const didimdolInterest: number = Number.parseFloat(
           didimdolInterestResult ? didimdolInterestResult : "0"
         );
-        const didimdolPrimeRate: number = Number.parseFloat(get(KnowingState.getDidimdolPrimeRate));
+        const didimdolPrimeRate: number = Number.parseFloat(
+          get(KnowingState.getDidimdolPrimeRate)
+        );
         const didimdolLimit: number = get(KnowingState.getDidimdolLimit);
         const [didimdolPrincipalAmount, didimdolInterestAmount] =
           getPrincipalAndInterest(
@@ -652,7 +655,7 @@ export const KnowingState: KnowingStateType = {
           );
         if (
           soulGatheringAmount -
-          (didimdolPrincipalAmount + didimdolInterestAmount) >=
+            (didimdolPrincipalAmount + didimdolInterestAmount) >=
           0
         ) {
           result.push({
@@ -669,6 +672,12 @@ export const KnowingState: KnowingStateType = {
               ),
             fixedPrincipalPaymentLoanAmountFirstMonth:
               calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                didimdolPrincipalAmount,
+                didimdolInterest
+              ),
+            fixedGradualIncreasePaymentLoanAmountFirstMonth:
+              calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                 borrowingYear,
                 didimdolPrincipalAmount,
                 didimdolInterest
@@ -705,6 +714,12 @@ export const KnowingState: KnowingStateType = {
                   principalAmount,
                   didimdolInterest
                 ),
+              fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
+                  borrowingYear,
+                  principalAmount,
+                  didimdolInterest
+                ),
             });
             // soulGatheringAmount = 0;
             soulGatheringAmount =
@@ -723,7 +738,9 @@ export const KnowingState: KnowingStateType = {
         const specialHomeLoanInterest: number = specialHomeLoanInterestResult
           ? Number.parseFloat(specialHomeLoanInterestResult)
           : 0;
-        const specialHomeLoanPrimeRate: number = Number.parseFloat(get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2));
+        const specialHomeLoanPrimeRate: number = Number.parseFloat(
+          get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2)
+        );
         const specialHomeLoanLimit: number = get(
           KnowingState.getSpecialHomeLoanLimit
         );
@@ -737,7 +754,7 @@ export const KnowingState: KnowingStateType = {
 
         if (
           soulGatheringAmount -
-          (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
+            (specialHomeLoanPrincipalAmount + specialHomeLoanInterestAmount) >=
           0
         ) {
           result.push({
@@ -754,6 +771,12 @@ export const KnowingState: KnowingStateType = {
               ),
             fixedPrincipalPaymentLoanAmountFirstMonth:
               calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                specialHomeLoanPrincipalAmount,
+                specialHomeLoanInterest
+              ),
+            fixedGradualIncreasePaymentLoanAmountFirstMonth:
+              calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                 borrowingYear,
                 specialHomeLoanPrincipalAmount,
                 specialHomeLoanInterest
@@ -787,6 +810,12 @@ export const KnowingState: KnowingStateType = {
                 ),
               fixedPrincipalPaymentLoanAmountFirstMonth:
                 calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  principalAmount,
+                  specialHomeLoanInterest
+                ),
+              fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                   borrowingYear,
                   principalAmount,
                   specialHomeLoanInterest
@@ -900,7 +929,7 @@ export const KnowingState: KnowingStateType = {
           );
         if (
           soulGatheringAmount -
-          (normalLoanPrincipalAmount + normalLoanInterestAmount) >=
+            (normalLoanPrincipalAmount + normalLoanInterestAmount) >=
           0
         ) {
           result.push({
@@ -917,6 +946,12 @@ export const KnowingState: KnowingStateType = {
               ),
             fixedPrincipalPaymentLoanAmountFirstMonth:
               calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                normalLoanPrincipalAmount,
+                NormalLoanInterest
+              ),
+            fixedGradualIncreasePaymentLoanAmountFirstMonth:
+              calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                 borrowingYear,
                 normalLoanPrincipalAmount,
                 NormalLoanInterest
@@ -950,6 +985,12 @@ export const KnowingState: KnowingStateType = {
                 ),
               fixedPrincipalPaymentLoanAmountFirstMonth:
                 calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  principalAmount,
+                  NormalLoanInterest
+                ),
+              fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                   borrowingYear,
                   principalAmount,
                   NormalLoanInterest
@@ -1003,7 +1044,9 @@ export const KnowingState: KnowingStateType = {
 
         if (useDidimdol && isAbleDidimdol && loanAmountByLtv > 0) {
           const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
-          const didimdolPrimeRate: number = Number.parseFloat(get(KnowingState.getDidimdolPrimeRate));
+          const didimdolPrimeRate: number = Number.parseFloat(
+            get(KnowingState.getDidimdolPrimeRate)
+          );
           const didimdolInterest: number = Number.parseFloat(
             didimdolInterestResult ? didimdolInterestResult : "0"
           );
@@ -1037,6 +1080,12 @@ export const KnowingState: KnowingStateType = {
                   didimdolPrincipalAmount,
                   didimdolInterest
                 ),
+              fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
+                  borrowingYear,
+                  didimdolPrincipalAmount,
+                  didimdolInterest
+                ),
             });
             loanAmountByLtv = loanAmountByLtv - didimdolLimit;
           } else if (loanAmountByLtv > 0) {
@@ -1066,6 +1115,12 @@ export const KnowingState: KnowingStateType = {
                     principalAmount,
                     didimdolInterest
                   ),
+                fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                  calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
+                    borrowingYear,
+                    principalAmount,
+                    didimdolInterest
+                  ),
               });
               loanAmountByLtv = loanAmountByLtv - principalAmount;
             }
@@ -1075,8 +1130,11 @@ export const KnowingState: KnowingStateType = {
         if (useSpecialHome && isAbleSpecialHomeLoan && loanAmountByLtv > 0) {
           const specialHomeLoanInterestResult = get(
             KnowingState.getSpecialHomeLoanInterest
-          ); (2)
-          const specialHomePrimeRate: number = Number.parseFloat(get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2));
+          );
+          2;
+          const specialHomePrimeRate: number = Number.parseFloat(
+            get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2)
+          );
 
           const specialHomeLoanInterest: number = specialHomeLoanInterestResult
             ? Number.parseFloat(specialHomeLoanInterestResult)
@@ -1115,6 +1173,12 @@ export const KnowingState: KnowingStateType = {
                   specialHomeLoanPrincipalAmount,
                   specialHomeLoanInterest
                 ),
+              fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
+                  borrowingYear,
+                  specialHomeLoanPrincipalAmount,
+                  specialHomeLoanInterest
+                ),
             });
             loanAmountByLtv = loanAmountByLtv - specialHomeLoanLimit;
           } else if (loanAmountByLtv > 0) {
@@ -1140,6 +1204,12 @@ export const KnowingState: KnowingStateType = {
                   ),
                 fixedPrincipalPaymentLoanAmountFirstMonth:
                   calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                    borrowingYear,
+                    principalAmount,
+                    specialHomeLoanInterest
+                  ),
+                fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                  calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                     borrowingYear,
                     principalAmount,
                     specialHomeLoanInterest
@@ -1172,6 +1242,12 @@ export const KnowingState: KnowingStateType = {
               ),
             fixedPrincipalPaymentLoanAmountFirstMonth:
               calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                principalAmount,
+                NormalLoanInterest
+              ),
+            fixedGradualIncreasePaymentLoanAmountFirstMonth:
+              calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                 borrowingYear,
                 principalAmount,
                 NormalLoanInterest
@@ -1221,7 +1297,13 @@ export const KnowingState: KnowingStateType = {
       // }
 
       if (useDidimdol && includeDidimdol) {
-        const didimdolHousePriceLimit = getDidimdolHousePriceLimit(isNewCouple || false, isMarried, isHavingKids, kidsCount, internationalAge);
+        const didimdolHousePriceLimit = getDidimdolHousePriceLimit(
+          isNewCouple || false,
+          isMarried,
+          isHavingKids,
+          kidsCount,
+          internationalAge
+        );
         // 디딤돌 사용시 최대 5억 제한
         if (totalLoanAmount + getMyAsset > didimdolHousePriceLimit) {
           result.finalPropertyPrice = didimdolHousePriceLimit;
@@ -1253,7 +1335,9 @@ export const KnowingState: KnowingStateType = {
 
         if (useDidimdol && isAbleDidimdol && loanAmountByLimitedPrice > 0) {
           const didimdolInterestResult = get(KnowingState.getDidimdolInterest);
-          const didimdolPrimeRate: number = Number.parseFloat(get(KnowingState.getDidimdolPrimeRate));
+          const didimdolPrimeRate: number = Number.parseFloat(
+            get(KnowingState.getDidimdolPrimeRate)
+          );
           const didimdolInterest: number = Number.parseFloat(
             didimdolInterestResult ? didimdolInterestResult : "0"
           );
@@ -1282,6 +1366,12 @@ export const KnowingState: KnowingStateType = {
                 ),
               fixedPrincipalPaymentLoanAmountFirstMonth:
                 calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                  borrowingYear,
+                  didimdolPrincipalAmount,
+                  didimdolInterest
+                ),
+              fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                   borrowingYear,
                   didimdolPrincipalAmount,
                   didimdolInterest
@@ -1315,6 +1405,12 @@ export const KnowingState: KnowingStateType = {
                     principalAmount,
                     didimdolInterest
                   ),
+                fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                  calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
+                    borrowingYear,
+                    principalAmount,
+                    didimdolInterest
+                  ),
               });
               loanAmountByLimitedPrice =
                 loanAmountByLimitedPrice - principalAmount;
@@ -1334,7 +1430,9 @@ export const KnowingState: KnowingStateType = {
             ? Number.parseFloat(specialHomeLoanInterestResult)
             : 0;
 
-          const specialHomeLoanPrimeRate: number = Number.parseFloat(get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2));
+          const specialHomeLoanPrimeRate: number = Number.parseFloat(
+            get(KnowingState.getSpecialHomeLoanPrimeRate).toFixed(2)
+          );
 
           const specialHomeLoanLimit: number = get(
             KnowingState.getSpecialHomeLoanLimit
@@ -1369,6 +1467,12 @@ export const KnowingState: KnowingStateType = {
                   specialHomeLoanPrincipalAmount,
                   specialHomeLoanInterest
                 ),
+              fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
+                  borrowingYear,
+                  specialHomeLoanPrincipalAmount,
+                  specialHomeLoanInterest
+                ),
             });
             loanAmountByLimitedPrice =
               loanAmountByLimitedPrice - specialHomeLoanLimit;
@@ -1395,6 +1499,12 @@ export const KnowingState: KnowingStateType = {
                   ),
                 fixedPrincipalPaymentLoanAmountFirstMonth:
                   calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                    borrowingYear,
+                    principalAmount,
+                    specialHomeLoanInterest
+                  ),
+                fixedGradualIncreasePaymentLoanAmountFirstMonth:
+                  calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                     borrowingYear,
                     principalAmount,
                     specialHomeLoanInterest
@@ -1427,6 +1537,12 @@ export const KnowingState: KnowingStateType = {
               ),
             fixedPrincipalPaymentLoanAmountFirstMonth:
               calculateFixedPrincipalPaymentLoanAmountFirstMonth(
+                borrowingYear,
+                principalAmount,
+                NormalLoanInterest
+              ),
+            fixedGradualIncreasePaymentLoanAmountFirstMonth:
+              calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh(
                 borrowingYear,
                 principalAmount,
                 NormalLoanInterest

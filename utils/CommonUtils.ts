@@ -1,23 +1,30 @@
 import { HousePriceLitmitation, PaymentType } from "../constants/Common";
+import { GradualIncreaseRate } from "../constants/Interests";
 
 export const getNumericString = (value: string) => {
-  let check =  /(^\d+$)|(^\d{1,}.\d{0,2}$)/;
-  const withoutCommaString = value.replaceAll(',', "");
+  let check = /(^\d+$)|(^\d{1,}.\d{0,2}$)/;
+  const withoutCommaString = value.replaceAll(",", "");
   if (check.test(withoutCommaString)) {
     return withoutCommaString;
   }
   return "";
-}
+};
 
-export const getDidimdolHousePriceLimit = (isNewCouple: boolean, isMarried: boolean, isHavingKids: boolean, kidsCount: number, internationalAge: number) => {
+export const getDidimdolHousePriceLimit = (
+  isNewCouple: boolean,
+  isMarried: boolean,
+  isHavingKids: boolean,
+  kidsCount: number,
+  internationalAge: number
+) => {
   if (isNewCouple || (isMarried && isHavingKids && kidsCount >= 2)) {
     return HousePriceLitmitation.DIDIMDOL_PRIME;
   }
   if (!isMarried && internationalAge >= 30) {
-    return HousePriceLitmitation.DIDIMDOL_ADVANTAGE
+    return HousePriceLitmitation.DIDIMDOL_ADVANTAGE;
   }
   return HousePriceLitmitation.DIDIMDOL;
-}
+};
 
 export const getPrincipalAndInterest = (
   amount: number,
@@ -44,7 +51,7 @@ export const getPrincipalAndInterest = (
         borrowingYear! *
         12 -
         amount * 100000000) /
-      100000000,
+        100000000,
     ];
   } else if (paymentType === PaymentType.FIXED_PRINCIPAL) {
     // 매달 갚아야 할 원금 (원금 / 개월수)
@@ -154,6 +161,19 @@ export const calculateFixedPrincipalPaymentLoanAmountFirstMonth = (
   return Math.ceil(
     totalLoanAmount / loanMonth + totalLoanAmount * (loanRate / 100 / 12)
   );
+};
+
+// A × r/12 ​+ A × g × (i−1)​
+// 대출원금 : A, 대출기간 : N, 대출금리 : r (%), 회차 : i (i=1,2,3...), 체증률 : g (%)
+// 10년 0.015%, 15년 0.046%, 20년 0.023%, 30년 0.008%
+export const calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh = (
+  borrowingYear: number,
+  loanAmount: number,
+  loanRate: number
+): number => {
+  const totalLoanAmount = loanAmount * 100000000;
+
+  return Math.ceil((totalLoanAmount * (loanRate / 100)) / 12);
 };
 
 export const getCommaString = (original: string | number) => {

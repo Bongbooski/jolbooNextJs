@@ -6,6 +6,7 @@ export interface LoanResult {
   primeRate: number;
   fixedPaymentLoanAmountByMonth: number;
   fixedPrincipalPaymentLoanAmountFirstMonth: number;
+  fixedGradualIncreasePaymentLoanAmountFirstMonth: number;
 }
 
 export enum LoanType {
