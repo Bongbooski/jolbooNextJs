@@ -61,8 +61,45 @@ export const getPrincipalAndInterest = (
       interest
     );
     return [amount, fixedPrincipal.totalInterest / 100000000];
+  } else if (paymentType === PaymentType.GRADUAL_INCREASE) {
+    const totalInterest = getGradualIncreaseInterest(
+      amount,
+      borrowingYear,
+      interest
+    );
+    return [amount, totalInterest.totalInterest / 100000000];
   }
   return [amount, (amount * interest) / 100];
+};
+
+export const getGradualIncreaseInterest = (
+  amount: number, // 총 대출금, 단위 억
+  borrowingYear: number, // 빌린기간, 단위 년
+  interest: number, // 이율
+  loopingYear?: number
+) => {
+  let amountForCalculate = amount * 100000000;
+  let totalBorrowingMonth = (loopingYear ?? borrowingYear) * 12;
+  let monthlyInterest = 0;
+  let monthlyPrincipal = 0;
+  let totalInterest = 0;
+  let i = 1;
+  let totalPayment = 0;
+
+  while (totalBorrowingMonth > 0) {
+    amountForCalculate -= monthlyPrincipal;
+    monthlyInterest = Math.round((amountForCalculate * interest) / 100 / 12);
+    monthlyPrincipal = Math.round(
+      ((amountForCalculate * GradualIncreaseRate[borrowingYear]) / 100) *
+        (i - 1)
+    );
+    totalPayment += monthlyPrincipal + monthlyInterest;
+    totalBorrowingMonth--;
+    i++;
+    totalInterest += monthlyInterest;
+  }
+
+  return { totalInterest, totalPayment };
 };
 
 export const getFixedPrincipalInterest = (

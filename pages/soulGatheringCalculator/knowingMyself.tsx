@@ -506,7 +506,7 @@ const Home: NextPageWithLayout = () => {
           description={[
             "원리금균등은 원금, 이자를 더해 매달 동일한 금액을 갚는 방식이에요",
             "원금균등은 매달 동일한 원금에 변경되는 이자가 더해지는 방식이에요",
-            "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이에요(대출 종류에 따라 없을수도 있어요)",
+            "체증식은 처음에는 조금만 갚다가 점점 갚는 금액을 늘려가는 방식이에요(대출 종류에 따라 없을 수도 있어요)",
           ]}
         >
           <div className="minWidthWrapper">
@@ -527,9 +527,9 @@ const Home: NextPageWithLayout = () => {
               <ToggleButton value={PaymentType.FIXED_PRINCIPAL}>
                 원금균등
               </ToggleButton>
-              {/* <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
+              <ToggleButton value={PaymentType.GRADUAL_INCREASE}>
                 체증식
-              </ToggleButton> */}
+              </ToggleButton>
             </ToggleButtonGroup>
           </div>
         </SurveyContents>

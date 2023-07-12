@@ -42,10 +42,12 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { KnowingState } from "../../state/KnowingState";
 import DistrictDescription from "../../components/DistrictDescription";
 import {
+  calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh,
   calculateFixedPaymentLoanAmountByMonth,
   getCommaString,
   getDidimdolHousePriceLimit,
   getFixedPrincipalInterest,
+  getGradualIncreaseInterest,
 } from "../../utils/CommonUtils";
 import SymbolSmall from "../../components/SymbolSmall";
 import Router from "next/router";
@@ -174,6 +176,27 @@ const Result = () => {
             Number(value.loanAmount),
             value.interest
           ) * 12;
+      } else if (paymentType === PaymentType.GRADUAL_INCREASE) {
+        debugger;
+        sumDsr +=
+          (Number(
+            getGradualIncreaseInterest(
+              Number(value.loanAmount),
+              borrowingYear,
+              value.interest,
+              1
+            ).totalPayment.toFixed(2)
+          ) /
+            (Number(yearIncome) * 10000)) *
+          100;
+        paymentForYear += Number(
+          getGradualIncreaseInterest(
+            Number(value.loanAmount),
+            borrowingYear,
+            value.interest,
+            1
+          ).totalPayment.toFixed(2)
+        );
       }
     });
 
@@ -939,7 +962,8 @@ const Result = () => {
 
           <div className="verticalContainer">
             <Typography gutterBottom>
-              제안 또는 문의 사항이 있으시면 jolboo2023@gmail.com으로 메일주세요!
+              제안 또는 문의 사항이 있으시면 jolboo2023@gmail.com으로
+              메일주세요!
             </Typography>
           </div>
         </div>
