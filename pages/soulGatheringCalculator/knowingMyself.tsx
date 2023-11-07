@@ -30,6 +30,7 @@ import { FamilyType } from "../../constants/Loan";
 import { PaymentType } from "../../constants/Common";
 import Seo from "../../components/Seo";
 import KakaoAdFit from "../../components/KakaoAdFit";
+import GoogleAd from "../../components/GoogleAd";
 
 interface Movie {
   id: string;
@@ -554,7 +555,8 @@ const Home: NextPageWithLayout = () => {
           </div>
         )}
         {/* <span className="coupangNotice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다</span> */}
-        <KakaoAdFit />
+        {/* <KakaoAdFit /> */}
+        <GoogleAd />
       </div>
       {/* <iframe className='sideBanner' src="https://ads-partners.coupang.com/widgets.html?id=677067&template=carousel&trackingCode=AF6703910&subId=&width=140&height=680&tsource=" width="140" height="680" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe> */}
       <style jsx>{`

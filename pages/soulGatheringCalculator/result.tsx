@@ -57,6 +57,7 @@ import { LoanResult, LoanType } from "../../constants/Loan";
 import Seo from "../../components/Seo";
 import InfoIcon from "../../components/InfoIcon";
 import KakaoAdFit from "../../components/KakaoAdFit";
+import GoogleAd from "../../components/GoogleAd";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -975,7 +976,8 @@ const Result = () => {
               </Button>
             </Link>
           </div>
-          <KakaoAdFit />
+          {/* <KakaoAdFit /> */}
+          <GoogleAd />
         </div>
       </div>
       <style jsx>{`

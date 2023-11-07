@@ -6,6 +6,7 @@ import { ReactElement } from "react";
 import AppLayout from "../../components/layout/AppLayout";
 import Symbol from "../../components/Symbol";
 import KakaoAdFit from "../../components/KakaoAdFit";
+import GoogleAd from "../../components/GoogleAd";
 
 const Home = () => {
   return (
@@ -33,7 +34,8 @@ const Home = () => {
           <Typography variant="body1">시작하기</Typography>
         </Button>
       </Link>
-      <KakaoAdFit />
+      {/* <KakaoAdFit /> */}
+      <GoogleAd />
       <style jsx>{`
         .iconArea {
           padding: 20px 0px 0px 0px;
