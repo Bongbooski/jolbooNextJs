@@ -18,9 +18,8 @@ const GoogleAd = (props: any) => {
         className="adsbygoogle"
         style={{ display: "block" }}
         data-ad-format="fluid"
-        data-ad-layout-key="-fb+5w+4e-db+86"
-        data-ad-client="ca-pub-4293087420983151"
-        data-ad-slot="5792448771"
+        data-ad-client="ca-pub-1331839021898772"
+        data-ad-slot="5894519611"
       />
     </div>
   );
