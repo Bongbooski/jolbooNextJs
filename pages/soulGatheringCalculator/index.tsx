@@ -35,7 +35,6 @@ const Home = () => {
         </Button>
       </Link>
       {/* <KakaoAdFit /> */}
-      <GoogleAd />
       <style jsx>{`
         .iconArea {
           padding: 20px 0px 0px 0px;
