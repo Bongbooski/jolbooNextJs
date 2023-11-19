@@ -30,11 +30,11 @@ export default class MyDocument extends Document {
             name="naver-site-verification"
             content="63a6d2dbef2eebca9fa4ea51eaeb86b76db5e7cb"
           />
-          <script
+          {/* <script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1331839021898772"
             crossOrigin="anonymous"
-          ></script>
+          ></script> */}
           <meta
             name="description"
             content="내 연봉으로 어떤 집에 살 수 있을까?"

@@ -16,7 +16,8 @@ const GoogleAd = (props: any) => {
     <div className="googleAd-container">
       <ins
         className="adsbygoogle"
-        style={{ display: "block" }}
+        style={{ display: "block", textAlign: "center" }}
+        data-ad-layout="in-article"
         data-ad-format="fluid"
         data-ad-client="ca-pub-1331839021898772"
         data-ad-slot="5894519611"
