@@ -6,21 +6,22 @@ declare global {
   }
 }
 
-const GoogleAd = (props: any) => {
-  // const { currentPath } = props;
+const GoogleAd = () => {
   useEffect(() => {
-    (window.adsbygoogle = window.adsbygoogle || []).push({});
+    if (window.adsbygoogle && !window.adsbygoogle.loaded) {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    }
   }, []);
 
   return (
     <div className="googleAd-container">
       <ins
         className="adsbygoogle"
-        style={{ display: "block", textAlign: "center" }}
-        data-ad-layout="in-article"
+        style={{ display: "block" }}
         data-ad-format="fluid"
+        data-ad-layout-key="-fb+5w+4e-db+86"
         data-ad-client="ca-pub-1331839021898772"
-        data-ad-slot="5894519611"
+        data-ad-slot="7002854636"
       />
     </div>
   );

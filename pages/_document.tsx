@@ -1,12 +1,19 @@
 import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheets } from "@mui/styles";
+import Script from "next/script";
 
 export default class MyDocument extends Document {
   render() {
     return (
       <Html>
         <Head>
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1331839021898772`}
+            strategy="lazyOnload"
+            crossOrigin="anonymous"
+          />
           <script
             async
             src={`https://www.googletagmanager.com/gtag/js?id=G-E6NWYCQ921`}
@@ -30,11 +37,6 @@ export default class MyDocument extends Document {
             name="naver-site-verification"
             content="63a6d2dbef2eebca9fa4ea51eaeb86b76db5e7cb"
           />
-          {/* <script
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1331839021898772"
-            crossOrigin="anonymous"
-          ></script> */}
           <meta
             name="description"
             content="내 연봉으로 어떤 집에 살 수 있을까?"
