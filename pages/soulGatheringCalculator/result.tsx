@@ -41,6 +41,8 @@ import {
 import { useRecoilState, useRecoilValue } from "recoil";
 import { KnowingState } from "../../state/KnowingState";
 import DistrictDescription from "../../components/DistrictDescription";
+import RealEstateDataComponent from "../../components/RealEstateData";
+import RealEstateTrend from '../../components/RealEstateTrend';
 import {
   calculateFixedGradualIncreasePaymentLoanAmountFirstMonthh,
   calculateFixedPaymentLoanAmountByMonth,
@@ -864,6 +866,87 @@ const Result = () => {
                 </Typography>
               </>
             ))}
+        </div>
+
+
+        {/* 실거래가 정보 섹션 */}
+        <div className="contentsArea">
+          <Typography variant="h5" gutterBottom>
+            구매 가능한 지역의 최근 실거래가 정보
+          </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            선택한 면적과 예산에 맞는 최근 실거래가 정보를 확인해보세요
+          </Typography>
+          
+          {selectedSquareMeter === "18" && districtName18.length > 0 && (
+            <Box mb={3}>
+              <RealEstateDataComponent
+                district={districtName18[districtName18.length - 1].districtName}
+                area={18}
+                maxPrice={getFinalLoanResult.finalPropertyPrice}
+              />
+            </Box>
+          )}
+          
+          {selectedSquareMeter === "25" && districtName25.length > 0 && (
+            <Box mb={3}>
+              <RealEstateDataComponent
+                district={districtName25[districtName25.length - 1].districtName}
+                area={25}
+                maxPrice={getFinalLoanResult.finalPropertyPrice}
+              />
+            </Box>
+          )}
+          
+          {selectedSquareMeter === "34" && districtName34.length > 0 && (
+            <Box mb={3}>
+              <RealEstateDataComponent
+                district={districtName34[districtName34.length - 1].districtName}
+                area={34}
+                maxPrice={getFinalLoanResult.finalPropertyPrice}
+              />
+            </Box>
+          )}
+        </div>
+
+        {/* 실거래가 추세 섹션 */}
+        <div className="contentsArea">
+          <Typography variant="h5" gutterBottom>
+            실거래가 시장 동향 및 추세 분석
+          </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            해당 지역의 실거래가 추세와 시장 동향을 분석하여 투자 판단에 도움을 드립니다
+          </Typography>
+          
+          {selectedSquareMeter === "18" && districtName18.length > 0 && (
+            <Box mb={3}>
+              <RealEstateTrend
+                district={districtName18[districtName18.length - 1].districtName}
+                area={18}
+                maxPrice={getFinalLoanResult.finalPropertyPrice}
+              />
+            </Box>
+          )}
+          
+          {selectedSquareMeter === "25" && districtName25.length > 0 && (
+            <Box mb={3}>
+              <RealEstateTrend
+                district={districtName25[districtName25.length - 1].districtName}
+                area={25}
+                maxPrice={getFinalLoanResult.finalPropertyPrice}
+              />
+            </Box>
+          )}
+          
+          {selectedSquareMeter === "34" && districtName34.length > 0 && (
+            <Box mb={3}>
+              <RealEstateTrend
+                district={districtName34[districtName34.length - 1].districtName}
+                area={34}
+                maxPrice={getFinalLoanResult.finalPropertyPrice}
+              />
+            </Box>
+          )}
         </div>
 
         <div className="contentsArea">
